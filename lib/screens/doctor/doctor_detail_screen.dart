@@ -70,11 +70,7 @@ class DoctorDetailScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Appointment booking feature coming soon'),
-            ),
-          );
+          context.push('/mr/appointments/schedule?doctorId=${doctor.id}');
         },
         backgroundColor: AppColors.primary,
         icon: const Icon(Iconsax.calendar, color: AppColors.white),

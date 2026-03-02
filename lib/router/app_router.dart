@@ -6,6 +6,8 @@ import '../screens/home/home_screen.dart';
 import '../screens/doctor/doctor_screen.dart';
 import '../screens/doctor/doctor_detail_screen.dart';
 import '../screens/doctor/add_edit_doctor_screen.dart';
+import '../screens/appointment/my_appointment_screen.dart';
+import '../screens/appointment/schedule_edit_appointment_screen.dart';
 import '../models/doctor.dart';
 
 class AppRouter {
@@ -68,9 +70,29 @@ class AppRouter {
       GoRoute(
         path: appointments,
         name: 'appointments',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Appointments - Coming Soon')),
-        ),
+        builder: (context, state) => const MyAppointmentScreen(),
+        routes: [
+          GoRoute(
+            path: 'schedule',
+            name: 'appointmentSchedule',
+            builder: (context, state) {
+              final doctorId = state.uri.queryParameters['doctorId'];
+              return ScheduleEditAppointmentScreen(
+                initialDoctorId: doctorId,
+              );
+            },
+          ),
+          GoRoute(
+            path: 'edit/:id',
+            name: 'appointmentEdit',
+            builder: (context, state) {
+              final appointmentId = state.pathParameters['id']!;
+              return ScheduleEditAppointmentScreen(
+                appointmentId: appointmentId,
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: orders,
