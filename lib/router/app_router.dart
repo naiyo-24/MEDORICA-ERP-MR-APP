@@ -8,7 +8,11 @@ import '../screens/doctor/doctor_detail_screen.dart';
 import '../screens/doctor/add_edit_doctor_screen.dart';
 import '../screens/appointment/my_appointment_screen.dart';
 import '../screens/appointment/schedule_edit_appointment_screen.dart';
+import '../screens/chemist_shop/my_chemist_shop_screen.dart';
+import '../screens/chemist_shop/chemist_shop_detail_screen.dart';
+import '../screens/chemist_shop/add_edit_chemist_shop_screen.dart';
 import '../models/doctor.dart';
+import '../models/chemist_shop.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -104,9 +108,31 @@ class AppRouter {
       GoRoute(
         path: chemist,
         name: 'chemist',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Shops - Coming Soon')),
-        ),
+        builder: (context, state) => const MyChemistShopScreen(),
+        routes: [
+          GoRoute(
+            path: 'add',
+            name: 'chemistAdd',
+            builder: (context, state) => const AddEditChemistShopScreen(),
+          ),
+          GoRoute(
+            path: ':id',
+            name: 'chemistDetail',
+            builder: (context, state) {
+              final shopId = state.pathParameters['id']!;
+              return ChemistShopDetailScreen(shopId: shopId);
+            },
+          ),
+          GoRoute(
+            path: 'edit/:id',
+            name: 'chemistEdit',
+            builder: (context, state) {
+              final _ = state.pathParameters['id']!;
+              final shop = state.extra as ChemistShop?;
+              return AddEditChemistShopScreen(shop: shop);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: distributor,
