@@ -30,7 +30,7 @@ class DoctorCard extends StatelessWidget {
             children: [
               // Doctor Photo
               Container(
-                width: 100,
+                width: 140,
                 height: 120,
                 decoration: BoxDecoration(
                   color: AppColors.surface300,

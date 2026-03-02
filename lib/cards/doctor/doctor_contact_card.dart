@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../theme/app_theme.dart';
 
 class DoctorContactCard extends StatelessWidget {
@@ -11,6 +12,20 @@ class DoctorContactCard extends StatelessWidget {
     required this.phoneNumber,
     required this.email,
   });
+
+  Future<void> _launchPhone(String phoneNumber) async {
+    final uri = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  Future<void> _launchEmail(String email) async {
+    final uri = Uri.parse('mailto:$email');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +58,7 @@ class DoctorContactCard extends StatelessWidget {
             icon: Iconsax.call,
             label: 'Phone',
             value: phoneNumber,
+            onTap: () => _launchPhone(phoneNumber),
           ),
           const SizedBox(height: AppSpacing.md),
           // Email
@@ -50,6 +66,7 @@ class DoctorContactCard extends StatelessWidget {
             icon: Iconsax.sms,
             label: 'Email',
             value: email,
+            onTap: () => _launchEmail(email),
           ),
         ],
       ),
@@ -60,8 +77,12 @@ class DoctorContactCard extends StatelessWidget {
     required IconData icon,
     required String label,
     required String value,
+    VoidCallback? onTap,
   }) {
-    return Row(
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppBorderRadius.md),
+      child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
@@ -100,6 +121,7 @@ class DoctorContactCard extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }

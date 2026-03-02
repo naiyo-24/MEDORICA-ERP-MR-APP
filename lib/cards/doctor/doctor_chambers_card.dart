@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/doctor.dart';
 
@@ -7,6 +8,13 @@ class DoctorChambersCard extends StatelessWidget {
   final List<DoctorChamber> chambers;
 
   const DoctorChambersCard({super.key, required this.chambers});
+
+  Future<void> _launchPhone(String phoneNumber) async {
+    final uri = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,24 +124,29 @@ class DoctorChambersCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Iconsax.call,
-                          color: AppColors.quaternary,
-                          size: 16,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            chamber.phoneNumber,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.quaternary,
+                    InkWell(
+                      onTap: () => _launchPhone(chamber.phoneNumber),
+                      borderRadius: BorderRadius.circular(AppBorderRadius.sm),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Iconsax.call,
+                            color: AppColors.primary,
+                            size: 16,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              chamber.phoneNumber,
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppColors.primary,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
