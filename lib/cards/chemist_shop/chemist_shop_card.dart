@@ -41,7 +41,7 @@ class ChemistShopCard extends StatelessWidget {
                     ? Image.network(
                         shop.photo,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           color: AppColors.surface,
                           child: const Icon(
                             Iconsax.shop,
@@ -53,7 +53,7 @@ class ChemistShopCard extends StatelessWidget {
                     : Image.asset(
                         shop.photo,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           color: AppColors.surface,
                           child: const Icon(
                             Iconsax.shop,

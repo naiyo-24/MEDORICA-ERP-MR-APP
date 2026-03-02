@@ -568,7 +568,7 @@ class _AddEditChemistShopScreenState
                       ? Image.network(
                           _photoController.text,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                          errorBuilder: (_, _, _) => Container(
                             color: AppColors.surface,
                             child: const Icon(
                               Iconsax.gallery,

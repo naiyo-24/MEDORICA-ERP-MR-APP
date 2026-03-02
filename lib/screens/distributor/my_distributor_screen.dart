@@ -30,7 +30,7 @@ class _MyDistributorScreenState extends ConsumerState<MyDistributorScreen> {
       backgroundColor: AppColors.surface,
       appBar: const MRAppBar(
         showBack: false,
-        showActions: true,
+        showActions: false,
         titleText: 'My Distributors',
         subtitleText: 'Manage your supply network',
       ),

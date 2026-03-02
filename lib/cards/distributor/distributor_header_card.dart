@@ -34,7 +34,7 @@ class DistributorHeaderCard extends StatelessWidget {
                     ? Image.network(
                         distributor.photo,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           color: AppColors.surface,
                           child: const Icon(
                             Iconsax.truck,
@@ -46,7 +46,7 @@ class DistributorHeaderCard extends StatelessWidget {
                     : Image.asset(
                         distributor.photo,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           color: AppColors.surface,
                           child: const Icon(
                             Iconsax.truck,
