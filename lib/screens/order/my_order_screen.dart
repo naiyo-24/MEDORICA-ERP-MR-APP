@@ -170,7 +170,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   Widget _buildDoctorDropdown() {
     final doctors = ref.watch(doctorProvider);
     return DropdownButtonFormField<String>(
-      value: _selectedDoctorId.isEmpty ? null : _selectedDoctorId,
+      initialValue: _selectedDoctorId.isEmpty ? null : _selectedDoctorId,
       decoration: InputDecoration(
         hintText: 'All Doctors',
         border: OutlineInputBorder(
@@ -199,7 +199,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   Widget _buildChemistShopDropdown() {
     final shops = ref.watch(chemistShopProvider);
     return DropdownButtonFormField<String>(
-      value: _selectedChemistShopId.isEmpty ? null : _selectedChemistShopId,
+      initialValue: _selectedChemistShopId.isEmpty ? null : _selectedChemistShopId,
       decoration: InputDecoration(
         hintText: 'All Chemist Shops',
         border: OutlineInputBorder(
@@ -228,7 +228,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   Widget _buildDistributorDropdown() {
     final distributors = ref.watch(distributorProvider);
     return DropdownButtonFormField<String>(
-      value: _selectedDistributorId.isEmpty ? null : _selectedDistributorId,
+      initialValue: _selectedDistributorId.isEmpty ? null : _selectedDistributorId,
       decoration: InputDecoration(
         hintText: 'All Distributors',
         border: OutlineInputBorder(
@@ -256,7 +256,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
 
   Widget _buildStatusDropdown() {
     return DropdownButtonFormField<OrderStatus?>(
-      value: _selectedStatus,
+      initialValue: _selectedStatus,
       decoration: InputDecoration(
         hintText: 'All Statuses',
         border: OutlineInputBorder(

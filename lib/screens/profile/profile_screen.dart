@@ -42,12 +42,7 @@ class ProfileScreen extends ConsumerWidget {
                       context.push('/profile/update');
                     },
                     onAboutUs: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('About Us feature coming soon'),
-                          backgroundColor: AppColors.secondary,
-                        ),
-                      );
+                      context.push('/about-us');
                     },
                     onContactSupport: () {
                       ScaffoldMessenger.of(context).showSnackBar(

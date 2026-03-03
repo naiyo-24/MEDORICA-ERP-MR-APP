@@ -184,7 +184,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             _buildSectionHeader('Select Doctor', Iconsax.user),
             const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
-              value: _selectedDoctorId,
+              initialValue: _selectedDoctorId,
               decoration: _buildInputDecoration(
                 hintText: 'Choose a doctor',
                 prefixIcon: Iconsax.briefcase,
@@ -218,7 +218,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             _buildSectionHeader('Delivery Location', Iconsax.shop),
             const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
-              value: _selectedChemistShopId,
+              initialValue: _selectedChemistShopId,
               decoration: _buildInputDecoration(
                 hintText: 'Choose a chemist shop',
                 prefixIcon: Iconsax.location,
@@ -252,7 +252,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
             _buildSectionHeader('Select Distributor', Iconsax.truck),
             const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
-              value: _selectedDistributorId,
+              initialValue: _selectedDistributorId,
               decoration: _buildInputDecoration(
                 hintText: 'Choose a distributor',
                 prefixIcon: Iconsax.box,

@@ -16,6 +16,7 @@ import '../screens/order/my_order_screen.dart';
 import '../screens/order/create_order_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/profile/update_profile_screen.dart';
+import '../screens/about_us/about_us_screen.dart';
 import '../screens/notification/notification_screen.dart';
 import '../models/doctor.dart';
 import '../models/chemist_shop.dart';
@@ -30,6 +31,7 @@ class AppRouter {
   static const String chemist = '/mr/chemist';
   static const String distributor = '/mr/distributor';
   static const String profile = '/profile';
+  static const String aboutUs = '/about-us';
   static const String notifications = '/notifications';
 
   static final GoRouter router = GoRouter(
@@ -173,6 +175,11 @@ class AppRouter {
             builder: (context, state) => const UpdateProfileScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: aboutUs,
+        name: 'aboutUs',
+        builder: (context, state) => const AboutUsScreen(),
       ),
       GoRoute(
         path: notifications,
