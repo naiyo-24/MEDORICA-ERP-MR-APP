@@ -294,7 +294,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
       backgroundColor: AppColors.surface,
       appBar: const MRAppBar(
         showBack: false,
-        showActions: true,
+        showActions: false,
         titleText: 'My Orders',
         subtitleText: 'Track and manage your orders',
       ),
