@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         if (didPop) {
           return;
         }
-        // Navigate to home instead of exiting the app
+        // Prevent app from exiting - navigate to home instead
         AppRouter.router.go(AppRouter.home);
       },
       child: MaterialApp.router(

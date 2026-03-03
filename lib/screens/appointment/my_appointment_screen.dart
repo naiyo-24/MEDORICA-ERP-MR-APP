@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../models/appointment.dart';
 import '../../provider/appointment_provider.dart';
+import '../../router/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../cards/appointment/appointment_card.dart';
 import '../../cards/appointment/appointment_filter_options_card.dart';
@@ -29,15 +30,22 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
     // Apply filters
     final filteredAppointments = _filterAppointments(appointments);
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: MRAppBar(
-        showBack: false,
-        showActions: false,
-        titleText: 'My Appointments',
-        subtitleText: 'View and Manage',
-        onBack: () => context.go('/home'),
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.surface,
+        appBar: MRAppBar(
+          showBack: false,
+          showActions: false,
+          titleText: 'My Appointments',
+          subtitleText: 'View and Manage',
+        ),
       body: Column(
         children: [
           // Filter Options Card
@@ -88,7 +96,8 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const MRBottomNavBar(currentIndex: 2),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 2),
+      ),
     );
   }
 

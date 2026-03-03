@@ -6,6 +6,7 @@ import '../../../theme/app_theme.dart';
 import '../../cards/doctor/doctor_card.dart' show DoctorCard;
 import '../../cards/doctor/doctor_search_bar_card.dart';
 import '../../provider/doctor_provider.dart';
+import '../../router/app_router.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/bottom_nav_bar.dart';
 
@@ -39,19 +40,27 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
       return matchesSearch && matchesSpecialization;
     }).toList();
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: const MRAppBar(
-        showBack: false,
-        showActions: false,
-        titleText: 'My Doctors',
-        subtitleText: 'List of doctors you manage',
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/mr/doctor/add'),
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: AppColors.white),
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.surface,
+        appBar: const MRAppBar(
+          showBack: false,
+          showActions: false,
+          titleText: 'My Doctors',
+          subtitleText: 'List of doctors you manage',
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.go('/mr/doctor/add'),
+          backgroundColor: AppColors.primary,
+          child: const Icon(Icons.add, color: AppColors.white),
+        ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -119,7 +128,8 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const MRBottomNavBar(currentIndex: 1),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 1),
+      ),
     );
   }
 }

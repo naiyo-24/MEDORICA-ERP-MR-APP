@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../cards/distributor/distributor_card.dart';
 import '../../cards/distributor/distributor_search_filter_card.dart';
 import '../../provider/distributor_provider.dart';
+import '../../router/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/bottom_nav_bar.dart';
@@ -26,15 +28,23 @@ class _MyDistributorScreenState extends ConsumerState<MyDistributorScreen> {
         ? allDistributors
         : ref.watch(searchDistributorProvider(_searchQuery));
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: const MRAppBar(
-        showBack: false,
-        showActions: false,
-        titleText: 'My Distributors',
-        subtitleText: 'Manage your supply network',
-      ),
-      body: Column(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.surface,
+        appBar: const MRAppBar(
+          showBack: false,
+          showActions: false,
+          titleText: 'My Distributors',
+          subtitleText: 'Manage your supply network',
+        ),
+        body: Column(
         children: [
           // Search and Filter Card
           Padding(
@@ -100,7 +110,8 @@ class _MyDistributorScreenState extends ConsumerState<MyDistributorScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const MRBottomNavBar(currentIndex: 5),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 5),
+      ),
     );
   }
 }

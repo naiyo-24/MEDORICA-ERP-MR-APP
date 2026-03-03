@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../cards/chemist_shop/chemist_shop_card.dart';
 import '../../cards/chemist_shop/chemist_shop_search_filter_card.dart';
 import '../../provider/chemist_shop_provider.dart';
+import '../../router/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/bottom_nav_bar.dart';
@@ -27,15 +28,23 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
         ? allShops
         : ref.watch(searchChemistShopProvider(_searchQuery));
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: const MRAppBar(
-        showBack: false,
-        showActions: false,
-        titleText: 'My Chemist Shops',
-        subtitleText: 'Manage your pharmacy network',
-      ),
-      body: Column(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.surface,
+        appBar: const MRAppBar(
+          showBack: false,
+          showActions: false,
+          titleText: 'My Chemist Shops',
+          subtitleText: 'Manage your pharmacy network',
+        ),
+        body: Column(
         children: [
           // Search and Filter Card
           Padding(
@@ -113,7 +122,8 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const MRBottomNavBar(currentIndex: 4),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 4),
+      ),
     );
   }
 }

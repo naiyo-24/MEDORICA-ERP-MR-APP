@@ -290,15 +290,23 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
         _selectedDistributorId.isNotEmpty ||
         _selectedStatus != null;
 
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: const MRAppBar(
-        showBack: false,
-        showActions: false,
-        titleText: 'My Orders',
-        subtitleText: 'Track and manage your orders',
-      ),
-      body: Padding(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.surface,
+        appBar: const MRAppBar(
+          showBack: false,
+          showActions: false,
+          titleText: 'My Orders',
+          subtitleText: 'Track and manage your orders',
+        ),
+        body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
@@ -445,7 +453,8 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const MRBottomNavBar(currentIndex: 3),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 3),
+      ),
     );
   }
 
