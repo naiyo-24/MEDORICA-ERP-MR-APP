@@ -192,24 +192,11 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               items: doctors.map((doctor) {
                 return DropdownMenuItem(
                   value: doctor.id,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        doctor.name,
-                        style: AppTypography.body.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        doctor.specialization,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.quaternary,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    doctor.name,
+                    style: AppTypography.body.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               }).toList(),
@@ -239,26 +226,11 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               items: chemistShops.map((shop) {
                 return DropdownMenuItem(
                   value: shop.id,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        shop.name,
-                        style: AppTypography.body.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        shop.location,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.quaternary,
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  child: Text(
+                    shop.name,
+                    style: AppTypography.body.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               }).toList(),
@@ -288,24 +260,11 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               items: distributors.map((distributor) {
                 return DropdownMenuItem(
                   value: distributor.id,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        distributor.name,
-                        style: AppTypography.body.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        'Delivery: ${distributor.deliveryTime}',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.quaternary,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    distributor.name,
+                    style: AppTypography.body.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               }).toList(),
