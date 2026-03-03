@@ -14,6 +14,7 @@ import '../screens/distributor/my_distributor_screen.dart';
 import '../screens/distributor/distributor_detail_screen.dart';
 import '../screens/order/my_order_screen.dart';
 import '../screens/order/create_order_screen.dart';
+import '../screens/profile/profile_screen.dart';
 import '../models/doctor.dart';
 import '../models/chemist_shop.dart';
 
@@ -26,6 +27,7 @@ class AppRouter {
   static const String orders = '/mr/orders';
   static const String chemist = '/mr/chemist';
   static const String distributor = '/mr/distributor';
+  static const String profile = '/profile';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -156,6 +158,11 @@ class AppRouter {
             },
           ),
         ],
+      ),
+      GoRoute(
+        path: profile,
+        name: 'profile',
+        builder: (context, state) => const ProfileScreen(),
       ),
     ],
   );

@@ -53,9 +53,12 @@ class MRAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 12.0),
-          child: CircleAvatar(
-            backgroundColor: AppColors.primaryLight,
-            child: const Icon(Iconsax.user, color: AppColors.primary),
+          child: GestureDetector(
+            onTap: () => context.push('/profile'),
+            child: CircleAvatar(
+              backgroundColor: AppColors.primaryLight,
+              child: const Icon(Iconsax.user, color: AppColors.primary),
+            ),
           ),
         ),
       ] : null,
