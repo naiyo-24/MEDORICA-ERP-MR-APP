@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../theme/app_theme.dart';
 import '../../cards/home/attendance_card.dart';
+import '../../cards/home/monthly_target_card.dart';
 import '../../cards/home/greeting_card.dart';
 import '../../cards/home/home_footer.dart';
 import '../../cards/home/quick_actions_card.dart';
@@ -30,6 +31,8 @@ class HomeScreen extends ConsumerWidget {
               MRGreetingCard(),
               SizedBox(height: AppSpacing.md),
               MRAttendanceCard(),
+              SizedBox(height: AppSpacing.md),
+              MonthlyTargetCard(),
               SizedBox(height: AppSpacing.md),
               MRQuickActionsCard(),
               SizedBox(height: AppSpacing.md),

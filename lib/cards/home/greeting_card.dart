@@ -25,43 +25,55 @@ class MRGreetingCard extends ConsumerWidget {
     final label = _timeBasedGreeting();
     final roleLabel = 'Medical Representative'; // This can be dynamic based on user role in a real app
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
         color: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.lgRadius),
-        elevation: AppElevation.sm,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: AppCardStyles.minimalCard(backgroundColor: AppColors.primary),
-                child: Icon(_greetingIcon(), color: AppColors.secondary, size: AppSpacing.xxxl),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(label, style: AppTypography.tagline.copyWith(color: AppColors.quaternary)),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(roleLabel, style: AppTypography.h3.copyWith(color: AppColors.primary)),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Serving healthcare, one visit at a time.',
-                      style: AppTypography.body.copyWith(color: AppColors.quaternary),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Keep pushing — every call makes a difference.',
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.quaternary),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+        borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(AppBorderRadius.md),
+              ),
+              child: Icon(_greetingIcon(), color: AppColors.secondary, size: AppSpacing.xxxl),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: AppTypography.tagline.copyWith(color: AppColors.quaternary)),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(roleLabel, style: AppTypography.h3.copyWith(color: AppColors.primary)),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Serving healthcare, one visit at a time.',
+                    style: AppTypography.body.copyWith(color: AppColors.quaternary),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Keep pushing — every call makes a difference.',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.quaternary),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

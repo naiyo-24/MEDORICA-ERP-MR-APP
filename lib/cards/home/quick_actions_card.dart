@@ -11,7 +11,7 @@ class MRQuickActionsCard extends StatelessWidget {
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$label tapped')));
       },
-      borderRadius: AppBorderRadius.lgRadius,
+      borderRadius: BorderRadius.circular(AppBorderRadius.md),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -19,7 +19,10 @@ class MRQuickActionsCard extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: AppCardStyles.minimalCard(backgroundColor: AppColors.primaryLight),
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(AppBorderRadius.md),
+            ),
             child: Center(child: Icon(icon, color: AppColors.primary, size: 20)),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -51,32 +54,41 @@ class MRQuickActionsCard extends StatelessWidget {
       [Iconsax.user, 'Profile'],
     ];
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
         color: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.lgRadius),
-        elevation: AppElevation.xs,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text('Quick Actions', style: AppTypography.h3.copyWith(color: AppColors.primary)),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 4,
-                mainAxisSpacing: AppSpacing.md,
-                crossAxisSpacing: AppSpacing.md,
-                children: items.map((it) => _actionTile(context, it[0] as IconData, it[1] as String)).toList(),
-              ),
-            ],
+        borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Quick Actions', style: AppTypography.h3.copyWith(color: AppColors.primary)),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 4,
+              mainAxisSpacing: AppSpacing.md,
+              crossAxisSpacing: AppSpacing.md,
+              children: items.map((it) => _actionTile(context, it[0] as IconData, it[1] as String)).toList(),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

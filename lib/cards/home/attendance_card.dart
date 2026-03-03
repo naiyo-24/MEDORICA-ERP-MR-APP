@@ -37,15 +37,24 @@ class MRAttendanceCard extends ConsumerWidget {
     final attendance = ref.watch(todaysAttendanceProvider);
     final notifier = ref.read(attendanceNotifierProvider.notifier);
 
-    return Card(
-        color: AppColors.surface200,
-        shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.mdRadius),
-        elevation: AppElevation.xs,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
               Row(
                 children: [
                   Text('Attendance', style: AppTypography.h3.copyWith(color: AppColors.primary)),
@@ -57,7 +66,10 @@ class MRAttendanceCard extends ConsumerWidget {
                         builder: (context) => Dialog(
                           backgroundColor: Colors.transparent,
                           child: Container(
-                            decoration: AppCardStyles.styleCard(backgroundColor: AppColors.surface),
+                            decoration: BoxDecoration(
+                              color: AppColors.surface,
+                              borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                            ),
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -102,7 +114,10 @@ class MRAttendanceCard extends ConsumerWidget {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.sm),
-                      decoration: AppCardStyles.minimalCard(backgroundColor: AppColors.primaryLight),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryLight,
+                        borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                      ),
                       child: Icon(Icons.info_outline, color: AppColors.primary, size: 18),
                     ),
                   ),
@@ -183,6 +198,6 @@ class MRAttendanceCard extends ConsumerWidget {
             ],
           ),
         ),
-    );
+      );
   }
 }
