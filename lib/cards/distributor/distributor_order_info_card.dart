@@ -93,7 +93,7 @@ class _InfoRow extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: iconColor.withAlpha(25),
             borderRadius: BorderRadius.circular(AppBorderRadius.sm),
           ),
           child: Icon(

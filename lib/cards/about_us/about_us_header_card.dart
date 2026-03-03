@@ -18,7 +18,7 @@ class AboutUsHeaderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withAlpha(76),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -35,7 +35,7 @@ class AboutUsHeaderCard extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withAlpha(25),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -69,7 +69,7 @@ class AboutUsHeaderCard extends StatelessWidget {
             child: Text(
               'Your Daily Dose of Healing',
               style: AppTypography.body.copyWith(
-                color: AppColors.white.withOpacity(0.9),
+                color: AppColors.white.withAlpha(229),
               ),
               textAlign: TextAlign.center,
             ),

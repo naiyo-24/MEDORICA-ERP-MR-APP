@@ -44,7 +44,7 @@ class MRAttendanceCard extends ConsumerWidget {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
+            color: AppColors.primary.withAlpha(20),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

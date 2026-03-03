@@ -84,7 +84,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   vertical: AppSpacing.md,
                 ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(appointment.status).withOpacity(0.1),
+                  color: _getStatusColor(appointment.status).withAlpha(25),
                   borderRadius: AppBorderRadius.mdRadius,
                 ),
                 child: Row(

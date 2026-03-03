@@ -139,7 +139,7 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
             Icon(
               hasActiveFilters ? Iconsax.search_status : Iconsax.calendar_1,
               size: 80,
-              color: AppColors.quaternary.withOpacity(0.5),
+              color: AppColors.quaternary.withAlpha(127),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(

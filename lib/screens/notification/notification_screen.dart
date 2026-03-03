@@ -34,7 +34,7 @@ class NotificationScreen extends ConsumerWidget {
                   Icon(
                     Iconsax.notification,
                     size: 80,
-                    color: AppColors.quaternary.withOpacity(0.3),
+                    color: AppColors.quaternary.withAlpha(76),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(

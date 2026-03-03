@@ -394,27 +394,27 @@ class OrderDetailsBottomSheet extends ConsumerWidget {
 
     switch (status) {
       case OrderStatus.pending:
-        backgroundColor = AppColors.secondary.withOpacity(0.1);
+        backgroundColor = AppColors.secondary.withAlpha(25);
         textColor = AppColors.secondary;
         break;
       case OrderStatus.confirmed:
-        backgroundColor = AppColors.tertiary.withOpacity(0.1);
+        backgroundColor = AppColors.tertiary.withAlpha(25);
         textColor = AppColors.tertiary;
         break;
       case OrderStatus.processing:
-        backgroundColor = AppColors.secondary.withOpacity(0.1);
+        backgroundColor = AppColors.secondary.withAlpha(25);
         textColor = AppColors.secondary;
         break;
       case OrderStatus.shipped:
-        backgroundColor = AppColors.primary.withOpacity(0.1);
+        backgroundColor = AppColors.primary.withAlpha(25);
         textColor = AppColors.primary;
         break;
       case OrderStatus.delivered:
-        backgroundColor = AppColors.success.withOpacity(0.1);
+        backgroundColor = AppColors.success.withAlpha(25);
         textColor = AppColors.success;
         break;
       case OrderStatus.cancelled:
-        backgroundColor = AppColors.error.withOpacity(0.1);
+        backgroundColor = AppColors.error.withAlpha(25);
         textColor = AppColors.error;
         break;
     }

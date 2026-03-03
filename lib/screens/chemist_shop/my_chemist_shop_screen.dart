@@ -64,7 +64,7 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
                         Icon(
                           Iconsax.shop,
                           size: 80,
-                          color: AppColors.quaternary.withOpacity(0.5),
+                          color: AppColors.quaternary.withAlpha(127),
                         ),
                         const SizedBox(height: AppSpacing.lg),
                         Text(

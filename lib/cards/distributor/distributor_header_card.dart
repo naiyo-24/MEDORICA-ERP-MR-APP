@@ -62,8 +62,8 @@ class DistributorHeaderCard extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.3),
-                        Colors.black.withOpacity(0.7),
+                        Colors.black.withAlpha(76),
+                        Colors.black.withAlpha(178),
                       ],
                     ),
                   ),

@@ -61,7 +61,7 @@ class MonthlyTargetCard extends ConsumerWidget {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: statusColor.withOpacity(0.1),
+            color: statusColor.withAlpha(25),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -78,7 +78,7 @@ class MonthlyTargetCard extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
+                    color: statusColor.withAlpha(38),
                     borderRadius: BorderRadius.circular(AppBorderRadius.md),
                   ),
                   child: Icon(
@@ -147,9 +147,9 @@ class MonthlyTargetCard extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
+                color: statusColor.withAlpha(25),
                 borderRadius: BorderRadius.circular(AppBorderRadius.md),
-                border: Border.all(color: statusColor.withOpacity(0.3)),
+                border: Border.all(color: statusColor.withAlpha(76)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +165,7 @@ class MonthlyTargetCard extends ConsumerWidget {
                   Text(
                     statusInfo.description,
                     style: AppTypography.bodySmall.copyWith(
-                      color: statusColor.withOpacity(0.8),
+                      color: statusColor.withAlpha(204),
                     ),
                   ),
                 ],
@@ -256,9 +256,9 @@ class MonthlyTargetCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withAlpha(20),
         borderRadius: BorderRadius.circular(AppBorderRadius.md),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withAlpha(51)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -398,7 +398,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
                           Icon(
                             Iconsax.box,
                             size: 80,
-                            color: AppColors.quaternary.withOpacity(0.5),
+                            color: AppColors.quaternary.withAlpha(127),
                           ),
                           const SizedBox(height: AppSpacing.md),
                           Text(

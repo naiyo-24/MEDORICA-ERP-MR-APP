@@ -91,7 +91,7 @@ class AppointmentCard extends ConsumerWidget {
                       vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(appointment.status).withOpacity(0.1),
+                      color: _getStatusColor(appointment.status).withAlpha(25),
                       borderRadius: AppBorderRadius.smRadius,
                     ),
                     child: Text(

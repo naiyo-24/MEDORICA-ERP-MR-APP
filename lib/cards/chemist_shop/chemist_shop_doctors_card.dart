@@ -172,7 +172,7 @@ class _DoctorListItem extends StatelessWidget {
             icon: Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.success.withOpacity(0.1),
+                color: AppColors.success.withAlpha(25),
                 borderRadius: BorderRadius.circular(AppBorderRadius.sm),
               ),
               child: const Icon(

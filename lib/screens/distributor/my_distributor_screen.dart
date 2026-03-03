@@ -63,7 +63,7 @@ class _MyDistributorScreenState extends ConsumerState<MyDistributorScreen> {
                         Icon(
                           Iconsax.truck,
                           size: 80,
-                          color: AppColors.quaternary.withOpacity(0.5),
+                          color: AppColors.quaternary.withAlpha(127),
                         ),
                         const SizedBox(height: AppSpacing.lg),
                         Text(
