@@ -1,0 +1,438 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
+import '../../models/gift.dart';
+import '../../provider/gift_provider.dart';
+import '../../provider/doctor_provider.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_bar.dart';
+
+class SendEditGiftScreen extends ConsumerStatefulWidget {
+  final String? giftId;
+
+  const SendEditGiftScreen({
+    super.key,
+    this.giftId,
+  });
+
+  @override
+  ConsumerState<SendEditGiftScreen> createState() =>
+      _SendEditGiftScreenState();
+}
+
+class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _remarksController = TextEditingController();
+
+  DateTime? _selectedDate;
+  String? _selectedDoctorId;
+  String? _selectedOccasion;
+  String? _selectedGiftItem;
+  GiftStatus _selectedStatus = GiftStatus.pending;
+
+  bool _isEditMode = false;
+
+  // Sample data
+  final List<String> _occasions = [
+    'Birthday',
+    'Service Anniversary',
+    'Appreciation',
+    'Holiday',
+    'Promotion',
+    'Retirement',
+  ];
+
+  final List<String> _giftItems = [
+    'Luxury Pen Set',
+    'Watch',
+    'Coffee Maker',
+    'Gift Hamper',
+    'Book Set',
+    'Desk Organizer',
+    'Photo Frame',
+    'Perfume',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _isEditMode = widget.giftId != null;
+
+    // If editing, load gift data
+    if (_isEditMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final gift = ref.read(giftDetailProvider(widget.giftId!));
+        if (gift != null) {
+          setState(() {
+            _selectedDate = gift.date;
+            _selectedDoctorId = gift.doctorId;
+            _selectedOccasion = gift.occasion;
+            _selectedGiftItem = gift.giftItem;
+            _selectedStatus = gift.status;
+            _remarksController.text = gift.remarks;
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _remarksController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              surface: AppColors.white,
+              onSurface: AppColors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  void _saveGift() {
+    if (_formKey.currentState!.validate()) {
+      if (_selectedDate == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a date')),
+        );
+        return;
+      }
+      if (_selectedDoctorId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a doctor')),
+        );
+        return;
+      }
+      if (_selectedOccasion == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select an occasion')),
+        );
+        return;
+      }
+      if (_selectedGiftItem == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a gift item')),
+        );
+        return;
+      }
+
+      final gift = Gift(
+        id: widget.giftId ?? DateTime.now().toString(),
+        doctorId: _selectedDoctorId!,
+        giftItem: _selectedGiftItem!,
+        date: _selectedDate!,
+        occasion: _selectedOccasion!,
+        remarks: _remarksController.text.trim(),
+        status: _selectedStatus,
+      );
+
+      if (_isEditMode) {
+        ref.read(giftProvider.notifier).updateGift(gift);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gift updated successfully')),
+        );
+      } else {
+        ref.read(giftProvider.notifier).addGift(gift);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gift sent successfully')),
+        );
+      }
+
+      context.go('/gifts');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final doctors = ref.watch(doctorProvider);
+
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      appBar: MRAppBar(
+        showBack: true,
+        showActions: false,
+        titleText: _isEditMode ? 'Edit Gift' : 'Send Gift',
+        subtitleText: _isEditMode ? 'Update Gift Details' : 'Send Gift to Doctor',
+        onBack: () => context.pop(),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Doctor Dropdown Card
+              _buildSectionCard(
+                title: 'Select Doctor',
+                icon: Iconsax.user,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface200,
+                    borderRadius: AppBorderRadius.mdRadius,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedDoctorId,
+                      isExpanded: true,
+                      icon: const Icon(Iconsax.arrow_down_1,
+                          color: AppColors.primary),
+                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      items: doctors
+                          .map((doctor) => DropdownMenuItem<String>(
+                                value: doctor.id,
+                                child: Text(
+                                  doctor.name,
+                                  style: AppTypography.body
+                                      .copyWith(color: AppColors.black),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedDoctorId = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Date Picker Card
+              _buildSectionCard(
+                title: 'Gift Date',
+                icon: Iconsax.calendar,
+                child: InkWell(
+                  onTap: () => _selectDate(context),
+                  borderRadius: AppBorderRadius.mdRadius,
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface200,
+                      borderRadius: AppBorderRadius.mdRadius,
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedDate == null
+                              ? 'Select Date'
+                              : DateFormat('EEEE, MMM dd, yyyy')
+                                  .format(_selectedDate!),
+                          style: AppTypography.body.copyWith(
+                            color: _selectedDate == null
+                                ? AppColors.quaternary
+                                : AppColors.black,
+                          ),
+                        ),
+                        const Icon(Iconsax.calendar, color: AppColors.primary),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Occasion Dropdown Card
+              _buildSectionCard(
+                title: 'Occasion',
+                icon: Iconsax.star,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface200,
+                    borderRadius: AppBorderRadius.mdRadius,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedOccasion,
+                      isExpanded: true,
+                      icon: const Icon(Iconsax.arrow_down_1,
+                          color: AppColors.primary),
+                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      items: _occasions
+                          .map((occasion) => DropdownMenuItem<String>(
+                                value: occasion,
+                                child: Text(
+                                  occasion,
+                                  style: AppTypography.body
+                                      .copyWith(color: AppColors.black),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedOccasion = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Gift Item Dropdown Card
+              _buildSectionCard(
+                title: 'Gift Item',
+                icon: Iconsax.gift,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface200,
+                    borderRadius: AppBorderRadius.mdRadius,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedGiftItem,
+                      isExpanded: true,
+                      icon: const Icon(Iconsax.arrow_down_1,
+                          color: AppColors.primary),
+                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      items: _giftItems
+                          .map((item) => DropdownMenuItem<String>(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: AppTypography.body
+                                      .copyWith(color: AppColors.black),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedGiftItem = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Remarks Card
+              _buildSectionCard(
+                title: 'Remarks',
+                icon: Iconsax.message_text,
+                child: TextFormField(
+                  controller: _remarksController,
+                  maxLines: 4,
+                  style: AppTypography.body.copyWith(color: AppColors.black),
+                  decoration: InputDecoration(
+                    hintText: 'Add any remarks...',
+                    hintStyle: AppTypography.body
+                        .copyWith(color: AppColors.quaternary),
+                    filled: true,
+                    fillColor: AppColors.surface200,
+                    border: OutlineInputBorder(
+                      borderRadius: AppBorderRadius.mdRadius,
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: AppBorderRadius.mdRadius,
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: AppBorderRadius.mdRadius,
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+
+              // Save Button
+              ElevatedButton(
+                style: AppButtonStyles.primaryButton(height: 50),
+                onPressed: _saveGift,
+                child: Text(
+                  _isEditMode ? 'Update Gift' : 'Send Gift',
+                  style: AppTypography.buttonLarge.copyWith(
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: AppBorderRadius.lgRadius,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowColor,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: AppColors.primary, size: 20),
+              const SizedBox(width: AppSpacing.md),
+              Text(
+                title,
+                style: AppTypography.tagline.copyWith(color: AppColors.black),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          child,
+        ],
+      ),
+    );
+  }
+}

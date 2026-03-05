@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../theme/app_theme.dart';
@@ -9,7 +10,7 @@ class MRQuickActionsCard extends StatelessWidget {
   Widget _actionTile(BuildContext context, IconData icon, String label) {
     return InkWell(
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$label tapped')));
+        _handleAction(context, label);
       },
       borderRadius: BorderRadius.circular(AppBorderRadius.md),
       child: Column(
@@ -41,11 +42,37 @@ class MRQuickActionsCard extends StatelessWidget {
     );
   }
 
+  void _handleAction(BuildContext context, String label) {
+    switch (label) {
+      case 'Gifts':
+        context.push('/gifts');
+        break;
+      case 'My Doctors':
+        context.push('/mr/doctor');
+        break;
+      case 'Appointments':
+        context.push('/mr/appointments');
+        break;
+      case 'Distributors':
+        context.push('/mr/distributor');
+        break;
+      case 'Chemists':
+        context.push('/mr/chemist');
+        break;
+      case 'Profile':
+        context.push('/profile');
+        break;
+      default:
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('$label tapped')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = [
       [Iconsax.chart, 'Analytics'],
-      [Iconsax.shopping_cart, 'My Orders'],
+      [FontAwesomeIcons.gifts, 'Gifts'],
       [FontAwesomeIcons.userDoctor, 'My Doctors'],
       [Iconsax.calendar_tick, 'Appointments'],
       [Iconsax.truck, 'Distributors'],

@@ -14,6 +14,8 @@ import '../screens/distributor/my_distributor_screen.dart';
 import '../screens/distributor/distributor_detail_screen.dart';
 import '../screens/order/my_order_screen.dart';
 import '../screens/order/create_order_screen.dart';
+import '../screens/gift/gift_screen.dart';
+import '../screens/gift/send_edit_gift_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/profile/update_profile_screen.dart';
 import '../screens/about_us/about_us_screen.dart';
@@ -30,6 +32,7 @@ class AppRouter {
   static const String orders = '/mr/orders';
   static const String chemist = '/mr/chemist';
   static const String distributor = '/mr/distributor';
+  static const String gifts = '/gifts';
   static const String profile = '/profile';
   static const String aboutUs = '/about-us';
   static const String notifications = '/notifications';
@@ -185,6 +188,26 @@ class AppRouter {
         path: notifications,
         name: 'notifications',
         builder: (context, state) => const NotificationScreen(),
+      ),
+      GoRoute(
+        path: gifts,
+        name: 'gifts',
+        builder: (context, state) => const GiftScreen(),
+        routes: [
+          GoRoute(
+            path: 'send',
+            name: 'giftSend',
+            builder: (context, state) => const SendEditGiftScreen(),
+          ),
+          GoRoute(
+            path: 'edit/:id',
+            name: 'giftEdit',
+            builder: (context, state) {
+              final giftId = state.pathParameters['id'];
+              return SendEditGiftScreen(giftId: giftId);
+            },
+          ),
+        ],
       ),
     ],
   );
