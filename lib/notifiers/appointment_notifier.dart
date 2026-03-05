@@ -12,6 +12,7 @@ class AppointmentNotifier extends StateNotifier<List<Appointment>> {
       Appointment(
         id: '1',
         doctorId: '1',
+        chamberId: '1',
         date: DateTime(2026, 3, 5),
         time: '10:00 AM',
         message: 'Regular checkup for heart condition',
@@ -20,6 +21,7 @@ class AppointmentNotifier extends StateNotifier<List<Appointment>> {
       Appointment(
         id: '2',
         doctorId: '2',
+        chamberId: '3',
         date: DateTime(2026, 3, 8),
         time: '2:30 PM',
         message: 'Follow-up on knee injury',
@@ -28,6 +30,7 @@ class AppointmentNotifier extends StateNotifier<List<Appointment>> {
       Appointment(
         id: '3',
         doctorId: '1',
+        chamberId: '2',
         date: DateTime(2026, 2, 28),
         time: '11:00 AM',
         message: 'Consultation for chest pain',
@@ -36,6 +39,7 @@ class AppointmentNotifier extends StateNotifier<List<Appointment>> {
       Appointment(
         id: '4',
         doctorId: '3',
+        chamberId: '4',
         date: DateTime(2026, 2, 25),
         time: '4:00 PM',
         message: 'Neurological examination',

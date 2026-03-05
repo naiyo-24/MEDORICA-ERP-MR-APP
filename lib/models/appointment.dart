@@ -1,6 +1,7 @@
 class Appointment {
   final String id;
   final String doctorId;
+  final String? chamberId;
   final DateTime date;
   final String time;
   final String message;
@@ -10,6 +11,7 @@ class Appointment {
   Appointment({
     required this.id,
     required this.doctorId,
+    this.chamberId,
     required this.date,
     required this.time,
     required this.message,
@@ -21,6 +23,7 @@ class Appointment {
   Appointment copyWith({
     String? id,
     String? doctorId,
+    String? chamberId,
     DateTime? date,
     String? time,
     String? message,
@@ -30,6 +33,7 @@ class Appointment {
     return Appointment(
       id: id ?? this.id,
       doctorId: doctorId ?? this.doctorId,
+      chamberId: chamberId ?? this.chamberId,
       date: date ?? this.date,
       time: time ?? this.time,
       message: message ?? this.message,
@@ -42,6 +46,7 @@ class Appointment {
   Map<String, dynamic> toJson() => {
         'id': id,
         'doctorId': doctorId,
+      'chamberId': chamberId,
         'date': date.toIso8601String(),
         'time': time,
         'message': message,
@@ -53,6 +58,7 @@ class Appointment {
   factory Appointment.fromJson(Map<String, dynamic> json) => Appointment(
         id: json['id'] ?? '',
         doctorId: json['doctorId'] ?? '',
+      chamberId: json['chamberId'],
         date: DateTime.parse(json['date']),
         time: json['time'] ?? '',
         message: json['message'] ?? '',

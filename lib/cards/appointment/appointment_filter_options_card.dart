@@ -189,7 +189,7 @@ class _AppointmentFilterOptionsCardState
                               ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           _selectedDate == null
                               ? 'By Date'
@@ -249,7 +249,7 @@ class _AppointmentFilterOptionsCardState
                             ),
                         ],
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      const SizedBox(width: AppSpacing.xs),
                       PopupMenuButton<AppointmentStatus>(
                         offset: const Offset(0, 40),
                         shape: RoundedRectangleBorder(

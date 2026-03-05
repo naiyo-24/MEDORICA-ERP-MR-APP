@@ -7,7 +7,6 @@ import '../../provider/gift_provider.dart';
 import '../../provider/doctor_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
-import '../../widgets/bottom_nav_bar.dart';
 import '../../cards/gift/gift_filter_card.dart';
 import '../../cards/gift/gift_card.dart';
 
@@ -105,7 +104,6 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: const MRBottomNavBar(currentIndex: 0),
       ),
     );
   }

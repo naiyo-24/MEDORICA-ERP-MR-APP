@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import '../../models/appointment.dart';
 import '../../models/doctor.dart';
@@ -133,6 +134,20 @@ class _AppointmentDetailsBottomSheetState
     );
   }
 
+  Future<void> _openMapsForAddress(String address) async {
+    final encodedAddress = Uri.encodeComponent(address);
+    final mapsUri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$encodedAddress',
+    );
+
+    if (!await launchUrl(mapsUri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not launch maps')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final proofImage = _selectedImage != null
@@ -140,6 +155,11 @@ class _AppointmentDetailsBottomSheetState
         : (widget.appointment.proofImagePath != null
             ? File(widget.appointment.proofImagePath!)
             : null);
+    final selectedChamber = widget.doctor.chambers.where((chamber) {
+      return chamber.id == widget.appointment.chamberId;
+    }).toList();
+    final appointmentChamber =
+        selectedChamber.isNotEmpty ? selectedChamber.first : null;
 
     return Container(
       decoration: const BoxDecoration(
@@ -256,6 +276,61 @@ class _AppointmentDetailsBottomSheetState
                   widget.appointment.time,
                   style: AppTypography.bodyLarge.copyWith(color: AppColors.black),
                 ),
+              ),
+              const Divider(height: AppSpacing.xl),
+
+              // Chamber Information
+              _buildInfoSection(
+                icon: Iconsax.location,
+                title: 'Chamber',
+                content: appointmentChamber == null
+                    ? Text(
+                        'Not selected',
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.quaternary,
+                        ),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            appointmentChamber.name,
+                            style: AppTypography.bodyLarge.copyWith(
+                              color: AppColors.black,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            appointmentChamber.address,
+                            style: AppTypography.body.copyWith(
+                              color: AppColors.quaternary,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          OutlinedButton.icon(
+                            onPressed: () =>
+                                _openMapsForAddress(appointmentChamber.address),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(color: AppColors.primary),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.sm,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: AppBorderRadius.mdRadius,
+                              ),
+                            ),
+                            icon: const Icon(Iconsax.map, size: 18),
+                            label: Text(
+                              'Get Directions',
+                              style: AppTypography.buttonMedium.copyWith(
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
               ),
               const Divider(height: AppSpacing.xl),
 

@@ -33,6 +33,7 @@ class _ScheduleEditAppointmentScreenState
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   String? _selectedDoctorId;
+  String? _selectedChamberId;
 
   bool _isEditMode = false;
 
@@ -54,6 +55,7 @@ class _ScheduleEditAppointmentScreenState
               minute: int.parse(appointment.time.split(':')[1].split(' ')[0]),
             );
             _selectedDoctorId = appointment.doctorId;
+            _selectedChamberId = appointment.chamberId;
             _messageController.text = appointment.message;
           });
         }
@@ -146,6 +148,12 @@ class _ScheduleEditAppointmentScreenState
         );
         return;
       }
+      if (_selectedChamberId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a chamber')),
+        );
+        return;
+      }
 
       final existingAppointment = _isEditMode
           ? ref.read(appointmentDetailProvider(widget.appointmentId!))
@@ -154,6 +162,7 @@ class _ScheduleEditAppointmentScreenState
       final appointment = Appointment(
         id: widget.appointmentId ?? DateTime.now().toString(),
         doctorId: _selectedDoctorId!,
+        chamberId: _selectedChamberId,
         date: _selectedDate!,
         time: _formatTime(_selectedTime!),
         message: _messageController.text.trim(),
@@ -180,6 +189,12 @@ class _ScheduleEditAppointmentScreenState
   @override
   Widget build(BuildContext context) {
     final doctors = ref.watch(doctorProvider);
+    final selectedDoctorMatches =
+      doctors.where((doctor) => doctor.id == _selectedDoctorId).toList();
+    final selectedDoctor =
+      selectedDoctorMatches.isEmpty ? null : selectedDoctorMatches.first;
+    final selectedDoctorChambers =
+        selectedDoctor == null ? <DoctorChamber>[] : selectedDoctor.chambers;
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -318,8 +333,75 @@ class _ScheduleEditAppointmentScreenState
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedDoctorId = newValue;
+                          _selectedChamberId = null;
                         });
                       },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Chamber Dropdown Card
+              _buildSectionCard(
+                title: 'Select Chamber',
+                icon: Iconsax.location,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface200,
+                    borderRadius: AppBorderRadius.mdRadius,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedChamberId,
+                      hint: Text(
+                        _selectedDoctorId == null
+                            ? 'Select doctor first'
+                            : 'Choose a chamber',
+                        style: AppTypography.body
+                            .copyWith(color: AppColors.quaternary),
+                      ),
+                      isExpanded: true,
+                      icon: const Icon(
+                        Iconsax.arrow_down_1,
+                        color: AppColors.primary,
+                      ),
+                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      items: selectedDoctorChambers.map((DoctorChamber chamber) {
+                        return DropdownMenuItem<String>(
+                          value: chamber.id,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                chamber.name,
+                                style: AppTypography.body
+                                    .copyWith(color: AppColors.black),
+                              ),
+                              Text(
+                                chamber.address,
+                                style: AppTypography.bodySmall
+                                    .copyWith(color: AppColors.quaternary),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: _selectedDoctorId == null
+                          ? null
+                          : (String? newValue) {
+                              setState(() {
+                                _selectedChamberId = newValue;
+                              });
+                            },
                     ),
                   ),
                 ),
