@@ -33,7 +33,6 @@ class _ScheduleEditAppointmentScreenState
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   String? _selectedDoctorId;
-  AppointmentStatus _selectedStatus = AppointmentStatus.scheduled;
 
   bool _isEditMode = false;
 
@@ -55,7 +54,6 @@ class _ScheduleEditAppointmentScreenState
               minute: int.parse(appointment.time.split(':')[1].split(' ')[0]),
             );
             _selectedDoctorId = appointment.doctorId;
-            _selectedStatus = appointment.status;
             _messageController.text = appointment.message;
           });
         }
@@ -149,13 +147,18 @@ class _ScheduleEditAppointmentScreenState
         return;
       }
 
+      final existingAppointment = _isEditMode
+          ? ref.read(appointmentDetailProvider(widget.appointmentId!))
+          : null;
+
       final appointment = Appointment(
         id: widget.appointmentId ?? DateTime.now().toString(),
         doctorId: _selectedDoctorId!,
         date: _selectedDate!,
         time: _formatTime(_selectedTime!),
         message: _messageController.text.trim(),
-        status: _selectedStatus,
+        status: existingAppointment?.status ?? AppointmentStatus.scheduled,
+        proofImagePath: existingAppointment?.proofImagePath,
       );
 
       if (_isEditMode) {
@@ -316,51 +319,6 @@ class _ScheduleEditAppointmentScreenState
                         setState(() {
                           _selectedDoctorId = newValue;
                         });
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Status Dropdown Card
-              _buildSectionCard(
-                title: 'Appointment Status',
-                icon: Iconsax.status,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface200,
-                    borderRadius: AppBorderRadius.mdRadius,
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<AppointmentStatus>(
-                      value: _selectedStatus,
-                      isExpanded: true,
-                      icon: const Icon(Iconsax.arrow_down_1,
-                          color: AppColors.primary),
-                      style: AppTypography.body.copyWith(color: AppColors.black),
-                      items: AppointmentStatus.values
-                          .map((AppointmentStatus status) {
-                        return DropdownMenuItem<AppointmentStatus>(
-                          value: status,
-                          child: Text(
-                            status.displayName,
-                            style: AppTypography.body
-                                .copyWith(color: AppColors.black),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (AppointmentStatus? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            _selectedStatus = newValue;
-                          });
-                        }
                       },
                     ),
                   ),

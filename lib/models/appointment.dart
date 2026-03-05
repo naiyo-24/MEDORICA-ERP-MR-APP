@@ -5,6 +5,7 @@ class Appointment {
   final String time;
   final String message;
   final AppointmentStatus status;
+  final String? proofImagePath;
 
   Appointment({
     required this.id,
@@ -13,6 +14,7 @@ class Appointment {
     required this.time,
     required this.message,
     required this.status,
+    this.proofImagePath,
   });
 
   // Copy with method for updates
@@ -23,6 +25,7 @@ class Appointment {
     String? time,
     String? message,
     AppointmentStatus? status,
+    String? proofImagePath,
   }) {
     return Appointment(
       id: id ?? this.id,
@@ -31,6 +34,7 @@ class Appointment {
       time: time ?? this.time,
       message: message ?? this.message,
       status: status ?? this.status,
+      proofImagePath: proofImagePath ?? this.proofImagePath,
     );
   }
 
@@ -42,6 +46,7 @@ class Appointment {
         'time': time,
         'message': message,
         'status': status.toString(),
+        'proofImagePath': proofImagePath,
       };
 
   // Create from JSON
@@ -55,6 +60,7 @@ class Appointment {
           (e) => e.toString() == json['status'],
           orElse: () => AppointmentStatus.scheduled,
         ),
+        proofImagePath: json['proofImagePath'],
       );
 }
 

@@ -120,4 +120,29 @@ class AppointmentNotifier extends StateNotifier<List<Appointment>> {
         .toList()
       ..sort((a, b) => b.date.compareTo(a.date));
   }
+
+  // Mark appointment as completed with proof image
+  void markAppointmentAsCompleted(String id, String proofImagePath) {
+    state = [
+      for (final appointment in state)
+        if (appointment.id == id)
+          appointment.copyWith(
+            status: AppointmentStatus.completed,
+            proofImagePath: proofImagePath,
+          )
+        else
+          appointment,
+    ];
+  }
+
+  // Cancel an appointment
+  void cancelAppointment(String id) {
+    state = [
+      for (final appointment in state)
+        if (appointment.id == id)
+          appointment.copyWith(status: AppointmentStatus.cancelled)
+        else
+          appointment,
+    ];
+  }
 }

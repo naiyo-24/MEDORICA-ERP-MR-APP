@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../models/appointment.dart';
 import '../../models/doctor.dart';
 import '../../provider/appointment_provider.dart';
 import '../../theme/app_theme.dart';
 
-class AppointmentDetailsBottomSheet extends ConsumerWidget {
+class AppointmentDetailsBottomSheet extends ConsumerStatefulWidget {
   final Appointment appointment;
   final Doctor doctor;
 
@@ -17,6 +19,16 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
     required this.appointment,
     required this.doctor,
   });
+
+  @override
+  ConsumerState<AppointmentDetailsBottomSheet> createState() =>
+      _AppointmentDetailsBottomSheetState();
+}
+
+class _AppointmentDetailsBottomSheetState
+    extends ConsumerState<AppointmentDetailsBottomSheet> {
+  final ImagePicker _imagePicker = ImagePicker();
+  File? _selectedImage;
 
   Color _getStatusColor(AppointmentStatus status) {
     switch (status) {
@@ -31,8 +43,104 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
     }
   }
 
+  Future<void> _pickImage() async {
+    final XFile? image =
+        await _imagePicker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    }
+  }
+
+  void _markAsCompleted() {
+    if (_selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please upload a selfie with proof of visit'),
+        ),
+      );
+      return;
+    }
+
+    ref.read(appointmentProvider.notifier).markAppointmentAsCompleted(
+          widget.appointment.id,
+          _selectedImage!.path,
+        );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Appointment marked as completed successfully'),
+      ),
+    );
+
+    Navigator.of(context).pop();
+  }
+
+  void _showCancelConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: AppBorderRadius.lgRadius,
+        ),
+        title: Text(
+          'Cancel Appointment',
+          style: AppTypography.tagline.copyWith(color: AppColors.black),
+        ),
+        content: Text(
+          'Are you sure you want to cancel this appointment?',
+          style: AppTypography.body.copyWith(color: AppColors.quaternary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Keep',
+              style: AppTypography.buttonMedium.copyWith(
+                color: AppColors.quaternary,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              shape: RoundedRectangleBorder(
+                borderRadius: AppBorderRadius.mdRadius,
+              ),
+            ),
+            onPressed: () {
+              ref.read(appointmentProvider.notifier).cancelAppointment(
+                    widget.appointment.id,
+                  );
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Appointment cancelled successfully'),
+                ),
+              );
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Cancel',
+              style: AppTypography.buttonMedium.copyWith(
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final proofImage = _selectedImage != null
+        ? File(_selectedImage!.path)
+        : (widget.appointment.proofImagePath != null
+            ? File(widget.appointment.proofImagePath!)
+            : null);
+
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.white,
@@ -84,7 +192,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   vertical: AppSpacing.md,
                 ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(appointment.status).withAlpha(25),
+                  color: _getStatusColor(widget.appointment.status).withAlpha(25),
                   borderRadius: AppBorderRadius.mdRadius,
                 ),
                 child: Row(
@@ -92,14 +200,14 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   children: [
                     Icon(
                       Iconsax.status,
-                      color: _getStatusColor(appointment.status),
+                      color: _getStatusColor(widget.appointment.status),
                       size: 20,
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      appointment.status.displayName,
+                      widget.appointment.status.displayName,
                       style: AppTypography.tagline.copyWith(
-                        color: _getStatusColor(appointment.status),
+                        color: _getStatusColor(widget.appointment.status),
                       ),
                     ),
                   ],
@@ -115,12 +223,12 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      doctor.name,
+                      widget.doctor.name,
                       style:
                           AppTypography.bodyLarge.copyWith(color: AppColors.black),
                     ),
                     Text(
-                      doctor.specialization,
+                      widget.doctor.specialization,
                       style: AppTypography.body
                           .copyWith(color: AppColors.quaternary),
                     ),
@@ -134,7 +242,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 icon: Iconsax.calendar,
                 title: 'Date',
                 content: Text(
-                  DateFormat('EEEE, MMMM dd, yyyy').format(appointment.date),
+                  DateFormat('EEEE, MMMM dd, yyyy').format(widget.appointment.date),
                   style: AppTypography.bodyLarge.copyWith(color: AppColors.black),
                 ),
               ),
@@ -145,7 +253,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 icon: Iconsax.clock,
                 title: 'Time',
                 content: Text(
-                  appointment.time,
+                  widget.appointment.time,
                   style: AppTypography.bodyLarge.copyWith(color: AppColors.black),
                 ),
               ),
@@ -156,48 +264,178 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 icon: Iconsax.message_text,
                 title: 'Appointment Reason',
                 content: Text(
-                  appointment.message,
+                  widget.appointment.message,
                   style: AppTypography.body.copyWith(color: AppColors.black),
                 ),
               ),
               const SizedBox(height: AppSpacing.xxl),
 
-              // Action Buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _showDeleteDialog(context, ref);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.error,
-                        side: const BorderSide(color: AppColors.error),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.md,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppBorderRadius.mdRadius,
+              // Proof Image Section (only show for scheduled appointments)
+              if (widget.appointment.status == AppointmentStatus.scheduled) ...[
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: AppBorderRadius.mdRadius,
+                    border: Border.all(color: AppColors.primary),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Proof of Visit',
+                        style: AppTypography.tagline.copyWith(
+                          color: AppColors.black,
                         ),
                       ),
-                      icon: const Icon(Iconsax.trash, size: 20),
-                      label: Text(
-                        'Delete',
-                        style: AppTypography.buttonMedium.copyWith(
-                          color: AppColors.error,
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Upload a selfie with proof of doctor/chamber visit',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.quaternary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      if (_selectedImage != null || proofImage != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: AppBorderRadius.mdRadius,
+                              child: Image.file(
+                                _selectedImage ?? proofImage!,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                          ],
+                        ),
+                      ElevatedButton.icon(
+                        onPressed: _pickImage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.white,
+                          foregroundColor: AppColors.primary,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                            horizontal: AppSpacing.md,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: AppBorderRadius.mdRadius,
+                            side: const BorderSide(color: AppColors.primary),
+                          ),
+                        ),
+                        icon: const Icon(Iconsax.camera, size: 20),
+                        label: Text(
+                          _selectedImage != null || proofImage != null
+                              ? 'Change Image'
+                              : 'Upload Selfie',
+                          style: AppTypography.buttonMedium.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxl),
+              ] else if (widget.appointment.status == AppointmentStatus.completed &&
+                  proofImage != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withAlpha(25),
+                    borderRadius: AppBorderRadius.mdRadius,
+                    border: Border.all(color: AppColors.success),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Proof of Visit',
+                        style: AppTypography.tagline.copyWith(
+                          color: AppColors.black,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      ClipRRect(
+                        borderRadius: AppBorderRadius.mdRadius,
+                        child: Image.file(
+                          proofImage,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+
+              // Action Buttons
+              if (widget.appointment.status == AppointmentStatus.scheduled) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _markAsCompleted,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.success,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: AppBorderRadius.mdRadius,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
+                        ),
+                        icon: const Icon(Iconsax.tick_circle, color: AppColors.white, size: 20),
+                        label: Text(
+                          'Completed',
+                          style: AppTypography.buttonMedium.copyWith(
+                            color: AppColors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _showCancelConfirmation,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.error,
+                          side: const BorderSide(color: AppColors.error),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: AppBorderRadius.mdRadius,
+                          ),
+                        ),
+                        icon: const Icon(Iconsax.close_circle, color: AppColors.error, size: 20),
+                        label: Text(
+                          'Cancel',
+                          style: AppTypography.buttonMedium.copyWith(
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+              ],
+              Row(
+                children: [
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
                         Navigator.of(context).pop();
                         context.push(
-                          '/mr/appointments/edit/${appointment.id}',
-                          extra: appointment,
+                          '/mr/appointments/edit/${widget.appointment.id}',
+                          extra: widget.appointment,
                         );
                       },
                       style: AppButtonStyles.primaryButton(height: 44),
@@ -253,59 +491,6 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  void _showDeleteDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: AppBorderRadius.lgRadius,
-        ),
-        title: Text(
-          'Delete Appointment',
-          style: AppTypography.tagline.copyWith(color: AppColors.black),
-        ),
-        content: Text(
-          'Are you sure you want to delete this appointment?',
-          style: AppTypography.body.copyWith(color: AppColors.quaternary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Cancel',
-              style: AppTypography.buttonMedium.copyWith(
-                color: AppColors.quaternary,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppBorderRadius.mdRadius,
-              ),
-            ),
-            onPressed: () {
-              ref.read(appointmentProvider.notifier).deleteAppointment(appointment.id);
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Appointment deleted successfully'),
-                ),
-              );
-            },
-            child: Text(
-              'Delete',
-              style: AppTypography.buttonMedium.copyWith(
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
