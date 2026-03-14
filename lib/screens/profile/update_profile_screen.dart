@@ -77,6 +77,22 @@ class _UpdateProfileScreenState extends ConsumerState<UpdateProfileScreen> {
     if (profile?.profileImage != null && profile!.profileImage!.isNotEmpty) {
       final imagePath = profile.profileImage!;
 
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return ClipOval(
+          child: Image.network(
+            imagePath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(
+                Icons.person,
+                size: 60,
+                color: AppColors.primary,
+              );
+            },
+          ),
+        );
+      }
+
       // Check if it's a file path (contains "/" and doesn't start with "assets")
       if (imagePath.contains('/') && !imagePath.startsWith('assets')) {
         // It's a file path from the device
@@ -557,6 +573,111 @@ class _UpdateProfileScreenState extends ConsumerState<UpdateProfileScreen> {
 
                     const SizedBox(height: AppSpacing.lg),
 
+                    // Salary Details (Read-only)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Salary Details (Read-only)',
+                            style: AppTypography.tagline.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(
+                              profile.basicSalaryRupees,
+                            ),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Basic Salary',
+                              prefixIcon: Iconsax.wallet,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(
+                              profile.dailyAllowancesRupees,
+                            ),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Daily Allowance',
+                              prefixIcon: Iconsax.money,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(profile.hraRupees),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'HRA',
+                              prefixIcon: Iconsax.home,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(
+                              profile.phoneAllowancesRupees,
+                            ),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Phone Allowance',
+                              prefixIcon: Iconsax.call,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(
+                              profile.specialAllowancesRupees,
+                            ),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Special Allowance',
+                              prefixIcon: Iconsax.star,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(
+                              profile.medicalAllowancesRupees,
+                            ),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Medical Allowance',
+                              prefixIcon: Iconsax.hospital,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(
+                              profile.childrenAllowancesRupees,
+                            ),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Children Allowance',
+                              prefixIcon: Iconsax.profile_2user,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          TextFormField(
+                            initialValue: _salaryText(profile.esicRupees),
+                            enabled: false,
+                            decoration: _buildInputDecoration(
+                              hintText: 'ESIC',
+                              prefixIcon: Iconsax.health,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
                     // Password Section
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -686,5 +807,12 @@ class _UpdateProfileScreenState extends ConsumerState<UpdateProfileScreen> {
         vertical: AppSpacing.md,
       ),
     );
+  }
+
+  String _salaryText(double? value) {
+    if (value == null) {
+      return 'Not available';
+    }
+    return value.toStringAsFixed(2);
   }
 }

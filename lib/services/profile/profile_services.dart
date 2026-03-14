@@ -138,7 +138,9 @@ class ProfileService {
     if (path.startsWith('assets/')) {
       return path;
     }
-    return '${ApiUrl.baseUrl}$path';
+
+    final String normalizedPath = path.startsWith('/') ? path : '/$path';
+    return '${ApiUrl.baseUrl}$normalizedPath';
   }
 
   String _readDioError(DioException e) {
