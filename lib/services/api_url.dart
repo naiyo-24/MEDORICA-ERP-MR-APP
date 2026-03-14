@@ -42,7 +42,13 @@ class ApiUrl {
   // Visual Ads Endpoints
   static const String visualAdsGetAll = '/visual-ads/get-all';
   static String visualAdsGetById(String adId) => '/visual-ads/get-by/$adId';
-  
+
+  // Monthly Plan Endpoints
+  static String monthlyPlanGetByMr(String mrId) =>
+      '/monthly-plan/get-by-mr/$mrId';
+  static String monthlyPlanGetByMrAndDate(String mrId, String planDate) =>
+      '/monthly-plan/get-by-mr/$mrId/date/$planDate';
+
   static String getFullUrl(String path) {
     final String trimmed = path.trim();
     if (trimmed.isEmpty) {

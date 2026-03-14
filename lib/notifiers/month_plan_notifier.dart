@@ -1,128 +1,49 @@
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
+
+import '../provider/auth_provider.dart';
 import '../models/month_plan.dart';
+import '../services/month_plan/month_plan_services.dart';
+
+typedef Reader = T Function<T>(ProviderListenable<T> provider);
 
 class MonthPlanNotifier extends StateNotifier<List<MonthPlan>> {
-  MonthPlanNotifier() : super([]) {
-    _loadMonthPlans();
+  MonthPlanNotifier(this._monthPlanServices, this._read) : super([]);
+
+  final MonthPlanServices _monthPlanServices;
+  final Reader _read;
+
+  bool _isLoading = false;
+  String? _error;
+
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> loadCurrentMrMonthPlans() async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      _error = 'No logged in MR found';
+      state = [];
+      return;
+    }
+
+    await loadMonthPlansByMrId(mrId);
   }
 
-  // Load month plans - mock data for now
-  void _loadMonthPlans() {
-    final now = DateTime.now();
-    state = [
-      MonthPlan(
-        id: '1',
-        date: DateTime(now.year, now.month, 5),
-        activities: [
-          PlanActivity(
-            id: 'a1',
-            type: PlanActivityType.doctorVisit,
-            title: 'Visit Dr. Smith',
-            description: 'Discuss new product line',
-            time: '10:00 AM',
-            location: 'City Hospital',
-            contactId: '1',
-          ),
-          PlanActivity(
-            id: 'a2',
-            type: PlanActivityType.chemistVisit,
-            title: 'Visit MedPlus Pharmacy',
-            description: 'Check inventory and promote new products',
-            time: '2:30 PM',
-            location: 'Main Street',
-            contactId: '1',
-          ),
-        ],
-        notes: 'Focus on cardiology products',
-      ),
-      MonthPlan(
-        id: '2',
-        date: DateTime(now.year, now.month, 10),
-        activities: [
-          PlanActivity(
-            id: 'a3',
-            type: PlanActivityType.meeting,
-            title: 'Team Meeting',
-            description: 'Monthly review and planning',
-            time: '11:00 AM',
-            location: 'Regional Office',
-          ),
-        ],
-        notes: 'Prepare sales report',
-      ),
-      MonthPlan(
-        id: '3',
-        date: DateTime(now.year, now.month, 15),
-        activities: [
-          PlanActivity(
-            id: 'a4',
-            type: PlanActivityType.distributorVisit,
-            title: 'Meet ABC Distributors',
-            description: 'Discuss quarterly targets',
-            time: '9:30 AM',
-            location: 'Warehouse District',
-            contactId: '1',
-          ),
-          PlanActivity(
-            id: 'a5',
-            type: PlanActivityType.doctorVisit,
-            title: 'Visit Dr. Johnson',
-            description: 'Follow-up on previous meeting',
-            time: '3:00 PM',
-            location: 'Community Clinic',
-            contactId: '2',
-            isCompleted: true,
-          ),
-        ],
-      ),
-      MonthPlan(
-        id: '4',
-        date: DateTime(now.year, now.month, 20),
-        activities: [
-          PlanActivity(
-            id: 'a6',
-            type: PlanActivityType.doctorVisit,
-            title: 'Visit Dr. Kumar',
-            description: 'Product demonstration',
-            time: '1:00 PM',
-            location: 'Metro Hospital',
-            contactId: '3',
-          ),
-        ],
-        notes: 'Bring product samples',
-      ),
-      MonthPlan(
-        id: '5',
-        date: DateTime(now.year, now.month, 25),
-        activities: [
-          PlanActivity(
-            id: 'a7',
-            type: PlanActivityType.chemistVisit,
-            title: 'Apollo Pharmacy Visit',
-            description: 'Monthly stock review',
-            time: '10:30 AM',
-            location: 'Downtown',
-            contactId: '2',
-          ),
-          PlanActivity(
-            id: 'a8',
-            type: PlanActivityType.chemistVisit,
-            title: 'Wellness Pharmacy',
-            description: 'Introduce new products',
-            time: '2:00 PM',
-            location: 'East Side',
-            contactId: '3',
-          ),
-          PlanActivity(
-            id: 'a9',
-            type: PlanActivityType.other,
-            title: 'Prepare monthly report',
-            description: 'Compile visit summaries',
-            time: '5:00 PM',
-          ),
-        ],
-      ),
-    ];
+  Future<void> loadMonthPlansByMrId(String mrId) async {
+    _isLoading = true;
+    _error = null;
+
+    try {
+      final List<MonthPlan> plans = await _monthPlanServices
+          .fetchMonthPlansByMrId(mrId);
+      state = plans;
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      state = [];
+    } finally {
+      _isLoading = false;
+    }
   }
 
   // Add a new plan
@@ -142,7 +63,7 @@ class MonthPlanNotifier extends StateNotifier<List<MonthPlan>> {
   void deletePlan(String id) {
     state = [
       for (final plan in state)
-        if (plan.id != id) plan
+        if (plan.id != id) plan,
     ];
   }
 
@@ -163,8 +84,10 @@ class MonthPlanNotifier extends StateNotifier<List<MonthPlan>> {
   // Get plans for a specific month
   List<MonthPlan> getPlansForMonth(DateTime month) {
     return state
-        .where((plan) =>
-            plan.date.year == month.year && plan.date.month == month.month)
+        .where(
+          (plan) =>
+              plan.date.year == month.year && plan.date.month == month.month,
+        )
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date));
   }
@@ -198,9 +121,7 @@ class MonthPlanNotifier extends StateNotifier<List<MonthPlan>> {
     state = [
       for (final plan in state)
         if (plan.id == planId)
-          plan.copyWith(
-            activities: [...plan.activities, activity],
-          )
+          plan.copyWith(activities: [...plan.activities, activity])
         else
           plan,
     ];
