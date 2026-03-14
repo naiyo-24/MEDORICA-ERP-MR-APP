@@ -2,27 +2,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../models/visual_ads.dart';
 import '../notifiers/visual_ads_notifier.dart';
+import '../services/visual_ads/visual_ads_services.dart';
 
-final visualAdsProvider = StateNotifierProvider<VisualAdsNotifier, List<VisualAd>>(
-  (ref) => VisualAdsNotifier(),
-);
-
-final visualAdsCategoriesProvider = Provider<List<String>>((ref) {
-  final ads = ref.watch(visualAdsProvider);
-  final categories = ads.map((ad) => ad.category).toSet().toList();
-  categories.sort();
-  return categories;
+final visualAdsServicesProvider = Provider<VisualAdsServices>((ref) {
+  return VisualAdsServices();
 });
 
-final filteredVisualAdsProvider = StateProvider<String?>((ref) => null);
+final visualAdsProvider =
+    StateNotifierProvider<VisualAdsNotifier, VisualAdsState>(
+  (ref) => VisualAdsNotifier(ref.read(visualAdsServicesProvider)),
+);
+
+final visualAdsSearchQueryProvider = StateProvider<String>((ref) => '');
 
 final visualAdsFilteredProvider = Provider<List<VisualAd>>((ref) {
-  final ads = ref.watch(visualAdsProvider);
-  final selectedCategory = ref.watch(filteredVisualAdsProvider);
+  final ads = ref.watch(visualAdsProvider).ads;
+  final query = ref.watch(visualAdsSearchQueryProvider).trim().toLowerCase();
 
-  if (selectedCategory == null || selectedCategory.isEmpty) {
+  if (query.isEmpty) {
     return ads;
   }
 
-  return ads.where((ad) => ad.category == selectedCategory).toList();
+  return ads.where((ad) => ad.medicineName.toLowerCase().contains(query)).toList();
+});
+
+final visualAdsLoadingProvider = Provider<bool>((ref) {
+  return ref.watch(visualAdsProvider).isLoading;
+});
+
+final visualAdsErrorProvider = Provider<String?>((ref) {
+  return ref.watch(visualAdsProvider).error;
 });

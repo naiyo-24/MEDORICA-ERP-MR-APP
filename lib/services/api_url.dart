@@ -39,6 +39,10 @@ class ApiUrl {
   static String distributorGetById(String distId) =>
       '/distributor/get-by/$distId';
 
+  // Visual Ads Endpoints
+  static const String visualAdsGetAll = '/visual-ads/get-all';
+  static String visualAdsGetById(String adId) => '/visual-ads/get-by/$adId';
+  
   static String getFullUrl(String path) {
     final String trimmed = path.trim();
     if (trimmed.isEmpty) {
