@@ -1,93 +1,199 @@
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
+
 import '../models/chemist_shop.dart';
+import '../provider/auth_provider.dart';
+import '../services/chemist_shop/chemist_shop_services.dart';
 
-class ChemistShopNotifier extends StateNotifier<List<ChemistShop>> {
-  ChemistShopNotifier() : super([]) {
-    _loadChemistShops();
+typedef _Reader = T Function<T>(ProviderListenable<T> provider);
+
+class ChemistShopState {
+  final List<ChemistShop> shops;
+  final bool isLoading;
+  final bool isSubmitting;
+  final String? error;
+
+  const ChemistShopState({
+    this.shops = const <ChemistShop>[],
+    this.isLoading = false,
+    this.isSubmitting = false,
+    this.error,
+  });
+
+  ChemistShopState copyWith({
+    List<ChemistShop>? shops,
+    bool? isLoading,
+    bool? isSubmitting,
+    String? error,
+  }) {
+    return ChemistShopState(
+      shops: shops ?? this.shops,
+      isLoading: isLoading ?? this.isLoading,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      error: error,
+    );
   }
+}
 
-  // Load chemist shops - mock data for now
-  void _loadChemistShops() {
-    state = [
-      ChemistShop(
-        id: '1',
-        name: 'MediCare Pharmacy',
-        phoneNumber: '+880 1700 111222',
-        email: 'medicare@pharmacy.com',
-        photo: 'https://via.placeholder.com/400x300?text=MediCare+Pharmacy',
-        location: '123 Gulshan Avenue, Dhaka',
-        description:
-            'A trusted pharmacy serving the community for over 20 years. We provide quality medicines and healthcare products with excellent customer service.',
-        doctorIds: ['1', '2'],
-      ),
-      ChemistShop(
-        id: '2',
-        name: 'HealthPlus Chemist',
-        phoneNumber: '+880 1800 333444',
-        email: 'healthplus@pharmacy.com',
-        photo: 'https://via.placeholder.com/400x300?text=HealthPlus+Chemist',
-        location: '456 Dhanmondi Road, Dhaka',
-        description:
-            'Modern pharmacy with a wide range of medicines and health products. We also offer free health consultations and home delivery services.',
-        doctorIds: ['2', '3'],
-      ),
-      ChemistShop(
-        id: '3',
-        name: 'City Pharmacy',
-        phoneNumber: '+880 1900 555666',
-        email: 'city@pharmacy.com',
-        photo: 'https://via.placeholder.com/400x300?text=City+Pharmacy',
-        location: '789 Mirpur Road, Dhaka',
-        description:
-            '24/7 pharmacy service with experienced pharmacists. We stock all major brands and generic medicines at competitive prices.',
-        doctorIds: ['1'],
-      ),
-    ];
-  }
+class ChemistShopNotifier extends StateNotifier<ChemistShopState> {
+  ChemistShopNotifier(this._services, this._read)
+      : super(const ChemistShopState());
 
-  // Add a new chemist shop
-  void addChemistShop(ChemistShop shop) {
-    state = [...state, shop.copyWith(id: DateTime.now().toString())];
-  }
+  final ChemistShopServices _services;
+  final _Reader _read;
 
-  // Update a chemist shop
-  void updateChemistShop(ChemistShop updatedShop) {
-    state = [
-      for (final shop in state)
-        if (shop.id == updatedShop.id) updatedShop else shop,
-    ];
-  }
+  // ---------------------------------------------------------------------------
+  // Fetch
+  // ---------------------------------------------------------------------------
 
-  // Delete a chemist shop
-  void deleteChemistShop(String id) {
-    state = [for (final shop in state) if (shop.id != id) shop];
-  }
+  Future<void> loadShopsForCurrentMr() async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'No logged in MR found',
+      );
+      return;
+    }
 
-  // Get a chemist shop by id
-  ChemistShop? getChemistShopById(String id) {
+    state = state.copyWith(isLoading: true, error: null);
+
     try {
-      return state.firstWhere((shop) => shop.id == id);
+      final List<ChemistShop> shops = await _services.fetchShopsByMrId(mrId);
+      state = state.copyWith(shops: shops, isLoading: false, error: null);
     } catch (e) {
-      return null;
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
     }
   }
 
-  // Search chemist shops
-  List<ChemistShop> searchChemistShops(String query) {
-    if (query.isEmpty) return state;
-    final lowerQuery = query.toLowerCase();
-    return state
-        .where((shop) =>
-            shop.name.toLowerCase().contains(lowerQuery) ||
-            shop.location.toLowerCase().contains(lowerQuery))
-        .toList();
+  // ---------------------------------------------------------------------------
+  // Create
+  // ---------------------------------------------------------------------------
+
+  Future<void> addChemistShop(ChemistShop shop) async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(error: 'No logged in MR found');
+      return;
+    }
+
+    state = state.copyWith(isSubmitting: true, error: null);
+
+    try {
+      final ChemistShop created = await _services.createShop(
+        mrId: mrId,
+        shopName: shop.name,
+        phoneNo: shop.phoneNumber,
+        address: shop.location.isNotEmpty ? shop.location : null,
+        email: shop.email.isNotEmpty ? shop.email : null,
+        description: shop.description.isNotEmpty ? shop.description : null,
+        photoPath: _isLocalPath(shop.photo) ? shop.photo : null,
+      );
+
+      state = state.copyWith(
+        shops: <ChemistShop>[created, ...state.shops],
+        isSubmitting: false,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isSubmitting: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
   }
 
-  // Filter by location
-  List<ChemistShop> filterByLocation(String location) {
-    if (location.isEmpty) return state;
-    return state
-        .where((shop) => shop.location.toLowerCase().contains(location.toLowerCase()))
-        .toList();
+  // ---------------------------------------------------------------------------
+  // Update
+  // ---------------------------------------------------------------------------
+
+  Future<void> updateChemistShop(ChemistShop updatedShop) async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(error: 'No logged in MR found');
+      return;
+    }
+
+    if (updatedShop.id.isEmpty) {
+      state = state.copyWith(error: 'Missing shop ID for update');
+      return;
+    }
+
+    state = state.copyWith(isSubmitting: true, error: null);
+
+    try {
+      final ChemistShop saved = await _services.updateShop(
+        mrId: mrId,
+        shopId: updatedShop.id,
+        shopName: updatedShop.name.isNotEmpty ? updatedShop.name : null,
+        phoneNo: updatedShop.phoneNumber.isNotEmpty
+            ? updatedShop.phoneNumber
+            : null,
+        address: updatedShop.location.isNotEmpty ? updatedShop.location : null,
+        email: updatedShop.email.isNotEmpty ? updatedShop.email : null,
+        description: updatedShop.description.isNotEmpty
+            ? updatedShop.description
+            : null,
+        photoPath: _isLocalPath(updatedShop.photo) ? updatedShop.photo : null,
+      );
+
+      final List<ChemistShop> next = state.shops.map((ChemistShop item) {
+        return item.id == saved.id ? saved : item;
+      }).toList();
+
+      state = state.copyWith(shops: next, isSubmitting: false, error: null);
+    } catch (e) {
+      state = state.copyWith(
+        isSubmitting: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Delete
+  // ---------------------------------------------------------------------------
+
+  Future<void> deleteChemistShop(String shopId) async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(error: 'No logged in MR found');
+      return;
+    }
+
+    state = state.copyWith(isSubmitting: true, error: null);
+
+    try {
+      await _services.deleteShop(mrId: mrId, shopId: shopId);
+
+      final List<ChemistShop> remaining =
+          state.shops.where((ChemistShop s) => s.id != shopId).toList();
+
+      state = state.copyWith(
+        shops: remaining,
+        isSubmitting: false,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isSubmitting: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  /// Returns true when [path] is a local file path (not a URL, not empty).
+  bool _isLocalPath(String path) {
+    if (path.isEmpty) return false;
+    if (path.startsWith('http://') || path.startsWith('https://')) return false;
+    return true;
   }
 }
+

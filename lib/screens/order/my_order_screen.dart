@@ -203,7 +203,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   }
 
   Widget _buildChemistShopDropdown() {
-    final shops = ref.watch(chemistShopProvider);
+    final shops = ref.watch(chemistShopListProvider);
     return DropdownButtonFormField<String>(
       initialValue: _selectedChemistShopId.isEmpty
           ? null

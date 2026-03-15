@@ -7,7 +7,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../models/chemist_shop.dart';
 import '../../provider/chemist_shop_provider.dart';
-import '../../provider/doctor_provider.dart';
 import '../../theme/app_theme.dart';
 
 class AddEditChemistShopScreen extends ConsumerStatefulWidget {
@@ -25,14 +24,13 @@ class _AddEditChemistShopScreenState
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
-  late TextEditingController _photoController;
   late TextEditingController _locationController;
   late TextEditingController _descriptionController;
 
   final _formKey = GlobalKey<FormState>();
-  List<String> _selectedDoctorIds = [];
   bool _loading = false;
   XFile? _selectedPhoto;
+  XFile? _selectedBankPassbookPhoto;
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
@@ -42,58 +40,35 @@ class _AddEditChemistShopScreenState
     _nameController = TextEditingController(text: shop?.name ?? '');
     _phoneController = TextEditingController(text: shop?.phoneNumber ?? '');
     _emailController = TextEditingController(text: shop?.email ?? '');
-    _photoController = TextEditingController(text: shop?.photo ?? '');
     _locationController = TextEditingController(text: shop?.location ?? '');
     _descriptionController =
         TextEditingController(text: shop?.description ?? '');
-    _selectedDoctorIds = shop?.doctorIds ?? [];
   }
 
-  Future<void> _pickPhotoFromGallery() async {
-    try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 85,
-      );
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _locationController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
-      if (pickedFile != null) {
-        setState(() {
-          _selectedPhoto = pickedFile;
-          _photoController.text = pickedFile.path;
-        });
-      }
+  Future<XFile?> _pickImage(ImageSource source) async {
+    try {
+      return await _imagePicker.pickImage(source: source, imageQuality: 85);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error picking image: ${e.toString()}')),
+          SnackBar(content: Text('Error picking image: $e')),
         );
       }
+      return null;
     }
   }
 
-  Future<void> _pickPhotoFromCamera() async {
-    try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 85,
-      );
-
-      if (pickedFile != null) {
-        setState(() {
-          _selectedPhoto = pickedFile;
-          _photoController.text = pickedFile.path;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error taking photo: ${e.toString()}')),
-        );
-      }
-    }
-  }
-
-  void _showPhotoPickerOptions() {
+  void _showPhotoPickerOptions({required bool isBankPassbook}) {
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -102,17 +77,35 @@ class _AddEditChemistShopScreenState
             ListTile(
               leading: const Icon(Iconsax.gallery, color: AppColors.primary),
               title: const Text('Choose from Gallery'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                _pickPhotoFromGallery();
+                final file = await _pickImage(ImageSource.gallery);
+                if (file != null) {
+                  setState(() {
+                    if (isBankPassbook) {
+                      _selectedBankPassbookPhoto = file;
+                    } else {
+                      _selectedPhoto = file;
+                    }
+                  });
+                }
               },
             ),
             ListTile(
               leading: const Icon(Iconsax.camera, color: AppColors.primary),
               title: const Text('Take a Photo'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                _pickPhotoFromCamera();
+                final file = await _pickImage(ImageSource.camera);
+                if (file != null) {
+                  setState(() {
+                    if (isBankPassbook) {
+                      _selectedBankPassbookPhoto = file;
+                    } else {
+                      _selectedPhoto = file;
+                    }
+                  });
+                }
               },
             ),
           ],
@@ -121,150 +114,66 @@ class _AddEditChemistShopScreenState
     );
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _photoController.dispose();
-    _locationController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  void _showDoctorSelectionDialog() {
-    final allDoctors = ref.read(doctorProvider);
-    final selectedIds = List<String>.from(_selectedDoctorIds);
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text(
-            'Select Doctors',
-            style: AppTypography.h3.copyWith(color: AppColors.primary),
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: allDoctors.isEmpty
-                ? Center(
-                    child: Text(
-                      'No doctors available',
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.quaternary,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: allDoctors.length,
-                    itemBuilder: (context, index) {
-                      final doctor = allDoctors[index];
-                      final isSelected = selectedIds.contains(doctor.id);
-                      return CheckboxListTile(
-                        value: isSelected,
-                        onChanged: (value) {
-                          setDialogState(() {
-                            if (value == true) {
-                              selectedIds.add(doctor.id);
-                            } else {
-                              selectedIds.remove(doctor.id);
-                            }
-                          });
-                        },
-                        title: Text(
-                          doctor.name,
-                          style: AppTypography.body.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        subtitle: Text(
-                          doctor.specialization,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.quaternary,
-                          ),
-                        ),
-                        activeColor: AppColors.primary,
-                      );
-                    },
-                  ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.quaternary,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() => _selectedDoctorIds = selectedIds);
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Done',
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _removeDoctorId(String doctorId) {
-    setState(() => _selectedDoctorIds.remove(doctorId));
-  }
-
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill all required fields'),
-        ),
+        const SnackBar(content: Text('Please fill all required fields')),
       );
       return;
     }
 
     setState(() => _loading = true);
 
+    // Resolve photo paths: prefer newly picked local file, else keep existing
+    final String shopPhotoPath = _selectedPhoto?.path ?? widget.shop?.photo ?? '';
+    final String bankPassbookPath =
+        _selectedBankPassbookPhoto?.path ?? widget.shop?.bankPassbookPhoto ?? '';
+
     final shop = ChemistShop(
-      id: widget.shop?.id ?? DateTime.now().toString(),
+      id: widget.shop?.id ?? '',
+      mrId: widget.shop?.mrId,
       name: _nameController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
       email: _emailController.text.trim(),
-      photo: _photoController.text.trim(),
+      photo: shopPhotoPath,
+      bankPassbookPhoto: bankPassbookPath.isNotEmpty ? bankPassbookPath : null,
       location: _locationController.text.trim(),
       description: _descriptionController.text.trim(),
-      doctorIds: _selectedDoctorIds,
     );
 
     if (widget.shop == null) {
-      ref.read(chemistShopProvider.notifier).addChemistShop(shop);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Shop added successfully')),
-      );
+      await ref.read(chemistShopProvider.notifier).addChemistShop(shop);
     } else {
-      ref.read(chemistShopProvider.notifier).updateChemistShop(shop);
+      await ref.read(chemistShopProvider.notifier).updateChemistShop(shop);
+    }
+
+    if (!mounted) return;
+
+    final String? error = ref.read(chemistShopProvider).error;
+    if (error != null) {
+      setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Shop updated successfully')),
+        SnackBar(content: Text(error)),
       );
+      return;
     }
 
     setState(() => _loading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.shop == null
+              ? 'Shop added successfully'
+              : 'Shop updated successfully',
+        ),
+      ),
+    );
     context.go('/mr/chemist');
   }
 
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.shop != null;
-    final allDoctors = ref.watch(doctorProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -272,8 +181,7 @@ class _AddEditChemistShopScreenState
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_circle_left,
-              color: AppColors.primary),
+          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
           onPressed: () => context.pop(),
         ),
         title: Column(
@@ -299,179 +207,73 @@ class _AddEditChemistShopScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Shop Name
+              // Shop Name (required)
               _buildTextFormField(
                 controller: _nameController,
-                label: 'Shop Name',
+                label: 'Shop Name *',
                 icon: Iconsax.shop,
                 validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter shop name' : null,
+                    (v == null || v.trim().isEmpty) ? 'Enter shop name' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Phone Number
+              // Phone Number (required)
               _buildTextFormField(
                 controller: _phoneController,
-                label: 'Phone Number',
+                label: 'Phone Number *',
                 icon: Iconsax.call,
                 keyboardType: TextInputType.phone,
                 validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter phone number' : null,
+                    (v == null || v.trim().isEmpty) ? 'Enter phone number' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Email
+              // Email (optional)
               _buildTextFormField(
                 controller: _emailController,
                 label: 'Email',
                 icon: Iconsax.sms,
                 keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter email' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Photo Picker
-              _buildPhotoPickerField(),
-              const SizedBox(height: AppSpacing.md),
-
-              // Location
+              // Address / Location (optional)
               _buildTextFormField(
                 controller: _locationController,
-                label: 'Location',
+                label: 'Address',
                 icon: Iconsax.location,
                 maxLines: 2,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter location' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Description
+              // Description (optional)
               _buildTextFormField(
                 controller: _descriptionController,
                 label: 'Description',
                 icon: Iconsax.document_text,
                 maxLines: 4,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter description' : null,
               ),
               const SizedBox(height: AppSpacing.lg),
 
-              // Doctors Section
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadowColor,
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Consulting Doctors',
-                      style: AppTypography.bodyLarge.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
+              // Shop Photo
+              _buildPhotoPickerField(
+                label: 'Shop Photo',
+                icon: Iconsax.shop,
+                selectedFile: _selectedPhoto,
+                existingUrl: widget.shop?.photo,
+                onPickTapped: () =>
+                    _showPhotoPickerOptions(isBankPassbook: false),
+              ),
+              const SizedBox(height: AppSpacing.lg),
 
-                    // Select Doctors Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: AppButtonStyles.secondaryButton(height: 48),
-                        onPressed: _showDoctorSelectionDialog,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              'Select Doctors',
-                              style: AppTypography.buttonMedium.copyWith(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    if (_selectedDoctorIds.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.lg),
-                      Text(
-                        'Selected Doctors (${_selectedDoctorIds.length})',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.quaternary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _selectedDoctorIds.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: AppSpacing.sm),
-                        itemBuilder: (context, index) {
-                          final doctorId = _selectedDoctorIds[index];
-                          final doctor = allDoctors.firstWhere(
-                            (d) => d.id == doctorId,
-                            orElse: () => allDoctors.first,
-                          );
-                          return Container(
-                            padding: const EdgeInsets.all(AppSpacing.sm),
-                            decoration: BoxDecoration(
-                              color: AppColors.surface,
-                              borderRadius:
-                                  BorderRadius.circular(AppBorderRadius.md),
-                              border: Border.all(color: AppColors.surface300),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        doctor.name,
-                                        style: AppTypography.bodySmall.copyWith(
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
-                                        doctor.specialization,
-                                        style: AppTypography.caption.copyWith(
-                                          color: AppColors.quaternary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete_outline,
-                                    color: AppColors.error,
-                                  ),
-                                  onPressed: () => _removeDoctorId(doctorId),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ],
-                ),
+              // Bank Passbook Photo
+              _buildPhotoPickerField(
+                label: 'Bank Passbook Photo',
+                icon: Iconsax.wallet,
+                selectedFile: _selectedBankPassbookPhoto,
+                existingUrl: widget.shop?.bankPassbookPhoto,
+                onPickTapped: () =>
+                    _showPhotoPickerOptions(isBankPassbook: true),
               ),
               const SizedBox(height: AppSpacing.xxl),
 
@@ -543,65 +345,61 @@ class _AddEditChemistShopScreenState
     );
   }
 
-  Widget _buildPhotoPickerField() {
+  Widget _buildPhotoPickerField({
+    required String label,
+    required IconData icon,
+    required XFile? selectedFile,
+    required String? existingUrl,
+    required VoidCallback onPickTapped,
+  }) {
+    final bool hasPhoto =
+        selectedFile != null || (existingUrl != null && existingUrl.isNotEmpty);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Photo Preview
-        if (_selectedPhoto != null || _photoController.text.isNotEmpty)
+        Text(
+          label,
+          style: AppTypography.bodyLarge.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        if (hasPhoto)
           Container(
-            height: 200,
+            height: 180,
             width: double.infinity,
-            margin: const EdgeInsets.only(bottom: AppSpacing.md),
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppBorderRadius.md),
               border: Border.all(color: AppColors.border),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppBorderRadius.md),
-              child: _selectedPhoto != null
-                  ? Image.file(
-                      File(_selectedPhoto!.path),
-                      fit: BoxFit.cover,
-                    )
-                  : _photoController.text.startsWith('http')
+              child: selectedFile != null
+                  ? Image.file(File(selectedFile.path), fit: BoxFit.cover)
+                  : (existingUrl!.startsWith('http')
                       ? Image.network(
-                          _photoController.text,
+                          existingUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => Container(
-                            color: AppColors.surface,
-                            child: const Icon(
-                              Iconsax.gallery,
-                              size: 64,
-                              color: AppColors.quaternary,
-                            ),
-                          ),
+                          errorBuilder: (_, _, _) => _photoPlaceholder(icon),
                         )
-                      : Container(
-                          color: AppColors.surface,
-                          child: const Icon(
-                            Iconsax.gallery,
-                            size: 64,
-                            color: AppColors.quaternary,
-                          ),
-                        ),
+                      : _photoPlaceholder(icon)),
             ),
           ),
-        // Photo Picker Button
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             style: AppButtonStyles.secondaryButton(height: 48),
-            onPressed: _showPhotoPickerOptions,
+            onPressed: onPickTapped,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Iconsax.gallery),
+                Icon(hasPhoto ? Iconsax.refresh : icon),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
-                  _selectedPhoto != null || _photoController.text.isNotEmpty
-                      ? 'Change Photo'
-                      : 'Add Photo',
+                  hasPhoto ? 'Change $label' : 'Add $label',
                   style: AppTypography.buttonMedium.copyWith(
                     color: AppColors.primary,
                   ),
@@ -611,6 +409,13 @@ class _AddEditChemistShopScreenState
           ),
         ),
       ],
+    );
+  }
+
+  Widget _photoPlaceholder(IconData icon) {
+    return Container(
+      color: AppColors.surface,
+      child: Center(child: Icon(icon, size: 48, color: AppColors.quaternary)),
     );
   }
 }

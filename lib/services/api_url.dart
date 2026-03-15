@@ -60,6 +60,27 @@ class ApiUrl {
   static String attendanceMrUpdateByMrIdAndAttendanceId(String mrId, int id) =>
       '$_attendanceMrBase/update-by/$mrId/$id';
 
+  // Chemist Shop (MR Network) Endpoints
+  static const String _chemistShopMrBase = '/chemist-shop/mr';
+  static const String chemistShopMrPost = '$_chemistShopMrBase/post';
+  static const String chemistShopMrGetAll = '$_chemistShopMrBase/get-all';
+  static String chemistShopMrGetByMrId(String mrId) =>
+      '$_chemistShopMrBase/get-by-mr/$mrId';
+  static String chemistShopMrGetByMrIdAndShopId(
+    String mrId,
+    String shopId,
+  ) => '$_chemistShopMrBase/get-by/$mrId/$shopId';
+  static String chemistShopMrGetByShopId(String shopId) =>
+      '$_chemistShopMrBase/get-by-shop/$shopId';
+  static String chemistShopMrUpdateByMrIdAndShopId(
+    String mrId,
+    String shopId,
+  ) => '$_chemistShopMrBase/update-by/$mrId/$shopId';
+  static String chemistShopMrDeleteByMrIdAndShopId(
+    String mrId,
+    String shopId,
+  ) => '$_chemistShopMrBase/delete-by/$mrId/$shopId';
+
   static String getFullUrl(String path) {
     final String trimmed = path.trim();
     if (trimmed.isEmpty) {

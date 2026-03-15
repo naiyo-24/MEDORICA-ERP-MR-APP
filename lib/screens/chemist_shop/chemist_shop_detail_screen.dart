@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../cards/chemist_shop/chemist_shop_contact_card.dart';
 import '../../cards/chemist_shop/chemist_shop_description_caard.dart';
-import '../../cards/chemist_shop/chemist_shop_doctors_card.dart';
 import '../../cards/chemist_shop/chemist_shop_header_card.dart';
 import '../../provider/chemist_shop_provider.dart';
 import '../../theme/app_theme.dart';
@@ -142,11 +141,7 @@ class ChemistShopDetailScreen extends ConsumerWidget {
                   ChemistShopDescriptionCard(
                     description: shop.description,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  // Doctors Card
-                  ChemistShopDoctorsCard(
-                    doctorIds: shop.doctorIds,
-                  ),
+                 
                   const SizedBox(height: AppSpacing.lg),
                   // Contact Card
                   ChemistShopContactCard(shop: shop),

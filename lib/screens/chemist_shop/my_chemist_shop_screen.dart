@@ -22,8 +22,17 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(chemistShopProvider.notifier).loadShopsForCurrentMr();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final allShops = ref.watch(chemistShopProvider);
+    final chemistState = ref.watch(chemistShopProvider);
+    final allShops = chemistState.shops;
     final filteredShops = _searchQuery.isEmpty
         ? allShops
         : ref.watch(searchChemistShopProvider(_searchQuery));
@@ -46,6 +55,27 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
         ),
         body: Column(
         children: [
+          // Loading indicator
+          if (chemistState.isLoading)
+            const LinearProgressIndicator(
+              minHeight: 3,
+              backgroundColor: Colors.transparent,
+            ),
+          // Error banner
+          if (chemistState.error != null && !chemistState.isLoading)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
+              child: Text(
+                chemistState.error!,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.error,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
           // Search and Filter Card
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),

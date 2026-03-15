@@ -160,7 +160,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final doctors = ref.watch(doctorProvider);
-    final chemistShops = ref.watch(chemistShopProvider);
+    final chemistShops = ref.watch(chemistShopListProvider);
     final distributors = ref.watch(distributorListProvider);
 
     return Scaffold(
