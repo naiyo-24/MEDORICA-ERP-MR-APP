@@ -46,71 +46,71 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
           titleText: 'My Appointments',
           subtitleText: 'View and Manage',
         ),
-      body: Column(
-        children: [
-          // Filter Options Card
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: AppointmentFilterOptionsCard(
-              selectedDate: _selectedDate,
-              selectedStatus: _selectedStatus,
-              onDateFilterChanged: (date) {
-                setState(() {
-                  _selectedDate = date;
-                });
-              },
-              onStatusFilterChanged: (status) {
-                setState(() {
-                  _selectedStatus = status;
-                });
-              },
+        body: Column(
+          children: [
+            // Filter Options Card
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: AppointmentFilterOptionsCard(
+                selectedDate: _selectedDate,
+                selectedStatus: _selectedStatus,
+                onDateFilterChanged: (date) {
+                  setState(() {
+                    _selectedDate = date;
+                  });
+                },
+                onStatusFilterChanged: (status) {
+                  setState(() {
+                    _selectedStatus = status;
+                  });
+                },
+              ),
             ),
-          ),
 
-          // Appointments List
-          Expanded(
-            child: filteredAppointments.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
+            // Appointments List
+            Expanded(
+              child: filteredAppointments.isEmpty
+                  ? _buildEmptyState()
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.sm,
+                      ),
+                      itemCount: filteredAppointments.length,
+                      itemBuilder: (context, index) {
+                        final appointment = filteredAppointments[index];
+                        return AppointmentCard(appointment: appointment);
+                      },
                     ),
-                    itemCount: filteredAppointments.length,
-                    itemBuilder: (context, index) {
-                      final appointment = filteredAppointments[index];
-                      return AppointmentCard(appointment: appointment);
-                    },
-                  ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/mr/appointments/schedule'),
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Iconsax.add, color: AppColors.white),
-        label: Text(
-          'New Appointment',
-          style: AppTypography.buttonMedium.copyWith(
-            color: AppColors.white,
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => context.push('/asm/appointments/schedule'),
+          backgroundColor: AppColors.primary,
+          icon: const Icon(Iconsax.add, color: AppColors.white),
+          label: Text(
+            'New Appointment',
+            style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
           ),
         ),
-      ),
-        bottomNavigationBar: const MRBottomNavBar(currentIndex: 2),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 6),
       ),
     );
   }
 
   List<Appointment> _filterAppointments(List<Appointment> appointments) {
-    var filtered = appointments;
+    var filtered = List<Appointment>.from(appointments);
 
     // Filter by date
     if (_selectedDate != null) {
       filtered = filtered
-          .where((appointment) =>
-              appointment.date.year == _selectedDate!.year &&
-              appointment.date.month == _selectedDate!.month &&
-              appointment.date.day == _selectedDate!.day)
+          .where(
+            (appointment) =>
+                appointment.date.year == _selectedDate!.year &&
+                appointment.date.month == _selectedDate!.month &&
+                appointment.date.day == _selectedDate!.day,
+          )
           .toList();
     }
 
@@ -155,24 +155,20 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
               hasActiveFilters
                   ? 'No appointments found'
                   : 'No appointments yet',
-              style: AppTypography.h3.copyWith(
-                color: AppColors.quaternary,
-              ),
+              style: AppTypography.h3.copyWith(color: AppColors.quaternary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               hasActiveFilters
                   ? 'Try adjusting your filters'
                   : 'Schedule your first appointment',
-              style: AppTypography.body.copyWith(
-                color: AppColors.quaternary,
-              ),
+              style: AppTypography.body.copyWith(color: AppColors.quaternary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
             if (!hasActiveFilters)
               ElevatedButton.icon(
-                onPressed: () => context.push('/mr/appointments/schedule'),
+                onPressed: () => context.push('/asm/appointments/schedule'),
                 style: AppButtonStyles.primaryButton(height: 44),
                 icon: const Icon(Iconsax.add, color: AppColors.white),
                 label: Text(

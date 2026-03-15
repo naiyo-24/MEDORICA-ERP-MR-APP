@@ -221,7 +221,14 @@ class AppRouter {
       GoRoute(
         path: visualAds,
         name: 'visualAds',
-        builder: (context, state) => const VisualAdsScreen(),
+        builder: (context, state) {
+          final adIdsParam = state.uri.queryParameters['adIds'];
+          Set<String>? onlyAdIds;
+          if (adIdsParam != null && adIdsParam.isNotEmpty) {
+            onlyAdIds = adIdsParam.split(',').toSet();
+          }
+          return VisualAdsScreen(onlyAdIds: onlyAdIds);
+        },
       ),
     ],
   );

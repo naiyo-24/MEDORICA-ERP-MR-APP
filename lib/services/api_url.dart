@@ -76,6 +76,17 @@ class ApiUrl {
   ) => '$_doctorNetworkMrBase/update-by/$mrId/$doctorId';
   static String doctorNetworkMrDeleteByDoctorId(String doctorId) =>
       '$_doctorNetworkMrBase/delete-by/$doctorId';
+  
+    // ASM Appointment Endpoints
+  static const String appointmentAsmPost = '/appointment/mr/post';
+  static String appointmentGetBymrId(String mrId) =>
+      '/appointment/mr/get-by-mr/$mrId';
+  static String appointmentGetById(String appointmentId) =>
+      '/appointment/mr/get-by/$appointmentId';
+  static String appointmentUpdateById(String appointmentId) =>
+      '/appointment/mr/update-by/$appointmentId';
+  static String appointmentDeleteById(String appointmentId) =>
+      '/appointment/mr/delete-by/$appointmentId';
 
   // Chemist Shop (MR Network) Endpoints
   static const String _chemistShopMrBase = '/chemist-shop/mr';

@@ -11,21 +11,18 @@ import 'appointment_details_bottomsheet.dart';
 class AppointmentCard extends ConsumerWidget {
   final Appointment appointment;
 
-  const AppointmentCard({
-    super.key,
-    required this.appointment,
-  });
+  const AppointmentCard({super.key, required this.appointment});
 
   Color _getStatusColor(AppointmentStatus status) {
     switch (status) {
-      case AppointmentStatus.scheduled:
+      case AppointmentStatus.pending:
         return AppColors.primary;
+      case AppointmentStatus.ongoing:
+        return const Color(0xFF1565C0);
       case AppointmentStatus.completed:
         return AppColors.success;
       case AppointmentStatus.cancelled:
         return AppColors.error;
-      case AppointmentStatus.missed:
-        return AppColors.quaternary;
     }
   }
 
@@ -40,9 +37,7 @@ class AppointmentCard extends ConsumerWidget {
     return Card(
       elevation: 2,
       shadowColor: AppColors.shadowColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppBorderRadius.lgRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.lgRadius),
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: InkWell(
         onTap: () => _showAppointmentDetails(context, appointment, doctor),
@@ -59,7 +54,12 @@ class AppointmentCard extends ConsumerWidget {
                   CircleAvatar(
                     radius: 28,
                     backgroundColor: AppColors.primaryLight,
-                    backgroundImage: NetworkImage(doctor.photo),
+                    backgroundImage: doctor.photo.trim().isNotEmpty
+                        ? NetworkImage(doctor.photo)
+                        : null,
+                    child: doctor.photo.trim().isEmpty
+                        ? const Icon(Iconsax.user, color: AppColors.primary)
+                        : null,
                   ),
                   const SizedBox(width: AppSpacing.md),
                   // Doctor Details
@@ -105,7 +105,7 @@ class AppointmentCard extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
-              
+
               // Divider
               const Divider(color: AppColors.divider),
               const SizedBox(height: AppSpacing.md),
@@ -153,7 +153,7 @@ class AppointmentCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              
+
               if (appointment.message.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.md),
                 Row(
