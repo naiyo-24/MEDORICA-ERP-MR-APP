@@ -111,13 +111,17 @@ class DoctorDetailScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.lg),
 
             // Description
-            DoctorDescriptionCard(description: doctor.description),
+            DoctorDescriptionCard(
+              description: doctor.description,
+              birthday: doctor.birthday,
+            ),
             const SizedBox(height: AppSpacing.lg),
 
             // Contact Information
             DoctorContactCard(
               phoneNumber: doctor.phoneNumber,
               email: doctor.email,
+              address: doctor.address,
             ),
             const SizedBox(height: AppSpacing.lg),
 

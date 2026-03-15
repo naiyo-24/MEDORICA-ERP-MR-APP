@@ -6,11 +6,13 @@ import '../../../../theme/app_theme.dart';
 class DoctorContactCard extends StatelessWidget {
   final String phoneNumber;
   final String email;
+  final String address;
 
   const DoctorContactCard({
     super.key,
     required this.phoneNumber,
     required this.email,
+    required this.address,
   });
 
   Future<void> _launchPhone(String phoneNumber) async {
@@ -66,7 +68,13 @@ class DoctorContactCard extends StatelessWidget {
             icon: Iconsax.sms,
             label: 'Email',
             value: email,
-            onTap: () => _launchEmail(email),
+            onTap: email.isEmpty ? null : () => _launchEmail(email),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _buildContactItem(
+            icon: Iconsax.location,
+            label: 'Address',
+            value: address,
           ),
         ],
       ),
@@ -111,7 +119,7 @@ class DoctorContactCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                value,
+                value.isEmpty ? 'Not provided' : value,
                 style: AppTypography.bodyLarge.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w500,

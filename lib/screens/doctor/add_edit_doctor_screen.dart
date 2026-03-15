@@ -24,6 +24,8 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
+  late TextEditingController _addressController;
+  late TextEditingController _birthdayController;
   late TextEditingController _photoController;
   late TextEditingController _specializationController;
   late TextEditingController _experienceController;
@@ -37,6 +39,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   List<DoctorChamber> _chambers = [];
   bool _loading = false;
   XFile? _selectedPhoto;
+  DateTime? _selectedBirthday;
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
@@ -46,6 +49,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     _nameController = TextEditingController(text: doctor?.name ?? '');
     _phoneController = TextEditingController(text: doctor?.phoneNumber ?? '');
     _emailController = TextEditingController(text: doctor?.email ?? '');
+    _addressController = TextEditingController(text: doctor?.address ?? '');
+    _selectedBirthday = doctor?.birthday;
+    _birthdayController = TextEditingController(
+      text: doctor?.birthday != null ? _formatDate(doctor!.birthday!) : '',
+    );
     _photoController = TextEditingController(text: doctor?.photo ?? '');
     _specializationController = TextEditingController(
       text: doctor?.specialization ?? '',
@@ -90,6 +98,8 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _addressController.dispose();
+    _birthdayController.dispose();
     _photoController.dispose();
     _specializationController.dispose();
     _experienceController.dispose();
@@ -130,6 +140,28 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     setState(() => _chambers.removeAt(index));
   }
 
+  Future<void> _selectBirthday() async {
+    final DateTime now = DateTime.now();
+    final DateTime initialDate = _selectedBirthday ??
+        DateTime(now.year - 30, now.month, now.day);
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+
+    if (picked == null) {
+      return;
+    }
+
+    setState(() {
+      _selectedBirthday = picked;
+      _birthdayController.text = _formatDate(picked);
+    });
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate() || _chambers.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,11 +178,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
       id: widget.doctor?.id ?? '',
       dbId: widget.doctor?.dbId,
       mrId: widget.doctor?.mrId,
-      birthday: widget.doctor?.birthday,
+      birthday: _selectedBirthday,
       name: _nameController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
       email: _emailController.text.trim(),
-      address: widget.doctor?.address ?? '',
+      address: _addressController.text.trim(),
       photo: _photoController.text.trim(),
       specialization: _specializationController.text.trim(),
       experience: _experienceController.text.trim(),
@@ -254,6 +286,67 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                 keyboardType: TextInputType.emailAddress,
                 validator: (v) =>
                     (v == null || v.isEmpty) ? 'Enter email' : null,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Address
+              _buildTextFormField(
+                controller: _addressController,
+                label: 'Address',
+                icon: Iconsax.location,
+                maxLines: 2,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Birthday
+              TextFormField(
+                controller: _birthdayController,
+                readOnly: true,
+                onTap: _selectBirthday,
+                style: AppTypography.bodyLarge,
+                decoration: InputDecoration(
+                  labelText: 'Birthday',
+                  labelStyle: AppTypography.body.copyWith(
+                    color: AppColors.quaternary,
+                  ),
+                  prefixIcon: const Icon(
+                    Iconsax.calendar,
+                    color: AppColors.primary,
+                  ),
+                  suffixIcon: _selectedBirthday != null
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedBirthday = null;
+                              _birthdayController.clear();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.close,
+                            color: AppColors.quaternary,
+                          ),
+                        )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 2,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.md,
+                  ),
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -650,5 +743,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         ),
       ],
     );
+  }
+
+  String _formatDate(DateTime value) {
+    final String day = value.day.toString().padLeft(2, '0');
+    final String month = value.month.toString().padLeft(2, '0');
+    return '$day/$month/${value.year}';
   }
 }

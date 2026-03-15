@@ -3,8 +3,13 @@ import '../../../../theme/app_theme.dart';
 
 class DoctorDescriptionCard extends StatelessWidget {
   final String description;
+  final DateTime? birthday;
 
-  const DoctorDescriptionCard({super.key, required this.description});
+  const DoctorDescriptionCard({
+    super.key,
+    required this.description,
+    this.birthday,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +36,16 @@ class DoctorDescriptionCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+          if (birthday != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Birthday: ${_formatDate(birthday!)}',
+              style: AppTypography.body.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacing.md),
           Text(
             description,
@@ -42,5 +57,11 @@ class DoctorDescriptionCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatDate(DateTime value) {
+    final String day = value.day.toString().padLeft(2, '0');
+    final String month = value.month.toString().padLeft(2, '0');
+    return '$day/$month/${value.year}';
   }
 }
