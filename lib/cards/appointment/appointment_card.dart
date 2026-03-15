@@ -5,10 +5,22 @@ import 'package:intl/intl.dart';
 import '../../models/appointment.dart';
 import '../../models/doctor.dart';
 import '../../provider/doctor_provider.dart';
+import '../../services/api_url.dart';
 import '../../theme/app_theme.dart';
 import 'appointment_details_bottomsheet.dart';
 
 class AppointmentCard extends ConsumerWidget {
+    String getDoctorPhotoUrl(String photo) {
+      if (photo.trim().isEmpty) return '';
+      if (photo.startsWith('http://') || photo.startsWith('https://')) return photo;
+      // Ensure a slash between baseUrl and photo path
+      final base = ApiUrl.baseUrl;
+      if (photo.startsWith('/')) {
+        return base + photo;
+      } else {
+        return '$base/$photo';
+      }
+    }
   final Appointment appointment;
 
   const AppointmentCard({super.key, required this.appointment});
@@ -55,7 +67,7 @@ class AppointmentCard extends ConsumerWidget {
                     radius: 28,
                     backgroundColor: AppColors.primaryLight,
                     backgroundImage: doctor.photo.trim().isNotEmpty
-                        ? NetworkImage(doctor.photo)
+                        ? NetworkImage(getDoctorPhotoUrl(doctor.photo))
                         : null,
                     child: doctor.photo.trim().isEmpty
                         ? const Icon(Iconsax.user, color: AppColors.primary)
