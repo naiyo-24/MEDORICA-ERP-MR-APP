@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../models/chemist_shop.dart';
+import '../../services/api_url.dart';
 import '../../theme/app_theme.dart';
 
 class ChemistShopHeaderCard extends StatelessWidget {
@@ -30,9 +31,9 @@ class ChemistShopHeaderCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                shop.photo.startsWith('http')
+                shop.photo.isNotEmpty
                     ? Image.network(
-                        shop.photo,
+                        ApiUrl.getFullUrl(shop.photo),
                         fit: BoxFit.cover,
                         errorBuilder: (_, _, _) => Container(
                           color: AppColors.surface,
@@ -43,16 +44,12 @@ class ChemistShopHeaderCard extends StatelessWidget {
                           ),
                         ),
                       )
-                    : Image.asset(
-                        shop.photo,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => Container(
-                          color: AppColors.surface,
-                          child: const Icon(
-                            Iconsax.shop,
-                            size: 80,
-                            color: AppColors.quaternary,
-                          ),
+                    : Container(
+                        color: AppColors.surface,
+                        child: const Icon(
+                          Iconsax.shop,
+                          size: 80,
+                          color: AppColors.quaternary,
                         ),
                       ),
                 // Dark Overlay

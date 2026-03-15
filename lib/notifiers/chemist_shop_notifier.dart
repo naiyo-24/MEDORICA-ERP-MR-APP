@@ -91,6 +91,9 @@ class ChemistShopNotifier extends StateNotifier<ChemistShopState> {
         email: shop.email.isNotEmpty ? shop.email : null,
         description: shop.description.isNotEmpty ? shop.description : null,
         photoPath: _isLocalPath(shop.photo) ? shop.photo : null,
+        bankPassbookPhotoPath: _isLocalPath(shop.bankPassbookPhoto ?? '')
+            ? shop.bankPassbookPhoto
+            : null,
       );
 
       state = state.copyWith(
@@ -138,6 +141,10 @@ class ChemistShopNotifier extends StateNotifier<ChemistShopState> {
             ? updatedShop.description
             : null,
         photoPath: _isLocalPath(updatedShop.photo) ? updatedShop.photo : null,
+        bankPassbookPhotoPath:
+            _isLocalPath(updatedShop.bankPassbookPhoto ?? '')
+                ? updatedShop.bankPassbookPhoto
+                : null,
       );
 
       final List<ChemistShop> next = state.shops.map((ChemistShop item) {
