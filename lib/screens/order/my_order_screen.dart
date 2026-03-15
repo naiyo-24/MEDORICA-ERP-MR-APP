@@ -174,7 +174,7 @@ class _MyOrderScreenState extends ConsumerState<MyOrderScreen> {
   }
 
   Widget _buildDoctorDropdown() {
-    final doctors = ref.watch(doctorProvider);
+    final doctors = ref.watch(doctorListProvider);
     return DropdownButtonFormField<String>(
       initialValue: _selectedDoctorId.isEmpty ? null : _selectedDoctorId,
       decoration: InputDecoration(

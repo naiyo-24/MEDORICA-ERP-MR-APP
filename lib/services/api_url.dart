@@ -60,16 +60,31 @@ class ApiUrl {
   static String attendanceMrUpdateByMrIdAndAttendanceId(String mrId, int id) =>
       '$_attendanceMrBase/update-by/$mrId/$id';
 
+  // Doctor Network (MR) Endpoints
+  static const String _doctorNetworkMrBase = '/doctor-network/mr';
+  static const String doctorNetworkMrPost = '$_doctorNetworkMrBase/post';
+  static const String doctorNetworkMrGetAll = '$_doctorNetworkMrBase/get-all';
+  static String doctorNetworkMrGetByMrId(String mrId) =>
+      '$_doctorNetworkMrBase/get-by-mr/$mrId';
+  static String doctorNetworkMrGetByMrIdAndDoctorId(
+    String mrId,
+    String doctorId,
+  ) => '$_doctorNetworkMrBase/get-by/$mrId/$doctorId';
+  static String doctorNetworkMrUpdateByMrIdAndDoctorId(
+    String mrId,
+    String doctorId,
+  ) => '$_doctorNetworkMrBase/update-by/$mrId/$doctorId';
+  static String doctorNetworkMrDeleteByDoctorId(String doctorId) =>
+      '$_doctorNetworkMrBase/delete-by/$doctorId';
+
   // Chemist Shop (MR Network) Endpoints
   static const String _chemistShopMrBase = '/chemist-shop/mr';
   static const String chemistShopMrPost = '$_chemistShopMrBase/post';
   static const String chemistShopMrGetAll = '$_chemistShopMrBase/get-all';
   static String chemistShopMrGetByMrId(String mrId) =>
       '$_chemistShopMrBase/get-by-mr/$mrId';
-  static String chemistShopMrGetByMrIdAndShopId(
-    String mrId,
-    String shopId,
-  ) => '$_chemistShopMrBase/get-by/$mrId/$shopId';
+  static String chemistShopMrGetByMrIdAndShopId(String mrId, String shopId) =>
+      '$_chemistShopMrBase/get-by/$mrId/$shopId';
   static String chemistShopMrGetByShopId(String shopId) =>
       '$_chemistShopMrBase/get-by-shop/$shopId';
   static String chemistShopMrUpdateByMrIdAndShopId(

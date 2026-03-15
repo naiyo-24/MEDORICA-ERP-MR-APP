@@ -46,7 +46,9 @@ class _ScheduleEditAppointmentScreenState
     // If editing, load appointment data
     if (_isEditMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final appointment = ref.read(appointmentDetailProvider(widget.appointmentId!));
+        final appointment = ref.read(
+          appointmentDetailProvider(widget.appointmentId!),
+        );
         if (appointment != null) {
           setState(() {
             _selectedDate = appointment.date;
@@ -131,21 +133,21 @@ class _ScheduleEditAppointmentScreenState
   void _saveAppointment() {
     if (_formKey.currentState!.validate()) {
       if (_selectedDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a date')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please select a date')));
         return;
       }
       if (_selectedTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a time')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please select a time')));
         return;
       }
       if (_selectedDoctorId == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a doctor')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please select a doctor')));
         return;
       }
       if (_selectedChamberId == null) {
@@ -188,13 +190,16 @@ class _ScheduleEditAppointmentScreenState
 
   @override
   Widget build(BuildContext context) {
-    final doctors = ref.watch(doctorProvider);
-    final selectedDoctorMatches =
-      doctors.where((doctor) => doctor.id == _selectedDoctorId).toList();
-    final selectedDoctor =
-      selectedDoctorMatches.isEmpty ? null : selectedDoctorMatches.first;
-    final selectedDoctorChambers =
-        selectedDoctor == null ? <DoctorChamber>[] : selectedDoctor.chambers;
+    final doctors = ref.watch(doctorListProvider);
+    final selectedDoctorMatches = doctors
+        .where((doctor) => doctor.id == _selectedDoctorId)
+        .toList();
+    final selectedDoctor = selectedDoctorMatches.isEmpty
+        ? null
+        : selectedDoctorMatches.first;
+    final selectedDoctorChambers = selectedDoctor == null
+        ? <DoctorChamber>[]
+        : selectedDoctor.chambers;
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -232,8 +237,9 @@ class _ScheduleEditAppointmentScreenState
                         Text(
                           _selectedDate == null
                               ? 'Select Date'
-                              : DateFormat('EEEE, MMM dd, yyyy')
-                                  .format(_selectedDate!),
+                              : DateFormat(
+                                  'EEEE, MMM dd, yyyy',
+                                ).format(_selectedDate!),
                           style: AppTypography.body.copyWith(
                             color: _selectedDate == null
                                 ? AppColors.quaternary
@@ -302,13 +308,18 @@ class _ScheduleEditAppointmentScreenState
                       value: _selectedDoctorId,
                       hint: Text(
                         'Choose a doctor',
-                        style: AppTypography.body
-                            .copyWith(color: AppColors.quaternary),
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.quaternary,
+                        ),
                       ),
                       isExpanded: true,
-                      icon: const Icon(Iconsax.arrow_down_1,
-                          color: AppColors.primary),
-                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      icon: const Icon(
+                        Iconsax.arrow_down_1,
+                        color: AppColors.primary,
+                      ),
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.black,
+                      ),
                       items: doctors.map((Doctor doctor) {
                         return DropdownMenuItem<String>(
                           value: doctor.id,
@@ -318,13 +329,15 @@ class _ScheduleEditAppointmentScreenState
                             children: [
                               Text(
                                 doctor.name,
-                                style: AppTypography.body
-                                    .copyWith(color: AppColors.black),
+                                style: AppTypography.body.copyWith(
+                                  color: AppColors.black,
+                                ),
                               ),
                               Text(
                                 doctor.specialization,
-                                style: AppTypography.bodySmall
-                                    .copyWith(color: AppColors.quaternary),
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.quaternary,
+                                ),
                               ),
                             ],
                           ),
@@ -363,16 +376,21 @@ class _ScheduleEditAppointmentScreenState
                         _selectedDoctorId == null
                             ? 'Select doctor first'
                             : 'Choose a chamber',
-                        style: AppTypography.body
-                            .copyWith(color: AppColors.quaternary),
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.quaternary,
+                        ),
                       ),
                       isExpanded: true,
                       icon: const Icon(
                         Iconsax.arrow_down_1,
                         color: AppColors.primary,
                       ),
-                      style: AppTypography.body.copyWith(color: AppColors.black),
-                      items: selectedDoctorChambers.map((DoctorChamber chamber) {
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.black,
+                      ),
+                      items: selectedDoctorChambers.map((
+                        DoctorChamber chamber,
+                      ) {
                         return DropdownMenuItem<String>(
                           value: chamber.id,
                           child: Column(
@@ -381,13 +399,15 @@ class _ScheduleEditAppointmentScreenState
                             children: [
                               Text(
                                 chamber.name,
-                                style: AppTypography.body
-                                    .copyWith(color: AppColors.black),
+                                style: AppTypography.body.copyWith(
+                                  color: AppColors.black,
+                                ),
                               ),
                               Text(
                                 chamber.address,
-                                style: AppTypography.bodySmall
-                                    .copyWith(color: AppColors.quaternary),
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.quaternary,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -418,8 +438,9 @@ class _ScheduleEditAppointmentScreenState
                   style: AppTypography.body.copyWith(color: AppColors.black),
                   decoration: InputDecoration(
                     hintText: 'Enter the reason for appointment...',
-                    hintStyle: AppTypography.body
-                        .copyWith(color: AppColors.quaternary),
+                    hintStyle: AppTypography.body.copyWith(
+                      color: AppColors.quaternary,
+                    ),
                     filled: true,
                     fillColor: AppColors.surface200,
                     border: OutlineInputBorder(
@@ -432,8 +453,10 @@ class _ScheduleEditAppointmentScreenState
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: AppBorderRadius.mdRadius,
-                      borderSide:
-                          const BorderSide(color: AppColors.primary, width: 2),
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
                     ),
                     contentPadding: const EdgeInsets.all(AppSpacing.md),
                   ),

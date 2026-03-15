@@ -13,7 +13,6 @@ import '../../cards/doctor/doctor_description_card.dart';
 import '../../cards/doctor/doctor_contact_card.dart';
 import '../../cards/doctor/doctor_chambers_card.dart';
 
-
 class DoctorDetailScreen extends ConsumerWidget {
   final String doctorId;
 
@@ -29,14 +28,14 @@ class DoctorDetailScreen extends ConsumerWidget {
               backgroundColor: AppColors.white,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Iconsax.arrow_circle_left,
-                    color: AppColors.primary),
+                icon: const Icon(
+                  Iconsax.arrow_circle_left,
+                  color: AppColors.primary,
+                ),
                 onPressed: () => context.pop(),
               ),
             ),
-            body: const Center(
-              child: Text('Doctor not found'),
-            ),
+            body: const Center(child: Text('Doctor not found')),
           )
         : _buildDoctorDetail(context, ref, doctorAsync);
   }
@@ -52,8 +51,7 @@ class DoctorDetailScreen extends ConsumerWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon:
-              const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
+          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
           onPressed: () => context.pop(),
         ),
         actions: [
@@ -76,9 +74,7 @@ class DoctorDetailScreen extends ConsumerWidget {
         icon: const Icon(Iconsax.calendar, color: AppColors.white),
         label: Text(
           'Book Appointment',
-          style: AppTypography.buttonMedium.copyWith(
-            color: AppColors.white,
-          ),
+          style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
         ),
       ),
       body: SingleChildScrollView(
@@ -134,11 +130,7 @@ class DoctorDetailScreen extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(
-    BuildContext context,
-    WidgetRef ref,
-    Doctor doctor,
-  ) {
+  void _showDeleteDialog(BuildContext context, WidgetRef ref, Doctor doctor) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -150,17 +142,21 @@ class DoctorDetailScreen extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
-            onPressed: () {
-              ref.read(doctorProvider.notifier).deleteDoctor(doctor.id);
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            onPressed: () async {
+              await ref.read(doctorProvider.notifier).deleteDoctor(doctor.id);
+              final String? error = ref.read(doctorProvider).error;
+              if (error != null) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(error)));
+                return;
+              }
               Navigator.of(context).pop();
               context.pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Doctor deleted successfully'),
-                ),
+                const SnackBar(content: Text('Doctor deleted successfully')),
               );
             },
             child: const Text(

@@ -25,7 +25,7 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
   @override
   Widget build(BuildContext context) {
     final gifts = ref.watch(giftProvider);
-    final doctors = ref.watch(doctorProvider);
+    final doctors = ref.watch(doctorListProvider);
 
     // Apply filters
     final filteredGifts = _filterGifts(gifts);
@@ -99,9 +99,7 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
           icon: const Icon(Iconsax.gift, color: AppColors.white),
           label: Text(
             'Gift a Doctor',
-            style: AppTypography.buttonMedium.copyWith(
-              color: AppColors.white,
-            ),
+            style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
           ),
         ),
       ),
@@ -114,10 +112,12 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
     // Filter by date
     if (_selectedDate != null) {
       filtered = filtered
-          .where((gift) =>
-              gift.date.year == _selectedDate!.year &&
-              gift.date.month == _selectedDate!.month &&
-              gift.date.day == _selectedDate!.day)
+          .where(
+            (gift) =>
+                gift.date.year == _selectedDate!.year &&
+                gift.date.month == _selectedDate!.month &&
+                gift.date.day == _selectedDate!.day,
+          )
           .toList();
     }
 
@@ -130,7 +130,9 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
 
     // Filter by status
     if (_selectedStatus != null) {
-      filtered = filtered.where((gift) => gift.status == _selectedStatus).toList();
+      filtered = filtered
+          .where((gift) => gift.status == _selectedStatus)
+          .toList();
     }
 
     // Sort by date (newest first)
@@ -141,7 +143,9 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
 
   Widget _buildEmptyState() {
     final hasActiveFilters =
-        _selectedDate != null || _selectedDoctorId != null || _selectedStatus != null;
+        _selectedDate != null ||
+        _selectedDoctorId != null ||
+        _selectedStatus != null;
 
     return Center(
       child: Padding(
@@ -157,18 +161,14 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
             const SizedBox(height: AppSpacing.lg),
             Text(
               hasActiveFilters ? 'No gifts found' : 'No gifts yet',
-              style: AppTypography.h3.copyWith(
-                color: AppColors.quaternary,
-              ),
+              style: AppTypography.h3.copyWith(color: AppColors.quaternary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               hasActiveFilters
                   ? 'Try adjusting your filters'
                   : 'Send your first gift to a doctor',
-              style: AppTypography.body.copyWith(
-                color: AppColors.quaternary,
-              ),
+              style: AppTypography.body.copyWith(color: AppColors.quaternary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),

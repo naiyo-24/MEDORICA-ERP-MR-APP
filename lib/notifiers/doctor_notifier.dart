@@ -1,128 +1,199 @@
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
+
 import '../models/doctor.dart';
+import '../provider/auth_provider.dart';
+import '../services/doctor/doctor_services.dart';
 
-class DoctorNotifier extends StateNotifier<List<Doctor>> {
-  DoctorNotifier() : super([]) {
-    _loadDoctors();
+typedef Reader = T Function<T>(ProviderListenable<T> provider);
+
+class DoctorState {
+  final List<Doctor> doctors;
+  final bool isLoading;
+  final bool isSubmitting;
+  final String? error;
+
+  const DoctorState({
+    this.doctors = const <Doctor>[],
+    this.isLoading = false,
+    this.isSubmitting = false,
+    this.error,
+  });
+
+  DoctorState copyWith({
+    List<Doctor>? doctors,
+    bool? isLoading,
+    bool? isSubmitting,
+    String? error,
+  }) {
+    return DoctorState(
+      doctors: doctors ?? this.doctors,
+      isLoading: isLoading ?? this.isLoading,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      error: error,
+    );
+  }
+}
+
+class DoctorNotifier extends StateNotifier<DoctorState> {
+  DoctorNotifier(this._doctorServices, this._read)
+    : super(const DoctorState()) {
+    loadDoctorsForCurrentMr();
   }
 
-  // Load doctors - mock data for now
-  void _loadDoctors() {
-    state = [
-      Doctor(
-        id: '1',
-        name: 'Dr. Ahmed Khan',
-        phoneNumber: '+880 1700 123456',
-        email: 'ahmed.khan@hospital.com',
-        photo: 'https://via.placeholder.com/400x300?text=Dr.+Ahmed+Khan',
-        specialization: 'Cardiology',
-        experience: '15 years',
-        qualification: 'MBBS, MD (Cardiology)',
-        description: 'Experienced cardiologist with 15 years of practice in managing complex cardiac conditions.',
-        chambers: [
-          DoctorChamber(
-            id: '1',
-            name: 'Khan Heart Care Clinic',
-            address: '123 Gulshan Avenue, Dhaka',
-            phoneNumber: '+880 2 8000 1234',
-          ),
-          DoctorChamber(
-            id: '2',
-            name: 'Cardiac Center DMC',
-            address: '456 Dhanmondi Road, Dhaka',
-            phoneNumber: '+880 2 8000 5678',
-          ),
-        ],
-      ),
-      Doctor(
-        id: '2',
-        name: 'Dr. Fatima Begum',
-        phoneNumber: '+880 1800 234567',
-        email: 'fatima.begum@hospital.com',
-        photo: 'https://via.placeholder.com/400x300?text=Dr.+Fatima+Begum',
-        specialization: 'Orthopedics',
-        experience: '12 years',
-        qualification: 'MBBS, MS (Orthopedics)',
-        description: 'Specialist in orthopedic surgery with focus on joint replacements and sports injuries.',
-        chambers: [
-          DoctorChamber(
-            id: '3',
-            name: 'Bone & Joint Clinic',
-            address: '789 Mirpur Road, Dhaka',
-            phoneNumber: '+880 2 8000 9999',
-          ),
-        ],
-      ),
-      Doctor(
-        id: '3',
-        name: 'Dr. Rajesh Sharma',
-        phoneNumber: '+880 1900 345678',
-        email: 'rajesh.sharma@hospital.com',
-        photo: 'https://via.placeholder.com/400x300?text=Dr.+Rajesh+Sharma',
-        specialization: 'Neurology',
-        experience: '10 years',
-        qualification: 'MBBS, MD (Neurology)',
-        description: 'Expert in neurological disorders including stroke, epilepsy, and Parkinson\'s disease.',
-        chambers: [
-          DoctorChamber(
-            id: '4',
-            name: 'Neuro Center',
-            address: '321 Banani, Dhaka',
-            phoneNumber: '+880 2 8000 7777',
-          ),
-        ],
-      ),
-    ];
-  }
+  final DoctorServices _doctorServices;
+  final Reader _read;
 
-  // Add a new doctor
-  void addDoctor(Doctor doctor) {
-    state = [...state, doctor.copyWith(id: DateTime.now().toString())];
-  }
+  Future<void> loadDoctorsForCurrentMr() async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(isLoading: false, error: 'No logged in MR found');
+      return;
+    }
 
-  // Update a doctor
-  void updateDoctor(Doctor updatedDoctor) {
-    state = [
-      for (final doctor in state)
-        if (doctor.id == updatedDoctor.id) updatedDoctor else doctor,
-    ];
-  }
+    state = state.copyWith(isLoading: true, error: null);
 
-  // Delete a doctor
-  void deleteDoctor(String id) {
-    state = [for (final doctor in state) if (doctor.id != id) doctor];
-  }
-
-  // Get a doctor by id
-  Doctor? getDoctorById(String id) {
     try {
-      return state.firstWhere((doctor) => doctor.id == id);
+      final List<Doctor> doctors = await _doctorServices.fetchDoctorsByMrId(
+        mrId,
+      );
+      state = state.copyWith(doctors: doctors, isLoading: false, error: null);
     } catch (e) {
-      return null;
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
     }
   }
 
-  // Search doctors
-  List<Doctor> searchDoctors(String query) {
-    if (query.isEmpty) return state;
-    final lowerQuery = query.toLowerCase();
-    return state
-        .where((doctor) =>
-            doctor.name.toLowerCase().contains(lowerQuery) ||
-            doctor.specialization.toLowerCase().contains(lowerQuery))
-        .toList();
+  Future<void> addDoctor(Doctor doctor) async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(error: 'No logged in MR found');
+      return;
+    }
+
+    state = state.copyWith(isSubmitting: true, error: null);
+
+    try {
+      final Doctor created = await _doctorServices.createDoctor(
+        mrId: mrId,
+        doctorName: doctor.name,
+        doctorPhoneNo: doctor.phoneNumber,
+        doctorBirthday: doctor.birthday,
+        doctorSpecialization: doctor.specialization.isNotEmpty
+            ? doctor.specialization
+            : null,
+        doctorQualification: doctor.qualification.isNotEmpty
+            ? doctor.qualification
+            : null,
+        doctorExperience: doctor.experience.isNotEmpty
+            ? doctor.experience
+            : null,
+        doctorDescription: doctor.description.isNotEmpty
+            ? doctor.description
+            : null,
+        doctorChambers: doctor.chambers,
+        doctorEmail: doctor.email.isNotEmpty ? doctor.email : null,
+        doctorAddress: doctor.address.isNotEmpty ? doctor.address : null,
+        doctorPhotoPath: _isLocalPath(doctor.photo) ? doctor.photo : null,
+      );
+
+      state = state.copyWith(
+        doctors: <Doctor>[created, ...state.doctors],
+        isSubmitting: false,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isSubmitting: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
   }
 
-  // Filter by specialization
-  List<Doctor> filterBySpecialization(String specialization) {
-    if (specialization.isEmpty) return state;
-    return state
-        .where((doctor) => doctor.specialization == specialization)
-        .toList();
+  Future<void> updateDoctor(Doctor updatedDoctor) async {
+    final String? mrId = _read(authNotifierProvider).mr?.mrId;
+    if (mrId == null || mrId.isEmpty) {
+      state = state.copyWith(error: 'No logged in MR found');
+      return;
+    }
+    if (updatedDoctor.id.isEmpty) {
+      state = state.copyWith(error: 'Missing doctor ID for update');
+      return;
+    }
+
+    state = state.copyWith(isSubmitting: true, error: null);
+
+    try {
+      final Doctor saved = await _doctorServices.updateDoctor(
+        mrId: mrId,
+        doctorId: updatedDoctor.id,
+        doctorName: updatedDoctor.name.isNotEmpty ? updatedDoctor.name : null,
+        doctorPhoneNo: updatedDoctor.phoneNumber.isNotEmpty
+            ? updatedDoctor.phoneNumber
+            : null,
+        doctorBirthday: updatedDoctor.birthday,
+        doctorSpecialization: updatedDoctor.specialization.isNotEmpty
+            ? updatedDoctor.specialization
+            : null,
+        doctorQualification: updatedDoctor.qualification.isNotEmpty
+            ? updatedDoctor.qualification
+            : null,
+        doctorExperience: updatedDoctor.experience.isNotEmpty
+            ? updatedDoctor.experience
+            : null,
+        doctorDescription: updatedDoctor.description.isNotEmpty
+            ? updatedDoctor.description
+            : null,
+        doctorChambers: updatedDoctor.chambers,
+        doctorEmail: updatedDoctor.email.isNotEmpty
+            ? updatedDoctor.email
+            : null,
+        doctorAddress: updatedDoctor.address.isNotEmpty
+            ? updatedDoctor.address
+            : null,
+        doctorPhotoPath: _isLocalPath(updatedDoctor.photo)
+            ? updatedDoctor.photo
+            : null,
+      );
+
+      final List<Doctor> next = state.doctors.map((Doctor item) {
+        return item.id == saved.id ? saved : item;
+      }).toList();
+
+      state = state.copyWith(doctors: next, isSubmitting: false, error: null);
+    } catch (e) {
+      state = state.copyWith(
+        isSubmitting: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
   }
 
-  // Get all specializations
-  List<String> getAllSpecializations() {
-    return state.map((doctor) => doctor.specialization).toSet().toList();
+  Future<void> deleteDoctor(String doctorId) async {
+    state = state.copyWith(isSubmitting: true, error: null);
+
+    try {
+      await _doctorServices.deleteDoctor(doctorId);
+      state = state.copyWith(
+        doctors: state.doctors
+            .where((Doctor doctor) => doctor.id != doctorId)
+            .toList(),
+        isSubmitting: false,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isSubmitting: false,
+        error: e.toString().replaceFirst('Exception: ', ''),
+      );
+    }
+  }
+
+  bool _isLocalPath(String path) {
+    if (path.isEmpty) return false;
+    if (path.startsWith('http://') || path.startsWith('https://')) return false;
+    return true;
   }
 }

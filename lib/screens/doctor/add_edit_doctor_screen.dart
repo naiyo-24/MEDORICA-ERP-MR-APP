@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../theme/app_theme.dart';
 import '../../models/doctor.dart';
 import '../../provider/doctor_provider.dart';
+import '../../services/api_url.dart';
 
 class AddEditDoctorScreen extends ConsumerStatefulWidget {
   final Doctor? doctor;
@@ -46,14 +47,18 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     _phoneController = TextEditingController(text: doctor?.phoneNumber ?? '');
     _emailController = TextEditingController(text: doctor?.email ?? '');
     _photoController = TextEditingController(text: doctor?.photo ?? '');
-    _specializationController =
-        TextEditingController(text: doctor?.specialization ?? '');
-    _experienceController =
-        TextEditingController(text: doctor?.experience ?? '');
-    _qualificationController =
-        TextEditingController(text: doctor?.qualification ?? '');
-    _descriptionController =
-        TextEditingController(text: doctor?.description ?? '');
+    _specializationController = TextEditingController(
+      text: doctor?.specialization ?? '',
+    );
+    _experienceController = TextEditingController(
+      text: doctor?.experience ?? '',
+    );
+    _qualificationController = TextEditingController(
+      text: doctor?.qualification ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: doctor?.description ?? '',
+    );
     _chamberNameController = TextEditingController();
     _chamberAddressController = TextEditingController();
     _chamberPhoneController = TextEditingController();
@@ -125,7 +130,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     setState(() => _chambers.removeAt(index));
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate() || _chambers.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -138,10 +143,14 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     setState(() => _loading = true);
 
     final doctor = Doctor(
-      id: widget.doctor?.id ?? DateTime.now().toString(),
+      id: widget.doctor?.id ?? '',
+      dbId: widget.doctor?.dbId,
+      mrId: widget.doctor?.mrId,
+      birthday: widget.doctor?.birthday,
       name: _nameController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
       email: _emailController.text.trim(),
+      address: widget.doctor?.address ?? '',
       photo: _photoController.text.trim(),
       specialization: _specializationController.text.trim(),
       experience: _experienceController.text.trim(),
@@ -151,18 +160,32 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     );
 
     if (widget.doctor == null) {
-      ref.read(doctorProvider.notifier).addDoctor(doctor);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doctor added successfully')),
-      );
+      await ref.read(doctorProvider.notifier).addDoctor(doctor);
     } else {
-      ref.read(doctorProvider.notifier).updateDoctor(doctor);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doctor updated successfully')),
-      );
+      await ref.read(doctorProvider.notifier).updateDoctor(doctor);
+    }
+
+    if (!mounted) return;
+
+    final String? error = ref.read(doctorProvider).error;
+    if (error != null) {
+      setState(() => _loading = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
+      return;
     }
 
     setState(() => _loading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.doctor == null
+              ? 'Doctor added successfully'
+              : 'Doctor updated successfully',
+        ),
+      ),
+    );
     context.go('/mr/doctor');
   }
 
@@ -176,8 +199,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_circle_left,
-              color: AppColors.primary),
+          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
           onPressed: () => context.pop(),
         ),
         title: Column(
@@ -376,8 +398,9 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                             padding: const EdgeInsets.all(AppSpacing.sm),
                             decoration: BoxDecoration(
                               color: AppColors.surface,
-                              borderRadius:
-                                  BorderRadius.circular(AppBorderRadius.md),
+                              borderRadius: BorderRadius.circular(
+                                AppBorderRadius.md,
+                              ),
                               border: Border.all(color: AppColors.surface300),
                             ),
                             child: Row(
@@ -462,9 +485,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
       style: AppTypography.bodyLarge,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: AppTypography.body.copyWith(
-          color: AppColors.quaternary,
-        ),
+        labelStyle: AppTypography.body.copyWith(color: AppColors.quaternary),
         prefixIcon: Icon(icon, color: AppColors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppBorderRadius.lg),
@@ -476,10 +497,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 2,
-          ),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -540,7 +558,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                     color: AppColors.surface,
                   ),
                   child: Image.network(
-                    _photoController.text,
+                    ApiUrl.getFullUrl(_photoController.text),
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -574,9 +592,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               // Pick Button
               Container(
                 decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(color: AppColors.border),
-                  ),
+                  border: Border(top: BorderSide(color: AppColors.border)),
                 ),
                 child: ListTile(
                   onTap: _pickPhotoFromGallery,
@@ -586,7 +602,9 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                     color: AppColors.primary,
                   ),
                   title: Text(
-                    _selectedPhoto != null ? 'Change Photo' : 'Select from Gallery',
+                    _selectedPhoto != null
+                        ? 'Change Photo'
+                        : 'Select from Gallery',
                     style: AppTypography.body.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w500,
@@ -603,9 +621,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               if (_photoController.text.isNotEmpty)
                 Container(
                   decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: AppColors.border),
-                    ),
+                    border: Border(top: BorderSide(color: AppColors.border)),
                   ),
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(

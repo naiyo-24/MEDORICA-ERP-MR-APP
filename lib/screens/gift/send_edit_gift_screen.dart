@@ -12,14 +12,10 @@ import '../../widgets/app_bar.dart';
 class SendEditGiftScreen extends ConsumerStatefulWidget {
   final String? giftId;
 
-  const SendEditGiftScreen({
-    super.key,
-    this.giftId,
-  });
+  const SendEditGiftScreen({super.key, this.giftId});
 
   @override
-  ConsumerState<SendEditGiftScreen> createState() =>
-      _SendEditGiftScreenState();
+  ConsumerState<SendEditGiftScreen> createState() => _SendEditGiftScreenState();
 }
 
 class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
@@ -114,15 +110,15 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
   void _saveGift() {
     if (_formKey.currentState!.validate()) {
       if (_selectedDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a date')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please select a date')));
         return;
       }
       if (_selectedDoctorId == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a doctor')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please select a doctor')));
         return;
       }
       if (_selectedOccasion == null) {
@@ -155,9 +151,9 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
         );
       } else {
         ref.read(giftProvider.notifier).addGift(gift);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gift sent successfully')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Gift sent successfully')));
       }
 
       context.go('/gifts');
@@ -166,7 +162,7 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final doctors = ref.watch(doctorProvider);
+    final doctors = ref.watch(doctorListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -174,7 +170,9 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
         showBack: true,
         showActions: false,
         titleText: _isEditMode ? 'Edit Gift' : 'Send Gift',
-        subtitleText: _isEditMode ? 'Update Gift Details' : 'Send Gift to Doctor',
+        subtitleText: _isEditMode
+            ? 'Update Gift Details'
+            : 'Send Gift to Doctor',
         onBack: () => context.pop(),
       ),
       body: SingleChildScrollView(
@@ -202,18 +200,25 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                     child: DropdownButton<String>(
                       value: _selectedDoctorId,
                       isExpanded: true,
-                      icon: const Icon(Iconsax.arrow_down_1,
-                          color: AppColors.primary),
-                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      icon: const Icon(
+                        Iconsax.arrow_down_1,
+                        color: AppColors.primary,
+                      ),
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.black,
+                      ),
                       items: doctors
-                          .map((doctor) => DropdownMenuItem<String>(
-                                value: doctor.id,
-                                child: Text(
-                                  doctor.name,
-                                  style: AppTypography.body
-                                      .copyWith(color: AppColors.black),
+                          .map(
+                            (doctor) => DropdownMenuItem<String>(
+                              value: doctor.id,
+                              child: Text(
+                                doctor.name,
+                                style: AppTypography.body.copyWith(
+                                  color: AppColors.black,
                                 ),
-                              ))
+                              ),
+                            ),
+                          )
                           .toList(),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -246,8 +251,9 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                         Text(
                           _selectedDate == null
                               ? 'Select Date'
-                              : DateFormat('EEEE, MMM dd, yyyy')
-                                  .format(_selectedDate!),
+                              : DateFormat(
+                                  'EEEE, MMM dd, yyyy',
+                                ).format(_selectedDate!),
                           style: AppTypography.body.copyWith(
                             color: _selectedDate == null
                                 ? AppColors.quaternary
@@ -280,18 +286,25 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                     child: DropdownButton<String>(
                       value: _selectedOccasion,
                       isExpanded: true,
-                      icon: const Icon(Iconsax.arrow_down_1,
-                          color: AppColors.primary),
-                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      icon: const Icon(
+                        Iconsax.arrow_down_1,
+                        color: AppColors.primary,
+                      ),
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.black,
+                      ),
                       items: _occasions
-                          .map((occasion) => DropdownMenuItem<String>(
-                                value: occasion,
-                                child: Text(
-                                  occasion,
-                                  style: AppTypography.body
-                                      .copyWith(color: AppColors.black),
+                          .map(
+                            (occasion) => DropdownMenuItem<String>(
+                              value: occasion,
+                              child: Text(
+                                occasion,
+                                style: AppTypography.body.copyWith(
+                                  color: AppColors.black,
                                 ),
-                              ))
+                              ),
+                            ),
+                          )
                           .toList(),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -322,18 +335,25 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                     child: DropdownButton<String>(
                       value: _selectedGiftItem,
                       isExpanded: true,
-                      icon: const Icon(Iconsax.arrow_down_1,
-                          color: AppColors.primary),
-                      style: AppTypography.body.copyWith(color: AppColors.black),
+                      icon: const Icon(
+                        Iconsax.arrow_down_1,
+                        color: AppColors.primary,
+                      ),
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.black,
+                      ),
                       items: _giftItems
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: AppTypography.body
-                                      .copyWith(color: AppColors.black),
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: AppTypography.body.copyWith(
+                                  color: AppColors.black,
                                 ),
-                              ))
+                              ),
+                            ),
+                          )
                           .toList(),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -356,8 +376,9 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                   style: AppTypography.body.copyWith(color: AppColors.black),
                   decoration: InputDecoration(
                     hintText: 'Add any remarks...',
-                    hintStyle: AppTypography.body
-                        .copyWith(color: AppColors.quaternary),
+                    hintStyle: AppTypography.body.copyWith(
+                      color: AppColors.quaternary,
+                    ),
                     filled: true,
                     fillColor: AppColors.surface200,
                     border: OutlineInputBorder(

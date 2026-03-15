@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/doctor.dart';
+import '../../../services/api_url.dart';
 
 class DoctorCard extends StatelessWidget {
   final Doctor doctor;
@@ -32,23 +33,30 @@ class DoctorCard extends StatelessWidget {
               Container(
                 width: 140,
                 height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.surface300,
-                ),
-                child: Image.network(
-                  doctor.photo,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppColors.primaryLight,
-                      child: const Icon(
-                        Icons.person,
-                        size: 40,
-                        color: AppColors.primary,
+                decoration: BoxDecoration(color: AppColors.surface300),
+                child: doctor.photo.isNotEmpty
+                    ? Image.network(
+                        ApiUrl.getFullUrl(doctor.photo),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: AppColors.primaryLight,
+                            child: const Icon(
+                              Icons.person,
+                              size: 40,
+                              color: AppColors.primary,
+                            ),
+                          );
+                        },
+                      )
+                    : Container(
+                        color: AppColors.primaryLight,
+                        child: const Icon(
+                          Icons.person,
+                          size: 40,
+                          color: AppColors.primary,
+                        ),
                       ),
-                    );
-                  },
-                ),
               ),
               // Doctor Info
               Expanded(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/doctor.dart';
+import '../../../services/api_url.dart';
 
 class DoctorHeaderCard extends StatelessWidget {
   final Doctor doctor;
@@ -27,20 +28,29 @@ class DoctorHeaderCard extends StatelessWidget {
           // Background Image
           ClipRRect(
             borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-            child: Image.network(
-              doctor.photo,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: AppColors.primaryLight,
-                  child: const Icon(
-                    Icons.person,
-                    size: 80,
-                    color: AppColors.primary,
+            child: doctor.photo.isNotEmpty
+                ? Image.network(
+                    ApiUrl.getFullUrl(doctor.photo),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: AppColors.primaryLight,
+                        child: const Icon(
+                          Icons.person,
+                          size: 80,
+                          color: AppColors.primary,
+                        ),
+                      );
+                    },
+                  )
+                : Container(
+                    color: AppColors.primaryLight,
+                    child: const Icon(
+                      Icons.person,
+                      size: 80,
+                      color: AppColors.primary,
+                    ),
                   ),
-                );
-              },
-            ),
           ),
           // Dark Overlay
           Container(
@@ -49,10 +59,7 @@ class DoctorHeaderCard extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black54,
-                ],
+                colors: [Colors.transparent, Colors.black54],
                 stops: [0.4, 1.0],
               ),
             ),
@@ -67,9 +74,7 @@ class DoctorHeaderCard extends StatelessWidget {
               children: [
                 Text(
                   doctor.name,
-                  style: AppTypography.h2.copyWith(
-                    color: AppColors.white,
-                  ),
+                  style: AppTypography.h2.copyWith(color: AppColors.white),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
