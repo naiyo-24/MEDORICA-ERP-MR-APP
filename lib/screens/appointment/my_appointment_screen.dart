@@ -94,7 +94,7 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
             style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
           ),
         ),
-        bottomNavigationBar: const MRBottomNavBar(currentIndex: 6),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 2),
       ),
     );
   }

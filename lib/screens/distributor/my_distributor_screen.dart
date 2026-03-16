@@ -127,7 +127,7 @@ class _DistributorScreenState extends ConsumerState<DistributorScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: const MRBottomNavBar(currentIndex: 4),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 5),
       ),
     );
   }

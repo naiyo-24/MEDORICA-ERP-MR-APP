@@ -132,7 +132,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: const MRBottomNavBar(currentIndex: 2),
+        bottomNavigationBar: const MRBottomNavBar(currentIndex: 3),
       ),
     );
   }
