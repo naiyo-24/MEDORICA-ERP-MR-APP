@@ -67,6 +67,10 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final previewText = notification.subTitle?.trim().isNotEmpty == true
+        ? notification.subTitle!.trim()
+        : notification.message;
+
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -145,7 +149,7 @@ class NotificationCard extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
-                            notification.message,
+                            previewText,
                             style: AppTypography.bodySmall.copyWith(
                               color: AppColors.quaternary,
                             ),

@@ -133,6 +133,9 @@ class ApiUrl {
       '/order/mr/update-by/$orderId';
   static String orderMrDeleteByOrderId(String orderId) =>
       '/order/mr/delete-by/$orderId';
+  
+   // Notification Endpoints
+  static const String notificationsGetAllmr = '/notifications/get-all/mr';
 
    // Helper to construct full URL for a given path   
   static String getFullUrl(String path) {

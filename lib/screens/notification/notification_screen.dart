@@ -12,7 +12,7 @@ class NotificationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifications = ref.watch(notificationProvider);
+    final notifications = ref.watch(notificationsProvider);
     final unreadCount =
         ref.watch(unreadNotificationCountProvider);
 
