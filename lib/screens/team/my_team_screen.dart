@@ -47,38 +47,79 @@ class _MyTeamScreenState extends ConsumerState<MyTeamScreen> {
           final team = teams.first;
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(team.teamName, style: AppTypography.h2),
-                if (team.whatsappGroupLink != null)
-                  ElevatedButton.icon(
-                    icon: Icon(FontAwesomeIcons.whatsapp),
-                    label: const Text('Join WhatsApp Group'),
-                    onPressed: () async {
-                      final url = Uri.parse(team.whatsappGroupLink!);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url);
-                      }
-                    },
-                  ),
-                if (team.teamDescription != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    child: Text(team.teamDescription!),
-                  ),
-                ElevatedButton(
-                  child: const Text('View Team Members'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => TeamMemberDetailsScreen(members: team.teamMembers),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+              ),
+              elevation: 6,
+              color: AppColors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(team.teamName, style: AppTypography.h2.copyWith(color: AppColors.primary)),
+                    if (team.teamDescription != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        child: Text(
+                          team.teamDescription!,
+                          style: AppTypography.bodySmall.copyWith(color: AppColors.primary),
+                        ),
                       ),
-                    );
-                  },
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        if (team.whatsappGroupLink != null)
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF25D366),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                                ),
+                                elevation: 2,
+                              ),
+                              icon: Icon(FontAwesomeIcons.whatsapp, size: 18),
+                              label: const Text('Join WhatsApp Group'),
+                              onPressed: () async {
+                                final url = Uri.parse(team.whatsappGroupLink!);
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url);
+                                }
+                              },
+                            ),
+                          ),
+                        if (team.whatsappGroupLink != null)
+                          const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: const Text('View Team Members'),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => TeamMemberDetailsScreen(members: team.teamMembers),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           );
         },
