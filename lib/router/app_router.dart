@@ -27,6 +27,9 @@ import '../screens/month_plan/month_plan_screen.dart';
 import '../screens/visual_ads/visual_ads_screen.dart';
 import '../models/doctor.dart';
 import '../models/chemist_shop.dart';
+import '../models/team.dart';
+import '../screens/team/my_team_screen.dart';
+import '../screens/team/team_member_details_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -248,6 +251,26 @@ class AppRouter {
           name: 'attendance',
           builder: (context, state) => const AttendanceScreen(),
         ),
+      GoRoute(
+        path: '/mr/team',
+        name: 'myTeam',
+        builder: (context, state) {
+          // You may need to pass mrId from auth/provider
+          final mrId = state.uri.queryParameters['mrId'] ?? '';
+          return MyTeamScreen(mrId: mrId);
+        },
+        routes: [
+          GoRoute(
+            path: 'members',
+            name: 'teamMembers',
+            builder: (context, state) {
+              // You may need to pass team members via state.extra
+              final members = state.extra as List<TeamMember>? ?? [];
+              return TeamMemberDetailsScreen(members: members);
+            },
+          ),
+        ],
+      ),
     ],
   );
 }

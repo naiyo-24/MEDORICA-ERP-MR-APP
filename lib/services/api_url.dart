@@ -38,6 +38,11 @@ class ApiUrl {
   // Update Profile by ID Endpoint
   static String mrUpdateById(String mrId) => '$_mrBase/update-by/$mrId';
 
+  
+  // Team Endpoints
+  static const String _teamMrBase = '/team';
+  static String teamGetByMrId(String mrId) => '$_teamMrBase/get-by-mr/$mrId';
+  
   // Distributor Endpoints
   static const String distributorGetAll = '/distributor/get-all';
   static String distributorGetById(String distId) =>

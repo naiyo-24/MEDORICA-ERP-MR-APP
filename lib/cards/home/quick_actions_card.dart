@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../../theme/app_theme.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:iconsax/iconsax.dart';
+import '../../provider/profile_provider.dart';
+import '../../theme/app_theme.dart';
 
-class MRQuickActionsCard extends StatelessWidget {
+class MRQuickActionsCard extends ConsumerWidget {
   const MRQuickActionsCard({super.key});
 
-  Widget _actionTile(BuildContext context, IconData icon, String label) {
+  Widget _actionTile(BuildContext context, WidgetRef ref, IconData icon, String label) {
     return InkWell(
       onTap: () {
-        _handleAction(context, label);
+        _handleAction(context, ref, label);
       },
       borderRadius: BorderRadius.circular(AppBorderRadius.md),
       child: Column(
@@ -42,7 +44,7 @@ class MRQuickActionsCard extends StatelessWidget {
     );
   }
 
-  void _handleAction(BuildContext context, String label) {
+  void _handleAction(BuildContext context, WidgetRef ref, String label) {
     switch (label) {
       case 'Month Plan':
         context.push('/month-plan');
@@ -50,14 +52,16 @@ class MRQuickActionsCard extends StatelessWidget {
       case 'Gifts':
         context.push('/gifts');
         break;
-      case 'My Doctors':
-        context.push('/mr/doctor');
+      case 'Add Doctors':
+        context.push('/mr/doctor/add');
         break;
       case 'Visual Ads':
         context.push('/visual-ads');
         break;
-      case 'Distributors':
-        context.push('/mr/distributor');
+      case 'My Team':
+        final mr = ref.read(profileProvider);
+        final mrId = mr?.mrId ?? '';
+        context.push('/mr/team?mrId=$mrId');
         break;
       case 'Chemists':
         context.push('/mr/chemist');
@@ -72,13 +76,13 @@ class MRQuickActionsCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final items = [
       [Iconsax.route_square, 'Month Plan'],
       [FontAwesomeIcons.gifts, 'Gifts'],
-      [FontAwesomeIcons.userDoctor, 'My Doctors'],
+      [FontAwesomeIcons.userDoctor, 'Add Doctors'],
       [FontAwesomeIcons.image, 'Visual Ads'],
-      [Iconsax.truck, 'Distributors'],
+      [Iconsax.truck, 'My Team'],
       [Iconsax.wallet, 'Salary Slip'],
       [Iconsax.shop, 'Chemists'],
       [Iconsax.calendar, 'Attendance'],
@@ -88,7 +92,6 @@ class MRQuickActionsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withAlpha(20),
@@ -114,7 +117,7 @@ class MRQuickActionsCard extends StatelessWidget {
               crossAxisCount: 4,
               mainAxisSpacing: AppSpacing.md,
               crossAxisSpacing: AppSpacing.md,
-              children: items.map((it) => _actionTile(context, it[0] as IconData, it[1] as String)).toList(),
+              children: items.map((it) => _actionTile(context, ref, it[0] as IconData, it[1] as String)).toList(),
             ),
           ],
         ),
@@ -122,3 +125,4 @@ class MRQuickActionsCard extends StatelessWidget {
     );
   }
 }
+       
