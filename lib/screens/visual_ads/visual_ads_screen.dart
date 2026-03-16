@@ -19,9 +19,23 @@ class VisualAdsScreen extends ConsumerStatefulWidget {
 }
 
 class _VisualAdsScreenState extends ConsumerState<VisualAdsScreen> {
+    void _setScaleCentered(double scale) {
+      // Get the size of the InteractiveViewer
+      final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+      final Size viewerSize = renderBox?.size ?? Size.zero;
+      // Center point
+      final Offset center = viewerSize.center(Offset.zero);
+      // Calculate translation to keep center
+      final Matrix4 matrix = Matrix4.identity()
+        ..translate(center.dx, center.dy)
+        ..scale(scale)
+        ..translate(-center.dx, -center.dy);
+      _transformationController.value = matrix;
+    }
   late PageController _pageController;
   late TransformationController _transformationController;
   late TextEditingController _searchController;
+  VoidCallback? _transformationListener;
   int _currentIndex = 0;
   bool _isTransitioning = false;
   bool _showSearchField = false;
@@ -34,6 +48,15 @@ class _VisualAdsScreenState extends ConsumerState<VisualAdsScreen> {
     _pageController = PageController(initialPage: 0);
     _transformationController = TransformationController();
     _searchController = TextEditingController();
+
+    // Listen to transformation changes to update _currentScale
+    _transformationListener = () {
+      final matrix = _transformationController.value;
+      setState(() {
+        _currentScale = matrix.getMaxScaleOnAxis();
+      });
+    };
+    _transformationController.addListener(_transformationListener!);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(visualAdsProvider.notifier).loadVisualAds();
@@ -48,6 +71,9 @@ class _VisualAdsScreenState extends ConsumerState<VisualAdsScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    if (_transformationListener != null) {
+      _transformationController.removeListener(_transformationListener!);
+    }
     _transformationController.dispose();
     _searchController.dispose();
     SystemChrome.setPreferredOrientations([
@@ -66,13 +92,13 @@ class _VisualAdsScreenState extends ConsumerState<VisualAdsScreen> {
 
   void _zoomIn() {
     final next = (_currentScale + 0.25).clamp(1.0, 4.0);
-    _transformationController.value = Matrix4.identity()..scale(next);
+    _setScaleCentered(next);
     setState(() => _currentScale = next);
   }
 
   void _zoomOut() {
     final next = (_currentScale - 0.25).clamp(1.0, 4.0);
-    _transformationController.value = Matrix4.identity()..scale(next);
+    _setScaleCentered(next);
     setState(() => _currentScale = next);
   }
 
@@ -241,15 +267,23 @@ class _VisualAdsScreenState extends ConsumerState<VisualAdsScreen> {
             itemCount: ads.length,
             itemBuilder: (context, index) {
               final ad = ads[index];
-              return InteractiveViewer(
-                transformationController: _transformationController,
-                panEnabled: true,
-                scaleEnabled: true,
-                minScale: 1.0,
-                maxScale: 4.0,
-                child: Container(
-                  color: AppColors.black,
-                  child: _buildAdImage(ad),
+              return GestureDetector(
+                onDoubleTap: () {
+                  final newScale = (_currentScale == 1.0) ? 2.0 : 1.0;
+                  _setScaleCentered(newScale);
+                  setState(() => _currentScale = newScale);
+                },
+                child: InteractiveViewer(
+                  transformationController: _transformationController,
+                  panEnabled: true,
+                  scaleEnabled: true,
+                  minScale: 1.0,
+                  maxScale: 4.0,
+                  clipBehavior: Clip.hardEdge,
+                  child: Container(
+                    color: AppColors.black,
+                    child: _buildAdImage(ad),
+                  ),
                 ),
               );
             },
@@ -356,18 +390,38 @@ class _VisualAdsScreenState extends ConsumerState<VisualAdsScreen> {
             ),
           ),
 
-          // Zoom controls
+          // Zoom controls + scale indicator
           Positioned(
             right: AppSpacing.lg,
             top: 90,
-            child: Column(
-              children: [
-                _ZoomButton(icon: Iconsax.add, onTap: _zoomIn),
-                const SizedBox(height: AppSpacing.sm),
-                _ZoomButton(icon: Iconsax.minus, onTap: _zoomOut),
-                const SizedBox(height: AppSpacing.sm),
-                _ZoomButton(icon: Iconsax.refresh, onTap: _resetZoom),
-              ],
+            child: IgnorePointer(
+              ignoring: false,
+              child: Column(
+                children: [
+                  _ZoomButton(icon: Iconsax.add, onTap: _zoomIn),
+                  const SizedBox(height: AppSpacing.sm),
+                  _ZoomButton(icon: Iconsax.minus, onTap: _zoomOut),
+                  const SizedBox(height: AppSpacing.sm),
+                  _ZoomButton(icon: Iconsax.refresh, onTap: _resetZoom),
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withAlpha(30),
+                      borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                    ),
+                    child: Text(
+                      'Scale: ${_currentScale.toStringAsFixed(2)}x',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 

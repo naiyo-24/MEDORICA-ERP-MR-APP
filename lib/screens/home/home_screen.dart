@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../theme/app_theme.dart';
 import '../../cards/home/attendance_card.dart';
@@ -7,6 +8,7 @@ import '../../cards/home/monthly_target_card.dart';
 import '../../cards/home/greeting_card.dart';
 import '../../cards/home/home_footer.dart';
 import '../../cards/home/quick_actions_card.dart';
+import '../../cards/home/quit_app_bottomsheet.dart';
 import '../../widgets/ads_carousels.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/bottom_nav_bar.dart';
@@ -16,7 +18,22 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          final shouldExit = await showModalBottomSheet<bool>(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => const QuitAppBottomSheet(),
+          );
+          if (shouldExit == true) {
+            SystemNavigator.pop();
+          }
+        }
+      },
+      child: Scaffold(
       appBar: MRAppBar(showBack: false),
       backgroundColor: AppColors.surface,
       bottomNavigationBar: const MRBottomNavBar(),
@@ -45,6 +62,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

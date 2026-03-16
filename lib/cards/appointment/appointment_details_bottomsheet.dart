@@ -110,6 +110,35 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   ],
                 ),
               ),
+                const SizedBox(height: AppSpacing.md),
+                // Status Update Dropdown
+                _StatusUpdateSection(
+                  currentStatus: appointment.status,
+                  onStatusChanged: (newStatus) async {
+                    final mrId = ref.read(authNotifierProvider).mr?.mrId;
+                    if (mrId == null || mrId.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Unable to update status: MR ID missing.'),
+                          backgroundColor: AppColors.error,
+                        ),
+                      );
+                      return;
+                    }
+                    final updatedAppointment = appointment.copyWith(status: newStatus);
+                    await ref.read(appointmentNotifierProvider.notifier).updateAppointment(
+                      mrId: mrId,
+                      appointment: updatedAppointment,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Appointment status updated.'),
+                        backgroundColor: AppColors.success,
+                      ),
+                    );
+                    Navigator.of(context).pop();
+                  },
+                ),
               const SizedBox(height: AppSpacing.xl),
 
               // Doctor Information
@@ -242,7 +271,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                         context.push(
-                          '/mr/appointments/edit/${appointment.id}',
+                          '/asm/appointments/edit/${appointment.id}',
                           extra: appointment,
                         );
                       },
@@ -387,6 +416,84 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _StatusUpdateSection extends StatefulWidget {
+  final AppointmentStatus currentStatus;
+  final ValueChanged<AppointmentStatus> onStatusChanged;
+
+  const _StatusUpdateSection({
+    required this.currentStatus,
+    required this.onStatusChanged,
+  });
+
+  @override
+  State<_StatusUpdateSection> createState() => _StatusUpdateSectionState();
+}
+
+class _StatusUpdateSectionState extends State<_StatusUpdateSection> {
+  late AppointmentStatus _selectedStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedStatus = widget.currentStatus;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Update Status',
+          style: AppTypography.caption.copyWith(
+            color: AppColors.quaternary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        DropdownButtonFormField<AppointmentStatus>(
+          value: _selectedStatus,
+          decoration: InputDecoration(
+            labelText: 'Select Status',
+            labelStyle: AppTypography.body.copyWith(color: AppColors.primary),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primaryLight),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primaryLight),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primary),
+            ),
+            filled: true,
+            fillColor: AppColors.surface,
+          ),
+          style: AppTypography.body.copyWith(color: AppColors.black),
+          dropdownColor: AppColors.surface,
+          items: AppointmentStatus.values.map((status) {
+            return DropdownMenuItem<AppointmentStatus>(
+              value: status,
+              child: Text(status.displayName, style: AppTypography.body),
+            );
+          }).toList(),
+          onChanged: (newStatus) {
+            if (newStatus != null && newStatus != _selectedStatus) {
+              setState(() {
+                _selectedStatus = newStatus;
+              });
+              widget.onStatusChanged(newStatus);
+            }
+          },
+        ),
+      ],
     );
   }
 }
