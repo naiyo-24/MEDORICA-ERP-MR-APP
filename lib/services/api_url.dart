@@ -159,9 +159,9 @@ class ApiUrl {
     return '$baseUrl$normalizedPath';
   }
 
-    // Gift Inventory Endpoints
-    static const String giftInventoryGetAll = '/gift-inventory/get-all';
-    static String giftInventoryGetById(int giftId) => '/gift-inventory/get-by/$giftId';
+  // Gift Inventory Endpoints
+  static const String giftInventoryGetAll = '/gift-inventory/get-all';
+  static String giftInventoryGetById(int giftId) => '/gift-inventory/get-by/$giftId';
 
   // MR Gift Application Endpoints
   static const String mrGiftApplicationPost = '/gift-application/mr/post';
