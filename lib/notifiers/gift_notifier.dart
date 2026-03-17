@@ -7,42 +7,101 @@ class GiftNotifier extends StateNotifier<List<Gift>> {
   List<GiftItem> _giftInventoryItems = [];
   List<GiftItem> get giftInventoryItems => _giftInventoryItems;
 
+
+  String? _currentMrId;
+  String? get currentMrId => _currentMrId;
+  set currentMrId(String? mrId) {
+    _currentMrId = mrId;
+    if (mrId != null) fetchGiftsForMr();
+  }
+
   GiftNotifier() : super([]) {
-    _loadGifts();
     _fetchGiftInventory();
   }
 
-  // Load gifts - mock data for now
-  void _loadGifts() {
-    state = [
-      Gift(
-        id: '1',
-        doctorId: '1',
-        giftItem: 'Luxury Pen Set',
-        date: DateTime(2026, 3, 10),
-        occasion: 'Birthday',
-        remarks: 'High quality pen set for Dr. Ahmed Khan',
-        status: GiftStatus.pending,
-      ),
-      Gift(
-        id: '2',
-        doctorId: '2',
-        giftItem: 'Coffee Maker',
-        date: DateTime(2026, 2, 28),
-        occasion: 'Appreciation',
-        remarks: 'Premium coffee maker',
-        status: GiftStatus.sent,
-      ),
-      Gift(
-        id: '3',
-        doctorId: '1',
-        giftItem: 'Watch',
-        date: DateTime(2026, 2, 20),
-        occasion: 'Service Anniversary',
-        remarks: 'Elegant wristwatch',
-        status: GiftStatus.received,
-      ),
-    ];
+
+  // Fetch gifts for the current MR from backend
+  Future<void> fetchGiftsForMr([String? mrId]) async {
+    final id = mrId ?? _currentMrId;
+    if (id == null) {
+      state = [];
+      return;
+    }
+    try {
+      final data = await _giftServices.getMrGiftApplicationsByMrId(id);
+      state = data.map((json) => Gift(
+        id: json['request_id'].toString(),
+        doctorId: json['doctor_id'] ?? '',
+        giftItem: json['gift_name'] ?? '',
+        date: json['gift_date'] != null ? DateTime.parse(json['gift_date']) : DateTime.now(),
+        occasion: json['occassion'] ?? '',
+        remarks: json['remarks'] ?? '',
+        status: GiftStatus.values.firstWhere(
+          (e) => e.name == (json['status']?.toLowerCase() ?? ''),
+          orElse: () => GiftStatus.pending,
+        ),
+      )).toList();
+    } catch (e) {
+      state = [];
+    }
+  }
+
+  // Post a new MR Gift Application
+  Future<void> postMrGiftApplication({
+    String? mrId,
+    required String doctorId,
+    required int giftId,
+    String? occassion,
+    String? message,
+    DateTime? giftDate,
+    String? remarks,
+  }) async {
+    final id = mrId ?? _currentMrId;
+    if (id == null) return;
+    await _giftServices.postMrGiftApplication(
+      mrId: id,
+      doctorId: doctorId,
+      giftId: giftId,
+      occassion: occassion,
+      message: message,
+      giftDate: giftDate,
+      remarks: remarks,
+    );
+    await fetchGiftsForMr(id);
+  }
+
+  // Update MR Gift Application
+  Future<void> updateMrGiftApplication({
+    String? mrId,
+    required int requestId,
+    String? doctorId,
+    String? occassion,
+    String? message,
+    DateTime? giftDate,
+    String? remarks,
+    String? status,
+  }) async {
+    final id = mrId ?? _currentMrId;
+    if (id == null) return;
+    await _giftServices.updateMrGiftApplication(
+      mrId: id,
+      requestId: requestId,
+      doctorId: doctorId,
+      occassion: occassion,
+      message: message,
+      giftDate: giftDate,
+      remarks: remarks,
+      status: status,
+    );
+    await fetchGiftsForMr(id);
+  }
+
+  // Delete MR Gift Application
+  Future<void> deleteMrGiftApplication(int requestId, [String? mrId]) async {
+    final id = mrId ?? _currentMrId;
+    if (id == null) return;
+    await _giftServices.deleteMrGiftApplication(requestId);
+    await fetchGiftsForMr(id);
   }
 
   Future<void> _fetchGiftInventory() async {

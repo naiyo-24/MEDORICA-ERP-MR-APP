@@ -24,7 +24,7 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final gifts = ref.watch(giftProvider);
+    final gifts = ref.watch(currentMrGiftsProvider);
     final doctors = ref.watch(doctorListProvider);
 
     // Apply filters

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../models/gift.dart';
+import '../../provider/auth_provider.dart';
 import '../../provider/gift_provider.dart';
 import '../../provider/doctor_provider.dart';
 import '../../theme/app_theme.dart';
@@ -84,7 +85,7 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
       }
     }
 
-    void _saveGift() {
+    void _saveGift() async {
       if (_formKey.currentState!.validate()) {
         if (_selectedDate == null) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a date')));
@@ -103,25 +104,43 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
           return;
         }
 
-        final gift = Gift(
-          id: widget.giftId ?? DateTime.now().toString(),
-          doctorId: _selectedDoctorId!,
-          giftItem: _selectedGiftItem!,
-          date: _selectedDate!,
-          occasion: _selectedOccasion!,
-          remarks: _remarksController.text.trim(),
-          status: _selectedStatus,
-        );
-
-        if (_isEditMode) {
-          ref.read(giftProvider.notifier).updateGift(gift);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gift updated successfully')));
-        } else {
-          ref.read(giftProvider.notifier).addGift(gift);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gift sent successfully')));
+        final mrId = ref.read(authNotifierProvider).mr?.mrId;
+        if (mrId == null || mrId.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('MR ID not found. Please login again.')));
+          return;
         }
+        final giftInventory = ref.read(giftInventoryProvider);
+        final selectedGift = giftInventory.firstWhere((g) => g.name == _selectedGiftItem, orElse: () => GiftItem(id: '', name: '', description: ''));
+        final giftId = int.tryParse(selectedGift.id) ?? 0;
 
-        context.go('/gifts');
+        try {
+          if (_isEditMode && widget.giftId != null) {
+            await ref.read(giftProvider.notifier).updateMrGiftApplication(
+              mrId: mrId,
+              requestId: int.tryParse(widget.giftId!) ?? 0,
+              doctorId: _selectedDoctorId,
+              occassion: _selectedOccasion,
+              giftDate: _selectedDate,
+              remarks: _remarksController.text.trim(),
+              // Optionally add message/status if needed
+            );
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gift application updated successfully')));
+          } else {
+            await ref.read(giftProvider.notifier).postMrGiftApplication(
+              mrId: mrId,
+              doctorId: _selectedDoctorId!,
+              giftId: giftId,
+              occassion: _selectedOccasion,
+              giftDate: _selectedDate,
+              remarks: _remarksController.text.trim(),
+              // Optionally add message if needed
+            );
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gift application sent successfully')));
+          }
+          context.go('/gifts');
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        }
       }
     }
   final _formKey = GlobalKey<FormState>();
@@ -131,7 +150,6 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
   String? _selectedDoctorId;
   String? _selectedOccasion;
   String? _selectedGiftItem;
-  final GiftStatus _selectedStatus = GiftStatus.pending;
 
   final bool _isEditMode = false;
 

@@ -64,3 +64,16 @@ final giftInventoryProvider = Provider<List<GiftItem>>((ref) {
   final notifier = ref.watch(giftProvider.notifier);
   return notifier.giftInventoryItems;
 });
+
+// Set current MR ID for fetching gifts
+final currentMrIdProvider = StateProvider<String?>((ref) => null);
+
+// Provider for gifts for the current logged-in MR
+final currentMrGiftsProvider = Provider<List<Gift>>((ref) {
+  final mrId = ref.watch(currentMrIdProvider);
+  final notifier = ref.watch(giftProvider.notifier);
+  if (mrId != null) {
+    notifier.currentMrId = mrId;
+  }
+  return ref.watch(giftProvider);
+});

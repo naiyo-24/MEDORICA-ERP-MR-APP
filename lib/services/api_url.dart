@@ -1,3 +1,4 @@
+
 class ApiUrl {
   ApiUrl._();
 
@@ -161,4 +162,10 @@ class ApiUrl {
     // Gift Inventory Endpoints
     static const String giftInventoryGetAll = '/gift-inventory/get-all';
     static String giftInventoryGetById(int giftId) => '/gift-inventory/get-by/$giftId';
+
+  // MR Gift Application Endpoints
+  static const String mrGiftApplicationPost = '/gift-application/mr/post';
+  static String mrGiftApplicationGetByMrId(String mrId) => '/gift-application/mr/get-by-mr/$mrId';
+  static String mrGiftApplicationUpdateByMrId(String mrId, int requestId) => '/gift-application/mr/update-by/$mrId/$requestId';
+  static String mrGiftApplicationDeleteByRequestId(int requestId) => '/gift-application/mr/delete-by/$requestId';
 }
