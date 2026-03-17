@@ -174,9 +174,7 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(
-                              AppBorderRadius.lg,
-                            ),
+                            borderRadius: BorderRadius.circular(AppBorderRadius.lg),
                           ),
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           child: Column(
@@ -187,14 +185,12 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(
-                                      AppSpacing.sm,
-                                    ),
+                                    padding: const EdgeInsets.all(AppSpacing.sm),
                                     decoration: AppCardStyles.minimalCard(
                                       backgroundColor: AppColors.primaryLight,
                                     ),
                                     child: Icon(
-                                      Icons.info_outline,
+                                      Iconsax.information,
                                       color: AppColors.primary,
                                     ),
                                   ),
@@ -210,32 +206,25 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                                 ],
                               ),
                               const SizedBox(height: AppSpacing.md),
-                              Text(
-                                '• A selfie is taken using your front camera.',
-                                style: AppTypography.body.copyWith(
-                                  color: AppColors.quaternary,
-                                ),
+                              _InfoStep(
+                                icon: Iconsax.camera,
+                                title: 'Take a Selfie',
+                                description: 'A selfie is taken using your front camera as proof of your visit.',
                               ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                '• Each selfie is saved with a timestamp and attached to your attendance record.',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.quaternary,
-                                ),
+                              _InfoStep(
+                                icon: Iconsax.clock,
+                                title: 'Timestamped Record',
+                                description: 'Each selfie is saved with a timestamp and attached to your attendance record.',
                               ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                '• Photos are used only for verification and may be retained according to company policy.',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.quaternary,
-                                ),
+                              _InfoStep(
+                                icon: Iconsax.shield_tick,
+                                title: 'Secure & Verified',
+                                description: 'Photos are used only for verification and may be retained according to company policy.',
                               ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                '• You must check out with a selfie to complete the day\'s record.',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.quaternary,
-                                ),
+                              _InfoStep(
+                                icon: Iconsax.logout,
+                                title: 'Check Out Required',
+                                description: 'You must check out with a selfie to complete the day\'s record.',
                               ),
                               const SizedBox(height: AppSpacing.lg),
                               Align(
@@ -248,8 +237,7 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: AppSpacing.sm,
                                     ),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: const Text('Close'),
                                 ),
@@ -267,7 +255,7 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                       borderRadius: BorderRadius.circular(AppBorderRadius.md),
                     ),
                     child: Icon(
-                      Icons.info_outline,
+                      Iconsax.information,
                       color: AppColors.primary,
                       size: 18,
                     ),
@@ -367,6 +355,45 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Modern step widget for info dialog
+class _InfoStep extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  const _InfoStep({required this.icon, required this.title, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 22),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: AppTypography.body.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 2),
+                Text(description, style: AppTypography.bodySmall.copyWith(color: AppColors.quaternary)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
