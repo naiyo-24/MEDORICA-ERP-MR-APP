@@ -19,6 +19,111 @@ class SendEditGiftScreen extends ConsumerStatefulWidget {
 }
 
 class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
+    Widget _buildSectionCard({
+      required String title,
+      required IconData icon,
+      required Widget child,
+    }) {
+      return Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: AppBorderRadius.lgRadius,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadowColor,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: AppColors.primary, size: 20),
+                const SizedBox(width: AppSpacing.md),
+                Text(
+                  title,
+                  style: AppTypography.tagline.copyWith(color: AppColors.black),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            child,
+          ],
+        ),
+      );
+    }
+
+    Future<void> _selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate ?? DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: AppColors.primary,
+                onPrimary: AppColors.white,
+                surface: AppColors.white,
+                onSurface: AppColors.black,
+              ),
+            ),
+            child: child!,
+          );
+        },
+      );
+      if (picked != null && picked != _selectedDate) {
+        setState(() {
+          _selectedDate = picked;
+        });
+      }
+    }
+
+    void _saveGift() {
+      if (_formKey.currentState!.validate()) {
+        if (_selectedDate == null) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a date')));
+          return;
+        }
+        if (_selectedDoctorId == null) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a doctor')));
+          return;
+        }
+        if (_selectedOccasion == null) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select an occasion')));
+          return;
+        }
+        if (_selectedGiftItem == null) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a gift item')));
+          return;
+        }
+
+        final gift = Gift(
+          id: widget.giftId ?? DateTime.now().toString(),
+          doctorId: _selectedDoctorId!,
+          giftItem: _selectedGiftItem!,
+          date: _selectedDate!,
+          occasion: _selectedOccasion!,
+          remarks: _remarksController.text.trim(),
+          status: _selectedStatus,
+        );
+
+        if (_isEditMode) {
+          ref.read(giftProvider.notifier).updateGift(gift);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gift updated successfully')));
+        } else {
+          ref.read(giftProvider.notifier).addGift(gift);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gift sent successfully')));
+        }
+
+        context.go('/gifts');
+      }
+    }
   final _formKey = GlobalKey<FormState>();
   final _remarksController = TextEditingController();
 
@@ -26,9 +131,9 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
   String? _selectedDoctorId;
   String? _selectedOccasion;
   String? _selectedGiftItem;
-  GiftStatus _selectedStatus = GiftStatus.pending;
+  final GiftStatus _selectedStatus = GiftStatus.pending;
 
-  bool _isEditMode = false;
+  final bool _isEditMode = false;
 
   // Sample data
   final List<String> _occasions = [
@@ -40,130 +145,10 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
     'Retirement',
   ];
 
-  final List<String> _giftItems = [
-    'Luxury Pen Set',
-    'Watch',
-    'Coffee Maker',
-    'Gift Hamper',
-    'Book Set',
-    'Desk Organizer',
-    'Photo Frame',
-    'Perfume',
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _isEditMode = widget.giftId != null;
-
-    // If editing, load gift data
-    if (_isEditMode) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final gift = ref.read(giftDetailProvider(widget.giftId!));
-        if (gift != null) {
-          setState(() {
-            _selectedDate = gift.date;
-            _selectedDoctorId = gift.doctorId;
-            _selectedOccasion = gift.occasion;
-            _selectedGiftItem = gift.giftItem;
-            _selectedStatus = gift.status;
-            _remarksController.text = gift.remarks;
-          });
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _remarksController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: AppColors.white,
-              surface: AppColors.white,
-              onSurface: AppColors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  void _saveGift() {
-    if (_formKey.currentState!.validate()) {
-      if (_selectedDate == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Please select a date')));
-        return;
-      }
-      if (_selectedDoctorId == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Please select a doctor')));
-        return;
-      }
-      if (_selectedOccasion == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select an occasion')),
-        );
-        return;
-      }
-      if (_selectedGiftItem == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a gift item')),
-        );
-        return;
-      }
-
-      final gift = Gift(
-        id: widget.giftId ?? DateTime.now().toString(),
-        doctorId: _selectedDoctorId!,
-        giftItem: _selectedGiftItem!,
-        date: _selectedDate!,
-        occasion: _selectedOccasion!,
-        remarks: _remarksController.text.trim(),
-        status: _selectedStatus,
-      );
-
-      if (_isEditMode) {
-        ref.read(giftProvider.notifier).updateGift(gift);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gift updated successfully')),
-        );
-      } else {
-        ref.read(giftProvider.notifier).addGift(gift);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Gift sent successfully')));
-      }
-
-      context.go('/gifts');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final doctors = ref.watch(doctorListProvider);
-
+    final giftInventory = ref.watch(giftInventoryProvider);
     return Scaffold(
       backgroundColor: AppColors.surface,
       appBar: MRAppBar(
@@ -251,9 +236,7 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                         Text(
                           _selectedDate == null
                               ? 'Select Date'
-                              : DateFormat(
-                                  'EEEE, MMM dd, yyyy',
-                                ).format(_selectedDate!),
+                              : DateFormat('EEEE, MMM dd, yyyy').format(_selectedDate!),
                           style: AppTypography.body.copyWith(
                             color: _selectedDate == null
                                 ? AppColors.quaternary
@@ -342,12 +325,12 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
                       style: AppTypography.body.copyWith(
                         color: AppColors.black,
                       ),
-                      items: _giftItems
+                      items: giftInventory
                           .map(
                             (item) => DropdownMenuItem<String>(
-                              value: item,
+                              value: item.name,
                               child: Text(
-                                item,
+                                item.name,
                                 style: AppTypography.body.copyWith(
                                   color: AppColors.black,
                                 ),
@@ -415,44 +398,6 @@ class _SendEditGiftScreenState extends ConsumerState<SendEditGiftScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSectionCard({
-    required String title,
-    required IconData icon,
-    required Widget child,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: AppBorderRadius.lgRadius,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowColor,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: AppColors.primary, size: 20),
-              const SizedBox(width: AppSpacing.md),
-              Text(
-                title,
-                style: AppTypography.tagline.copyWith(color: AppColors.black),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          child,
-        ],
       ),
     );
   }

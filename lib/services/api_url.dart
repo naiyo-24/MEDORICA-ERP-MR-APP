@@ -157,4 +157,8 @@ class ApiUrl {
         : '/$trimmed';
     return '$baseUrl$normalizedPath';
   }
+
+    // Gift Inventory Endpoints
+    static const String giftInventoryGetAll = '/gift-inventory/get-all';
+    static String giftInventoryGetById(int giftId) => '/gift-inventory/get-by/$giftId';
 }

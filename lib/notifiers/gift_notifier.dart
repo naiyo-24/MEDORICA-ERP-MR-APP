@@ -1,9 +1,15 @@
 import 'package:flutter_riverpod/legacy.dart';
 import '../models/gift.dart';
+import '../services/gift/gift_services.dart';
 
 class GiftNotifier extends StateNotifier<List<Gift>> {
+  final GiftServices _giftServices = GiftServices();
+  List<GiftItem> _giftInventoryItems = [];
+  List<GiftItem> get giftInventoryItems => _giftInventoryItems;
+
   GiftNotifier() : super([]) {
     _loadGifts();
+    _fetchGiftInventory();
   }
 
   // Load gifts - mock data for now
@@ -37,6 +43,14 @@ class GiftNotifier extends StateNotifier<List<Gift>> {
         status: GiftStatus.received,
       ),
     ];
+  }
+
+  Future<void> _fetchGiftInventory() async {
+    try {
+      _giftInventoryItems = await _giftServices.fetchGiftInventory();
+    } catch (e) {
+      _giftInventoryItems = [];
+    }
   }
 
   // Add a new gift

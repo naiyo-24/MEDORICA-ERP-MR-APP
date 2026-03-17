@@ -58,3 +58,9 @@ final allGiftItemsProvider = Provider<List<String>>((ref) {
   final gifts = ref.watch(giftProvider);
   return gifts.map((gift) => gift.giftItem).toSet().toList();
 });
+
+// Provider for gift inventory items
+final giftInventoryProvider = Provider<List<GiftItem>>((ref) {
+  final notifier = ref.watch(giftProvider.notifier);
+  return notifier.giftInventoryItems;
+});
