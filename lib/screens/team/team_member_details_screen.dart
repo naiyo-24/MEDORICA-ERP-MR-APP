@@ -77,7 +77,7 @@ class TeamMemberDetailsScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryLight.withOpacity(0.12),
+                          color: AppColors.primaryLight.withAlpha(120),
                           borderRadius: BorderRadius.circular(AppBorderRadius.md),
                         ),
                         child: Column(
@@ -118,12 +118,12 @@ class TeamMemberDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      Divider(color: AppColors.primary.withOpacity(0.15)),
+                      Divider(color: AppColors.primary.withAlpha(120)),
                       const SizedBox(height: AppSpacing.md),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryLight.withOpacity(0.08),
+                          color: AppColors.primaryLight.withAlpha(120),
                           borderRadius: BorderRadius.circular(AppBorderRadius.md),
                         ),
                         child: Column(

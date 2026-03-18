@@ -10,7 +10,7 @@ import '../../theme/app_theme.dart';
 
 class PlanCard extends ConsumerWidget {
   final DateTime date;
-  const PlanCard({Key? key, required this.date}) : super(key: key);
+  const PlanCard({super.key, required this.date});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

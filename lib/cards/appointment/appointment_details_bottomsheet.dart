@@ -456,7 +456,7 @@ class _StatusUpdateSectionState extends State<_StatusUpdateSection> {
         ),
         const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<AppointmentStatus>(
-          value: _selectedStatus,
+          initialValue: _selectedStatus,
           decoration: InputDecoration(
             labelText: 'Select Status',
             labelStyle: AppTypography.body.copyWith(color: AppColors.primary),
