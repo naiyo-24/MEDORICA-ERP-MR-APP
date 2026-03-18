@@ -1,27 +1,23 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show WidgetRef, ConsumerWidget;
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import '../../theme/app_theme.dart';
-import '../../models/month_plan.dart';
+import 'package:mr_app/models/month_plan.dart';
+
 import '../../provider/month_plan_provider.dart';
+import '../../theme/app_theme.dart';
 
 class PlanCard extends ConsumerWidget {
   final DateTime date;
-
-  const PlanCard({
-    super.key,
-    required this.date,
-  });
+  const PlanCard({Key? key, required this.date}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final plan = ref.watch(monthPlanByDateProvider(date));
-
     if (plan == null) {
       return const SizedBox.shrink();
     }
-
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -75,8 +71,7 @@ class PlanCard extends ConsumerWidget {
                 ),
               ],
             ),
-            
-            if (plan.notes != null) ...[
+            if (plan.notes != null && plan.notes!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -106,9 +101,7 @@ class PlanCard extends ConsumerWidget {
                 ),
               ),
             ],
-
             const SizedBox(height: AppSpacing.lg),
-            
             // Activities
             if (plan.activities.isEmpty)
               Center(
@@ -196,7 +189,6 @@ class PlanCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.md),
-            
             // Activity details
             Expanded(
               child: Column(
@@ -204,79 +196,51 @@ class PlanCard extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _getActivityColor(activity.type).withAlpha(30),
-                          borderRadius: BorderRadius.circular(AppBorderRadius.sm),
-                        ),
-                        child: Text(
-                          activity.typeLabel,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: _getActivityColor(activity.type),
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      Icon(
+                        Iconsax.activity,
+                        color: AppColors.primary,
+                        size: 18,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        activity.type.isNotEmpty ? activity.type : 'Activity',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (activity.time != null) ...[
+                      if (activity.slot != null && activity.slot!.isNotEmpty) ...[
                         const SizedBox(width: AppSpacing.sm),
-                        Icon(
-                          Iconsax.clock,
-                          size: 12,
-                          color: AppColors.quaternary,
-                        ),
-                        const SizedBox(width: 4),
+                        Icon(Icons.access_time, size: 16, color: AppColors.quaternary),
+                        const SizedBox(width: 2),
                         Text(
-                          activity.time!,
+                          activity.slot!,
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.quaternary,
-                            fontSize: 11,
                           ),
                         ),
                       ],
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    activity.title,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                      decoration: activity.isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
-                    ),
-                  ),
-                  if (activity.description != null) ...[
+                  if (activity.notes != null && activity.notes!.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      activity.description!,
+                      activity.notes!,
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.quaternary,
                       ),
                     ),
                   ],
-                  if (activity.location != null) ...[
+                  if (activity.location != null && activity.location!.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
-                        Icon(
-                          Iconsax.location,
-                          size: 14,
-                          color: AppColors.quaternary,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            activity.location!,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.quaternary,
-                              fontSize: 11,
-                            ),
+                        Icon(Icons.location_on, size: 16, color: AppColors.quaternary),
+                        const SizedBox(width: 2),
+                        Text(
+                          activity.location!,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.quaternary,
                           ),
                         ),
                       ],
@@ -289,20 +253,5 @@ class PlanCard extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Color _getActivityColor(PlanActivityType type) {
-    switch (type) {
-      case PlanActivityType.doctorVisit:
-        return const Color(0xFF1976D2); // Blue
-      case PlanActivityType.chemistVisit:
-        return const Color(0xFF388E3C); // Green
-      case PlanActivityType.distributorVisit:
-        return const Color(0xFFF57C00); // Orange
-      case PlanActivityType.meeting:
-        return const Color(0xFF7B1FA2); // Purple
-      case PlanActivityType.other:
-        return AppColors.quaternary;
-    }
   }
 }
