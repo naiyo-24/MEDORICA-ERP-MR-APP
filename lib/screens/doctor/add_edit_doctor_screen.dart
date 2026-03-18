@@ -23,11 +23,12 @@ class AddEditDoctorScreen extends ConsumerStatefulWidget {
 class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
+  late TextEditingController _specializationController;
+  // Optional fields
   late TextEditingController _emailController;
   late TextEditingController _addressController;
   late TextEditingController _birthdayController;
   late TextEditingController _photoController;
-  late TextEditingController _specializationController;
   late TextEditingController _experienceController;
   late TextEditingController _qualificationController;
   late TextEditingController _descriptionController;
@@ -48,6 +49,8 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     final doctor = widget.doctor;
     _nameController = TextEditingController(text: doctor?.name ?? '');
     _phoneController = TextEditingController(text: doctor?.phoneNumber ?? '');
+    _specializationController = TextEditingController(text: doctor?.specialization ?? '');
+    // Optional fields
     _emailController = TextEditingController(text: doctor?.email ?? '');
     _addressController = TextEditingController(text: doctor?.address ?? '');
     _selectedBirthday = doctor?.birthday;
@@ -55,18 +58,9 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
       text: doctor?.birthday != null ? _formatDate(doctor!.birthday!) : '',
     );
     _photoController = TextEditingController(text: doctor?.photo ?? '');
-    _specializationController = TextEditingController(
-      text: doctor?.specialization ?? '',
-    );
-    _experienceController = TextEditingController(
-      text: doctor?.experience ?? '',
-    );
-    _qualificationController = TextEditingController(
-      text: doctor?.qualification ?? '',
-    );
-    _descriptionController = TextEditingController(
-      text: doctor?.description ?? '',
-    );
+    _experienceController = TextEditingController(text: doctor?.experience ?? '');
+    _qualificationController = TextEditingController(text: doctor?.qualification ?? '');
+    _descriptionController = TextEditingController(text: doctor?.description ?? '');
     _chamberNameController = TextEditingController();
     _chamberAddressController = TextEditingController();
     _chamberPhoneController = TextEditingController();
@@ -163,10 +157,10 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate() || _chambers.isEmpty) {
+    if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please fill all fields and add at least one chamber'),
+          content: Text('Please fill all mandatory fields'),
         ),
       );
       return;
@@ -257,7 +251,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Doctor Name
+              // Doctor Name (mandatory)
               _buildTextFormField(
                 controller: _nameController,
                 label: 'Doctor Name',
@@ -267,7 +261,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Phone Number
+              // Phone Number (mandatory)
               _buildTextFormField(
                 controller: _phoneController,
                 label: 'Phone Number',
@@ -278,18 +272,25 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Email
+              // Specialization (mandatory)
+              _buildTextFormField(
+                controller: _specializationController,
+                label: 'Specialization',
+                icon: Iconsax.medal_star,
+                validator: (v) =>
+                    (v == null || v.isEmpty) ? 'Enter specialization' : null,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Optional fields
               _buildTextFormField(
                 controller: _emailController,
                 label: 'Email',
                 icon: Iconsax.sms,
                 keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter email' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Address
               _buildTextFormField(
                 controller: _addressController,
                 label: 'Address',
@@ -298,7 +299,6 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Birthday
               TextFormField(
                 controller: _birthdayController,
                 readOnly: true,
@@ -350,49 +350,29 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Photo Picker
               _buildPhotoPickerField(),
               const SizedBox(height: AppSpacing.md),
 
-              // Specialization
-              _buildTextFormField(
-                controller: _specializationController,
-                label: 'Specialization',
-                icon: Iconsax.medal_star,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter specialization' : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Experience
               _buildTextFormField(
                 controller: _experienceController,
                 label: 'Experience (e.g., 15 years)',
                 icon: Iconsax.briefcase,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter experience' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Qualification
               _buildTextFormField(
                 controller: _qualificationController,
                 label: 'Qualification',
                 icon: Iconsax.book,
                 maxLines: 2,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter qualification' : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Description
               _buildTextFormField(
                 controller: _descriptionController,
                 label: 'Description',
                 icon: Iconsax.document,
                 maxLines: 3,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter description' : null,
               ),
               const SizedBox(height: AppSpacing.lg),
 
