@@ -22,6 +22,21 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
   String? _selectedDoctorId;
   GiftStatus? _selectedStatus;
 
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch gifts only once when the screen is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_initialized) {
+        final mrId = ref.read(currentMrIdProvider);
+        ref.read(giftProvider.notifier).fetchGiftsForMr(mrId);
+        _initialized = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final gifts = ref.watch(currentMrGiftsProvider);

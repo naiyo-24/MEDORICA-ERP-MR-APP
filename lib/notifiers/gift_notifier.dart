@@ -12,7 +12,7 @@ class GiftNotifier extends StateNotifier<List<Gift>> {
   String? get currentMrId => _currentMrId;
   set currentMrId(String? mrId) {
     _currentMrId = mrId;
-    if (mrId != null) fetchGiftsForMr();
+    // Removed automatic fetch to prevent repeated API calls
   }
 
   GiftNotifier() : super([]) {
