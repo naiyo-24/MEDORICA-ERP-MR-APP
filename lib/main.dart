@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'services/update/app_update_services.dart';
 import 'widgets/app_update_screen.dart';
@@ -30,7 +31,14 @@ class MyApp extends StatelessWidget {
         }
         final showUpdate = snapshot.data == true;
         if (showUpdate) {
-          return const MaterialApp(home: AppUpdateScreen());
+          return MaterialApp(
+            home: AppUpdateScreen(
+              onUpdateComplete: () {
+                // Restart app after update using AppRouter
+                AppRouter.router.go(AppRouter.splash);
+              },
+            ),
+          );
         }
         return Consumer(
           builder: (context, ref, _) {
@@ -64,12 +72,31 @@ class MyApp extends StatelessWidget {
     try {
       final info = await PackageInfo.fromPlatform();
       final currentVersion = info.version;
+      if (kDebugMode) {
+        print('Current app version: $currentVersion');
+      }
       final data = await AppUpdateServices().fetchLatestVersionInfo();
+      if (kDebugMode) {
+        print('Backend response: $data');
+      }
       final latestVersion = data?['version'];
+      if (kDebugMode) {
+        print('Latest APK version from backend: $latestVersion');
+      }
       if (latestVersion == null) return false;
       final latest = latestVersion.replaceAll('.apk', '');
-      return latest != currentVersion;
-    } catch (_) {
+      if (kDebugMode) {
+        print('Normalized latest version: $latest');
+      }
+      final needsUpdate = latest != currentVersion;
+      if (kDebugMode) {
+        print('Needs update? $needsUpdate');
+      }
+      return needsUpdate;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in update check: $e');
+      }
       return false;
     }
   }

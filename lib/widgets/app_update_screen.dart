@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:mr_app/services/update/app_update_services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:mr_app/theme/app_theme.dart';
 
 class AppUpdateScreen extends StatefulWidget {
-  const AppUpdateScreen({super.key});
+  final VoidCallback? onUpdateComplete;
+  const AppUpdateScreen({super.key, this.onUpdateComplete});
 
   @override
   State<AppUpdateScreen> createState() => _AppUpdateScreenState();
@@ -58,54 +60,119 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
     });
     if (filePath != null) {
       await AppUpdateServices().openApkFile(filePath);
+      // After APK install, trigger callback to restart app
+      if (widget.onUpdateComplete != null) {
+        widget.onUpdateComplete!();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        backgroundColor: AppColors.surface,
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
     if (!_shouldUpdate) {
       return const SizedBox.shrink();
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('App Update Available')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.system_update, size: 80, color: Colors.blue),
-            const SizedBox(height: 24),
-            Text(
-              'A new version ($_latestVersion) is available!',
-              style: Theme.of(context).textTheme.titleLarge,
+      backgroundColor: AppColors.surface,
+      body: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.huge),
+          padding: const EdgeInsets.all(AppSpacing.xxxl),
+          decoration: BoxDecoration(
+            borderRadius: AppBorderRadius.xlRadius,
+            gradient: LinearGradient(
+              colors: [AppColors.primary, AppColors.secondary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            const SizedBox(height: 16),
-            if (_downloading)
-              Column(
-                children: [
-                  LinearProgressIndicator(value: _progress),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Downloading... ${(100 * _progress).toStringAsFixed(0)}%',
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowColorDark,
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primaryLight,
+                ),
+                child: const Icon(
+                  Icons.system_update,
+                  size: 64,
+                  color: AppColors.white,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxl),
+              Text(
+                'App Update Available',
+                style: AppTypography.h2.copyWith(color: AppColors.white),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'A new version ($_latestVersion) is ready to download.',
+                style: AppTypography.bodyLarge.copyWith(color: AppColors.secondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              if (_downloading)
+                Column(
+                  children: [
+                    LinearProgressIndicator(
+                      value: _progress,
+                      minHeight: 6,
+                      backgroundColor: AppColors.surface200,
+                      color: AppColors.success,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Downloading... ${(100 * _progress).toStringAsFixed(0)}%',
+                      style: AppTypography.bodySmall.copyWith(color: AppColors.white),
+                    ),
+                  ],
+                )
+              else
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: AppButtonStyles.primaryButton(),
+                    onPressed: _downloadAndInstall,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.download, size: 20),
+                        const SizedBox(width: AppSpacing.md),
+                        Text(
+                          'Download & Install Update',
+                          style: AppTypography.buttonMedium,
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              )
-            else
-              ElevatedButton.icon(
-                icon: const Icon(Icons.download),
-                label: const Text('Download & Install Update'),
-                onPressed: _downloadAndInstall,
-              ),
-            if (_downloadedFilePath != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Downloaded to: $_downloadedFilePath'),
-              ),
-          ],
+                ),
+              if (_downloadedFilePath != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.lg),
+                  child: Text(
+                    'Downloaded to: $_downloadedFilePath',
+                    style: AppTypography.caption.copyWith(color: AppColors.secondary),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

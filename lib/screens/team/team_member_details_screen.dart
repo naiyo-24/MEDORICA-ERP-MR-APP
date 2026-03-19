@@ -44,7 +44,7 @@ class TeamMemberDetailsScreen extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.shadowColor.withOpacity(0.08),
+                          color: AppColors.shadowColor.withAlpha(8),
                           blurRadius: 16,
                           offset: const Offset(0, -4),
                         ),
