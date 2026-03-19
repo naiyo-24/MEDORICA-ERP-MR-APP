@@ -40,6 +40,12 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
     _medicineQtyController = TextEditingController();
     _medicinePackController = TextEditingController();
     _medicineTotalAmountController = TextEditingController();
+
+    // Ensure chemist shops are loaded for dropdown
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chemistShopNotifier = ref.read(chemistShopProvider.notifier);
+      chemistShopNotifier.loadShopsForCurrentMr();
+    });
   }
 
   @override
