@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mr_app/widgets/loader.dart';
 import '../../cards/notification/notification_card.dart';
 import '../../provider/notification_provider.dart';
 import '../../theme/app_theme.dart';
@@ -27,32 +28,7 @@ class NotificationScreen extends ConsumerWidget {
         onBack: () => context.pop(),
       ),
       body: notifications.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Iconsax.notification,
-                    size: 80,
-                    color: AppColors.quaternary.withAlpha(76),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    'No Notifications',
-                    style: AppTypography.h3.copyWith(
-                      color: AppColors.quaternary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'You\'re all caught up!',
-                    style: AppTypography.body.copyWith(
-                      color: AppColors.quaternary,
-                    ),
-                  ),
-                ],
-              ),
-            )
+          ? const TransparentLoader(subtext: 'Loading notifications...')
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
               itemCount: notifications.length,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mr_app/widgets/loader.dart';
 import '../../cards/about_us/about_us_header_card.dart';
 import '../../cards/about_us/about_us_description_card.dart';
 import '../../cards/about_us/about_us_director_card.dart';
@@ -28,10 +29,8 @@ class AboutUsScreen extends ConsumerWidget {
         subtitleText: 'Learn about Medorica Pharma',
         onBack: () => context.pop(),
       ),
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            )
+        body: isLoading
+          ? const TransparentLoader(subtext: 'Loading about us...')
           : error != null
               ? Center(
                   child: Column(

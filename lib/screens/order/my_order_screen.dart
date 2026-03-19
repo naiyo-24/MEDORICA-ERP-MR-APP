@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mr_app/widgets/loader.dart';
 import '../../cards/order/order_card.dart';
 import '../../cards/order/order_details_bottomsheet.dart';
 import '../../cards/order/order_search_filter_card.dart';
@@ -64,7 +65,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
               // Orders List
               Expanded(
                 child: orderState.isLoading
-                    ? const Center(child: CircularProgressIndicator())
+                  ? const TransparentLoader(subtext: 'Fetching your orders...')
                     : filteredOrders.isEmpty
                     ? Center(
                         child: Column(

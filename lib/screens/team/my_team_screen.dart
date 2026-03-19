@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mr_app/widgets/loader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../provider/team_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -38,7 +39,7 @@ class _MyTeamScreenState extends ConsumerState<MyTeamScreen> {
         onBack: () => context.pop(),
       ),
       body: teamState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const TransparentLoader(subtext: 'Loading team...'),
         error: (e, _) => Center(child: Text('Server down. Please try again later.')),
         data: (teams) {
           if (teams.isEmpty) {

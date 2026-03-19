@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mr_app/widgets/loader.dart';
 
 import '../../cards/distributor/distributor_card.dart';
 import '../../cards/distributor/distributor_search_filter_card.dart';
@@ -71,7 +72,7 @@ class _DistributorScreenState extends ConsumerState<DistributorScreen> {
               // Distributor List
               Expanded(
                 child: isLoading
-                    ? const Center(child: CircularProgressIndicator())
+                  ? const TransparentLoader(subtext: 'Loading distributors...')
                     : error != null && distributors.isEmpty
                     ? _DistributorErrorState(
                         message: error,

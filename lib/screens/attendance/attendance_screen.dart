@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mr_app/widgets/loader.dart';
 import '../../models/attendance.dart';
 import '../../provider/attendance_provider.dart';
 import '../../cards/attendance/calendar_card.dart';
@@ -43,21 +44,23 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
         subtitleText: 'View your attendance records',
         onBack: () => Navigator.of(context).pop(),
       ),
-      body: Column(
-        children: [
-          CalendarCard(
-            records: selectedMonthRecords,
-            selectedDate: _selectedDate,
-            onDateSelected: (date) {
-              setState(() {
-                _selectedDate = date;
-              });
-            },
+      body: selectedMonthRecords.isEmpty
+        ? const TransparentLoader(subtext: 'Loading attendance...')
+        : Column(
+            children: [
+              CalendarCard(
+                records: selectedMonthRecords,
+                selectedDate: _selectedDate,
+                onDateSelected: (date) {
+                  setState(() {
+                    _selectedDate = date;
+                  });
+                },
+              ),
+              if (_selectedDate != null && selectedAttendance != null)
+                ReportCard(attendance: selectedAttendance),
+            ],
           ),
-          if (_selectedDate != null && selectedAttendance != null)
-            ReportCard(attendance: selectedAttendance),
-        ],
-      ),
     );
   }
 }

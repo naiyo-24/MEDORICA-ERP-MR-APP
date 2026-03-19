@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mr_app/widgets/loader.dart';
 import '../../widgets/app_bar.dart';
 import '../../cards/month_plan/calendar_card.dart';
 import '../../cards/month_plan/plan_card.dart';
@@ -43,12 +44,7 @@ class _MonthPlanScreenState extends ConsumerState<MonthPlanScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isLoading && plans.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(bottom: AppSpacing.md),
-                child: Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                ),
-              ),
+              const TransparentLoader(subtext: 'Loading month plans...'),
 
             if (error != null && plans.isEmpty)
               Padding(

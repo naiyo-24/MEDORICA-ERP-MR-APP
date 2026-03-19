@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mr_app/widgets/loader.dart';
 import '../../../theme/app_theme.dart';
 import '../../cards/doctor/doctor_card.dart' show DoctorCard;
 import '../../cards/doctor/doctor_search_bar_card.dart';
@@ -77,10 +78,7 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
           child: Column(
             children: [
               if (doctorState.isLoading)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: AppSpacing.md),
-                  child: LinearProgressIndicator(minHeight: 3),
-                ),
+                const TransparentLoader(subtext: 'Loading doctors...'),
               if (doctorState.error != null && !doctorState.isLoading)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
