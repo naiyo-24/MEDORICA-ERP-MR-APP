@@ -177,7 +177,10 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
       phoneNumber: _phoneController.text.trim(),
       email: _emailController.text.trim(),
       address: _addressController.text.trim(),
-      photo: _photoController.text.trim(),
+      // Only send local file path if a new photo is selected, else send empty string
+      photo: (_selectedPhoto != null && _selectedPhoto!.path.isNotEmpty)
+          ? _selectedPhoto!.path
+          : '',
       specialization: _specializationController.text.trim(),
       experience: _experienceController.text.trim(),
       qualification: _qualificationController.text.trim(),

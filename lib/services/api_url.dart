@@ -1,11 +1,6 @@
 
 class ApiUrl {
-    // MR App Update Endpoints
-    static const String mrAppUpdatesBase = '/mr-app-updates';
-    static const String mrAppUpdatesVersions = '$mrAppUpdatesBase/versions';
-    static const String mrAppUpdatesDownloadLatest = '$mrAppUpdatesBase/download-latest';
-    static const String mrAppUpdatesLatestVersion = '$mrAppUpdatesBase/latest-version';
-    static String mrAppUpdatesDownload(String filename) => '$mrAppUpdatesBase/download/$filename';
+    
   ApiUrl._();
 
   // Default base URL for physical devices on the same LAN as the backend.
@@ -31,7 +26,14 @@ class ApiUrl {
 
     return normalized;
   }
-
+  
+  // MR App Update Endpoints
+  static const String mrAppUpdatesBase = '/mr-app-updates';
+  static const String mrAppUpdatesVersions = '$mrAppUpdatesBase/versions';
+  static const String mrAppUpdatesDownloadLatest = '$mrAppUpdatesBase/download-latest';
+  static const String mrAppUpdatesLatestVersion = '$mrAppUpdatesBase/latest-version';
+  static String mrAppUpdatesDownload(String filename) => '$mrAppUpdatesBase/download/$filename';
+  
   // Base Url for login and Profile fetching
   static const String _mrBase = '/onboarding/mr';
   // Login Endpoint
