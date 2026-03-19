@@ -67,7 +67,7 @@ class _OrderDetailsBottomSheetState
                       Text(
                         'Order Details',
                         style: AppTypography.h2.copyWith(
-                          color: AppColors.primary,
+                          color: Colors.black,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -96,7 +96,7 @@ class _OrderDetailsBottomSheetState
                     child: Text(
                       widget.order.id,
                       style: AppTypography.h3.copyWith(
-                        color: AppColors.primary,
+                        color: Colors.black,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -322,7 +322,7 @@ class _OrderDetailsBottomSheetState
     return Text(
       title,
       style: AppTypography.h3.copyWith(
-        color: AppColors.primary,
+        color: Colors.black,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.3,
       ),
@@ -336,7 +336,7 @@ class _OrderDetailsBottomSheetState
         Text(
           title,
           style: AppTypography.caption.copyWith(
-            color: AppColors.quaternary,
+            color: Colors.black,
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
@@ -356,12 +356,16 @@ class _OrderDetailsBottomSheetState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.primaryLight.withAlpha(100),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.primaryLight.withAlpha(150),
-          width: 1,
-        ),
+        
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryLight.withAlpha(40),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -381,7 +385,7 @@ class _OrderDetailsBottomSheetState
                 Text(
                   label,
                   style: AppTypography.caption.copyWith(
-                    color: AppColors.quaternary,
+                    color: Colors.black,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
@@ -390,7 +394,7 @@ class _OrderDetailsBottomSheetState
                 Text(
                   value,
                   style: AppTypography.body.copyWith(
-                    color: AppColors.primary,
+                    color: Colors.black,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),
