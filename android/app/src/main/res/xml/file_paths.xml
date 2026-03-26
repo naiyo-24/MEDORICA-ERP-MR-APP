@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- External storage: getExternalStorageDirectory() used by path_provider -->
+    <external-path name="external_files" path="." />
+    <!-- External files dir: getExternalFilesDir() -->
+    <external-files-path name="external_app_files" path="." />
+    <!-- Internal cache -->
+    <cache-path name="cache" path="." />
+    <!-- Internal files -->
+    <files-path name="files" path="." />
+</paths>

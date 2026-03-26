@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:open_filex/open_filex.dart';
+import 'package:flutter_app_installer/flutter_app_installer.dart';
 import '../api_url.dart';
 
 class AppUpdateServices {
@@ -55,6 +55,9 @@ class AppUpdateServices {
   }
 
   Future<void> openApkFile(String filePath) async {
-    await OpenFilex.open(filePath);
+    final flutterAppInstaller = FlutterAppInstaller();
+    await flutterAppInstaller.installApk(
+      filePath: filePath,
+    );
   }
 }

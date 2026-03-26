@@ -32,13 +32,9 @@ class MyApp extends StatelessWidget {
         }
         final showUpdate = snapshot.data == true;
         if (showUpdate) {
-          return MaterialApp(
-            home: AppUpdateScreen(
-              onUpdateComplete: () {
-                // Restart app after update using AppRouter
-                AppRouter.router.go(AppRouter.splash);
-              },
-            ),
+          return const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: AppUpdateScreen(),
           );
         }
         return Consumer(
@@ -50,10 +46,7 @@ class MyApp extends StatelessWidget {
             return PopScope(
               canPop: false,
               onPopInvokedWithResult: (didPop, result) {
-                if (didPop) {
-                  return;
-                }
-                // Prevent app from exiting - navigate to home instead
+                if (didPop) return;
                 AppRouter.router.go(AppRouter.home);
               },
               child: MaterialApp.router(

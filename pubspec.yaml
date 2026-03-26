@@ -75,6 +75,7 @@ dependencies:
 
   # For app version info
   package_info_plus: ^9.0.0
+  flutter_app_installer: ^2.0.0
 
 dev_dependencies:
   # For generating app icons and splash screens

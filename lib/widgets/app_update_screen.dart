@@ -1,4 +1,4 @@
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mr_app/services/update/app_update_services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -21,6 +21,8 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
   double _progress = 0.0;
   String? _downloadedFilePath;
   String? _currentVersion;
+
+  bool _installerLaunched = false;
 
   @override
   void initState() {
@@ -59,11 +61,13 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
       _downloadedFilePath = filePath;
     });
     if (filePath != null) {
+      setState(() => _installerLaunched = true);
       await AppUpdateServices().openApkFile(filePath);
-      // After APK install, trigger callback to restart app
-      if (widget.onUpdateComplete != null) {
-        widget.onUpdateComplete!();
-      }
+      // Kill the old app process immediately after launching the installer.
+      // The Android installer is system UI — it does NOT need our process alive.
+      // When the user taps Done/Open, Android will cold-start the newly
+      // installed binary, which will have the correct (new) build number.
+      exit(0);
     }
   }
 
@@ -149,21 +153,23 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: AppButtonStyles.primaryButton(),
-                    onPressed: _downloadAndInstall,
+                    onPressed: _installerLaunched ? null : _downloadAndInstall,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.download, size: 20),
                         const SizedBox(width: AppSpacing.md),
                         Text(
-                          'Download & Install Update',
+                          _installerLaunched
+                              ? 'Installing...'
+                              : 'Download & Install Update',
                           style: AppTypography.buttonMedium,
                         ),
                       ],
                     ),
                   ),
                 ),
-              if (_downloadedFilePath != null)
+              if (_downloadedFilePath != null && !_installerLaunched)
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpacing.lg),
                   child: Text(
