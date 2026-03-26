@@ -63,10 +63,11 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
     if (filePath != null) {
       setState(() => _installerLaunched = true);
       await AppUpdateServices().openApkFile(filePath);
-      // Kill the old app process immediately after launching the installer.
-      // The Android installer is system UI — it does NOT need our process alive.
-      // When the user taps Done/Open, Android will cold-start the newly
-      // installed binary, which will have the correct (new) build number.
+      // Give Android ~1 second to fully receive the installer intent and bring
+      // the Package Installer activity to the foreground before we kill the
+      // old process. Without this delay there is a race: exit(0) can fire
+      // before the OS has delivered the Intent, causing the installer to never appear.
+      await Future.delayed(const Duration(milliseconds: 1000));
       exit(0);
     }
   }
