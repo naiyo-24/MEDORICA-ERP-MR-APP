@@ -85,15 +85,19 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push('/mr/appointments/schedule'),
-          backgroundColor: AppColors.primary,
-          icon: const Icon(Iconsax.add, color: AppColors.white),
-          label: Text(
-            'New Appointment',
-            style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
+        floatingActionButton: filteredAppointments.isEmpty
+    ? null
+    : FloatingActionButton.extended(
+        onPressed: () => context.push('/mr/appointments/schedule'),
+        backgroundColor: AppColors.primary,
+        icon: const Icon(Iconsax.add, color: AppColors.white),
+        label: Text(
+          'New Appointment',
+          style: AppTypography.buttonMedium.copyWith(
+            color: AppColors.white,
           ),
         ),
+      ),
         bottomNavigationBar: const MRBottomNavBar(currentIndex: 2),
       ),
     );
