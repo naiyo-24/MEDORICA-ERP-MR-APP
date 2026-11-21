@@ -30,6 +30,7 @@ import '../models/chemist_shop.dart';
 import '../models/team.dart';
 import '../screens/team/my_team_screen.dart';
 import '../screens/team/team_member_details_screen.dart';
+import 'package:flutter/material.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -88,9 +89,25 @@ class AppRouter {
             path: 'edit/:id',
             name: 'doctorEdit',
             builder: (context, state) {
-              final _ = state.pathParameters['id']!;
-              final doctor = state.extra as Doctor?;
-              return AddEditDoctorScreen(doctor: doctor);
+              final doctorId = state.pathParameters['id']!;
+final extra = state.extra;
+
+Doctor? doctor;
+if (extra is Doctor) {
+  doctor = extra;
+} else if (extra is Map<String, dynamic>) {
+  doctor = Doctor.fromJson(extra);
+}
+
+if (doctor == null || doctor.id != doctorId) {
+  return const Scaffold(
+    body: Center(
+      child: Text('Could not load doctor. Go back and open the doctor again.'),
+    ),
+  );
+}
+
+return AddEditDoctorScreen(doctor: doctor);
             },
           ),
         ],

@@ -37,6 +37,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   late TextEditingController _chamberPhoneController;
 
   final _formKey = GlobalKey<FormState>();
+  final _chamberPhoneKey = GlobalKey<FormFieldState<String>>();
   List<DoctorChamber> _chambers = [];
   bool _loading = false;
   XFile? _selectedPhoto;
@@ -160,7 +161,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     super.dispose();
   }
 
+  
   void _addChamber() {
+    if (!_chamberPhoneKey.currentState!.validate()) {
+  return;
+}
     if (_chamberNameController.text.isEmpty ||
         _chamberAddressController.text.isEmpty ||
         _chamberPhoneController.text.isEmpty) {
@@ -313,7 +318,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                 label: 'Doctor Name',
                 icon: Iconsax.user,
                 validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter doctor name' : null,
+                    (v == null ||
+                        v.trim().length < 2 ||
+                        !RegExp(r"^[a-zA-Z\s.'-]+$").hasMatch(v.trim()))
+                    ? 'Enter a valid doctor name'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -324,7 +333,9 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                 icon: Iconsax.call,
                 keyboardType: TextInputType.phone,
                 validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter phone number' : null,
+                    (v == null || !RegExp(r'^\d{10}$').hasMatch(v.trim()))
+                    ? 'Enter a valid 10-digit phone number'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -333,8 +344,9 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                 controller: _specializationController,
                 label: 'Specialization',
                 icon: Iconsax.medal_star,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Enter specialization' : null,
+                validator: (v) => (v == null || v.trim().length < 2)
+                    ? 'Enter a valid specialization'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -344,6 +356,14 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                 label: 'Email',
                 icon: Iconsax.sms,
                 keyboardType: TextInputType.emailAddress,
+                validator: (v) =>
+                    (v != null &&
+                        v.trim().isNotEmpty &&
+                        !RegExp(
+                          r'^[\w.+-]+@[\w-]+\.[\w.-]+$',
+                        ).hasMatch(v.trim()))
+                    ? 'Enter a valid email address'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -478,9 +498,16 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                     // Chamber Phone
                     _buildTextFormField(
                       controller: _chamberPhoneController,
+                      key: _chamberPhoneKey,
                       label: 'Chamber Phone',
                       icon: Iconsax.call,
                       keyboardType: TextInputType.phone,
+                      validator: (v) =>
+    (v != null &&
+     v.trim().isNotEmpty &&
+     !RegExp(r'^\d{10}$').hasMatch(v.trim()))
+        ? 'Enter a valid 10-digit phone number'
+        : null,
                     ),
                     const SizedBox(height: AppSpacing.md),
 
@@ -606,8 +633,10 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
     String? Function(String?)? validator,
+    Key? key,
   }) {
     return TextFormField(
+      key: key,
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
