@@ -49,7 +49,9 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     final doctor = widget.doctor;
     _nameController = TextEditingController(text: doctor?.name ?? '');
     _phoneController = TextEditingController(text: doctor?.phoneNumber ?? '');
-    _specializationController = TextEditingController(text: doctor?.specialization ?? '');
+    _specializationController = TextEditingController(
+      text: doctor?.specialization ?? '',
+    );
     // Optional fields
     _emailController = TextEditingController(text: doctor?.email ?? '');
     _addressController = TextEditingController(text: doctor?.address ?? '');
@@ -58,19 +60,25 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
       text: doctor?.birthday != null ? _formatDate(doctor!.birthday!) : '',
     );
     _photoController = TextEditingController(text: doctor?.photo ?? '');
-    _experienceController = TextEditingController(text: doctor?.experience ?? '');
-    _qualificationController = TextEditingController(text: doctor?.qualification ?? '');
-    _descriptionController = TextEditingController(text: doctor?.description ?? '');
+    _experienceController = TextEditingController(
+      text: doctor?.experience ?? '',
+    );
+    _qualificationController = TextEditingController(
+      text: doctor?.qualification ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: doctor?.description ?? '',
+    );
     _chamberNameController = TextEditingController();
     _chamberAddressController = TextEditingController();
     _chamberPhoneController = TextEditingController();
     _chambers = doctor?.chambers ?? [];
   }
 
-  Future<void> _pickPhotoFromGallery() async {
+  Future<void> _pickPhoto(ImageSource source) async {
     try {
       final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
+        source: source,
         imageQuality: 85,
       );
 
@@ -85,6 +93,53 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         SnackBar(content: Text('Error picking image: ${e.toString()}')),
       );
     }
+  }
+
+  void _showPhotoSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Select Photo Source',
+                  style: AppTypography.h3.copyWith(color: AppColors.primary),
+                ),
+                const SizedBox(height: 20),
+
+                ListTile(
+                  leading: const Icon(Iconsax.camera, color: AppColors.primary),
+                  title: const Text('Take Photo'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickPhoto(ImageSource.camera);
+                  },
+                ),
+
+                ListTile(
+                  leading: const Icon(
+                    Iconsax.gallery,
+                    color: AppColors.primary,
+                  ),
+                  title: const Text('Choose from Gallery'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickPhoto(ImageSource.gallery);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -136,8 +191,8 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
 
   Future<void> _selectBirthday() async {
     final DateTime now = DateTime.now();
-    final DateTime initialDate = _selectedBirthday ??
-        DateTime(now.year - 30, now.month, now.day);
+    final DateTime initialDate =
+        _selectedBirthday ?? DateTime(now.year - 30, now.month, now.day);
 
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -159,9 +214,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill all mandatory fields'),
-        ),
+        const SnackBar(content: Text('Please fill all mandatory fields')),
       );
       return;
     }
@@ -671,16 +724,14 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                   border: Border(top: BorderSide(color: AppColors.border)),
                 ),
                 child: ListTile(
-                  onTap: _pickPhotoFromGallery,
+                  onTap: _showPhotoSourceOptions,
                   horizontalTitleGap: AppSpacing.md,
                   leading: const Icon(
                     Iconsax.gallery,
                     color: AppColors.primary,
                   ),
                   title: Text(
-                    _selectedPhoto != null
-                        ? 'Change Photo'
-                        : 'Select from Gallery',
+                    _selectedPhoto != null ? 'Change Photo' : 'Upload Photo',
                     style: AppTypography.body.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w500,
@@ -693,34 +744,6 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                   ),
                 ),
               ),
-              // File Path Display
-              if (_photoController.text.isNotEmpty)
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(top: BorderSide(color: AppColors.border)),
-                  ),
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selected Photo:',
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.quaternary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        _selectedPhoto?.name ?? 'Network Image',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.primary,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
             ],
           ),
         ),
