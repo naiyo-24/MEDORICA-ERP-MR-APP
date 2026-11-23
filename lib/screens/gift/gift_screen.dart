@@ -108,15 +108,19 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push('/gifts/send'),
-          backgroundColor: AppColors.primary,
-          icon: const Icon(Iconsax.gift, color: AppColors.white),
-          label: Text(
-            'Gift a Doctor',
-            style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
-          ),
-        ),
+        floatingActionButton: filteredGifts.isEmpty
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => context.push('/gifts/send'),
+                backgroundColor: AppColors.primary,
+                icon: const Icon(Iconsax.gift, color: AppColors.white),
+                label: Text(
+                  'Gift a Doctor',
+                  style: AppTypography.buttonMedium.copyWith(
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
       ),
     );
   }
