@@ -50,11 +50,21 @@ class MyApp extends StatelessWidget {
                 AppRouter.router.go(AppRouter.home);
               },
               child: MaterialApp.router(
-                title: 'Medorica MR App',
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
-                routerConfig: AppRouter.router,
-              ),
+  title: 'Medorica MR App',
+  debugShowCheckedModeBanner: false,
+  theme: AppTheme.lightTheme.copyWith(
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: NoTransitionsBuilder(),
+        TargetPlatform.iOS: NoTransitionsBuilder(),
+        TargetPlatform.macOS: NoTransitionsBuilder(),
+        TargetPlatform.windows: NoTransitionsBuilder(),
+        TargetPlatform.linux: NoTransitionsBuilder(),
+      },
+    ),
+  ),
+  routerConfig: AppRouter.router,
+),
             );
           },
         );
@@ -94,5 +104,20 @@ class MyApp extends StatelessWidget {
       }
       return false;
     }
+  }
+}
+
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+  const NoTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }
