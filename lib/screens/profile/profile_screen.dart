@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../cards/profile/profile_header_card.dart';
 import '../../cards/profile/profile_options_card.dart';
 import '../../provider/profile_provider.dart';
+import '../../provider/theme_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 
@@ -37,14 +38,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profile = ref.watch(profileProvider);
     final profileNotifier = ref.read(profileProvider.notifier);
 
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,
         titleText: 'My Profile',
         subtitleText: 'View and manage your profile',
         onBack: () => context.pop(),
+        actions: [
+          IconButton(
+            tooltip: isDarkMode
+                ? 'Switch to Light Mode'
+                : 'Switch to Dark Mode',
+            icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () {
+              ref.read(themeModeProvider.notifier).state = isDarkMode
+                  ? ThemeMode.light
+                  : ThemeMode.dark;
+            },
+          ),
+        ],
       ),
       body: profile == null
           ? Center(
@@ -97,7 +113,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       context.push('/notifications');
                     },
                     onSalarySlip: () async {
-                      await ref.read(profileProvider.notifier).downloadSalarySlipForCurrentMr();
+                      await ref
+                          .read(profileProvider.notifier)
+                          .downloadSalarySlipForCurrentMr();
                     },
                   ),
 

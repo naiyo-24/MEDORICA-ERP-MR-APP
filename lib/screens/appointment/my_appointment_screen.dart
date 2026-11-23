@@ -39,7 +39,7 @@ class _MyAppointmentScreenState extends ConsumerState<MyAppointmentScreen> {
         context.go(AppRouter.home);
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: MRAppBar(
           showBack: false,
           showActions: false,

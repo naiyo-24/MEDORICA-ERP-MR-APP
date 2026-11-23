@@ -9,6 +9,7 @@ class MRAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? titleText;
   final String? subtitleText;
   final VoidCallback? onBack;
+  final List<Widget>? actions;
 
   const MRAppBar({
     super.key,
@@ -17,6 +18,7 @@ class MRAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleText,
     this.subtitleText,
     this.onBack,
+    this.actions,
   });
 
   @override
@@ -25,14 +27,14 @@ class MRAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       elevation: 0,
       titleSpacing: titleText == null ? 0 : 16,
       leading: showBack
           ? IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Iconsax.arrow_circle_left,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               onPressed: onBack ?? () => GoRouter.of(context).pop(),
             )
@@ -47,39 +49,42 @@ class MRAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Text(
                 titleText ?? 'Medorica Pharma',
-                style: AppTypography.h3.copyWith(color: AppColors.primary),
+                style: AppTypography.h3.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
               Text(
                 subtitleText ?? 'Your Daily Dose of Healing',
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.quaternary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
         ],
       ),
-      actions: showActions
-          ? [
-              IconButton(
-                icon: const Icon(
-                  Iconsax.notification,
-                  color: AppColors.primary,
-                ),
-                onPressed: () => context.push('/notifications'),
+      actions: [
+        if (showActions) ...[
+          IconButton(
+            icon: Icon(
+              Iconsax.notification,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            onPressed: () => context.push('/notifications'),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: GestureDetector(
+              onTap: () => context.push('/profile'),
+              child: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: Icon(Iconsax.user, color: Theme.of(context).colorScheme.onSurface,),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: GestureDetector(
-                  onTap: () => context.push('/profile'),
-                  child: CircleAvatar(
-                    backgroundColor: AppColors.primaryLight,
-                    child: const Icon(Iconsax.user, color: AppColors.primary),
-                  ),
-                ),
-              ),
-            ]
-          : null,
+            ),
+          ),
+        ],
+        ...?actions,
+      ],
     );
   }
 }

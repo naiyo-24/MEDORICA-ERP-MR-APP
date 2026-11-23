@@ -20,12 +20,13 @@ class ProfileOptionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
         children: [
@@ -84,8 +85,12 @@ class ProfileOptionsCard extends StatelessWidget {
         borderRadius: BorderRadius.only(
           topLeft: isFirst ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
           topRight: isFirst ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
-          bottomLeft: isLast ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
-          bottomRight: isLast ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
+          bottomLeft: isLast
+              ? Radius.circular(AppBorderRadius.lg)
+              : Radius.zero,
+          bottomRight: isLast
+              ? Radius.circular(AppBorderRadius.lg)
+              : Radius.zero,
         ),
         onTap: onTap,
         child: Padding(
@@ -123,7 +128,11 @@ class ProfileOptionsCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Iconsax.arrow_right, color: AppColors.quaternary, size: 20),
+              const Icon(
+                Iconsax.arrow_right,
+                color: AppColors.quaternary,
+                size: 20,
+              ),
             ],
           ),
         ),
@@ -134,10 +143,7 @@ class ProfileOptionsCard extends StatelessWidget {
   Widget _buildDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Divider(
-        height: 1,
-        color: AppColors.border,
-      ),
+      child: Divider(height: 1, color: AppColors.border),
     );
   }
 }
