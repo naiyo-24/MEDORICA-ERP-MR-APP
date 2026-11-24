@@ -54,7 +54,8 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
         context.go('/home');
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: MRAppBar(
           showBack: true,
           showActions: false,

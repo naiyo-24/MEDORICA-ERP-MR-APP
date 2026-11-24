@@ -10,10 +10,7 @@ import '../../theme/app_theme.dart';
 class GiftCard extends ConsumerWidget {
   final Gift gift;
 
-  const GiftCard({
-    super.key,
-    required this.gift,
-  });
+  const GiftCard({super.key, required this.gift});
 
   Color _getStatusColor(GiftStatus status) {
     switch (status) {
@@ -30,6 +27,7 @@ class GiftCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final doctor = ref.watch(doctorDetailProvider(gift.doctorId));
 
     if (doctor == null) {
@@ -37,11 +35,10 @@ class GiftCard extends ConsumerWidget {
     }
 
     return Card(
+      color: colorScheme.surface,
       elevation: 2,
       shadowColor: AppColors.shadowColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppBorderRadius.lgRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.lgRadius),
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -59,7 +56,7 @@ class GiftCard extends ConsumerWidget {
                       Text(
                         doctor.name,
                         style: AppTypography.bodyLarge.copyWith(
-                          color: AppColors.black,
+                          color: colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -75,11 +72,13 @@ class GiftCard extends ConsumerWidget {
                 ),
                 // Edit Icon Button
                 IconButton(
-                  icon: const Icon(Iconsax.edit, color: AppColors.primary, size: 20),
-                  onPressed: () => context.push(
-                    '/gifts/edit/${gift.id}',
-                    extra: gift,
+                  icon: Icon(
+                    Iconsax.edit,
+                    color: colorScheme.onSurface,
+                    size: 20,
                   ),
+                  onPressed: () =>
+                      context.push('/gifts/edit/${gift.id}', extra: gift),
                 ),
               ],
             ),
@@ -90,17 +89,13 @@ class GiftCard extends ConsumerWidget {
             // Gift Item Row
             Row(
               children: [
-                const Icon(
-                  Iconsax.gift,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
+                Icon(Iconsax.gift, size: 18, color: colorScheme.onSurface),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     gift.giftItem,
                     style: AppTypography.body.copyWith(
-                      color: AppColors.black,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -111,17 +106,13 @@ class GiftCard extends ConsumerWidget {
             // Occasion Row
             Row(
               children: [
-                const Icon(
-                  Iconsax.star,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
+                Icon(Iconsax.star, size: 18, color: colorScheme.onSurface),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     gift.occasion,
                     style: AppTypography.body.copyWith(
-                      color: AppColors.black,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -132,16 +123,12 @@ class GiftCard extends ConsumerWidget {
             // Date Row
             Row(
               children: [
-                const Icon(
-                  Iconsax.calendar,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
+                Icon(Iconsax.calendar, size: 18, color: colorScheme.onSurface),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   DateFormat('MMM dd, yyyy').format(gift.date),
                   style: AppTypography.body.copyWith(
-                    color: AppColors.black,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -149,19 +136,24 @@ class GiftCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
 
             // Status Badge
+            // Status Badge
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: _getStatusColor(gift.status).withAlpha(25),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.darkSurface300
+                    : _getStatusColor(gift.status).withAlpha(25),
                 borderRadius: AppBorderRadius.smRadius,
               ),
               child: Text(
                 gift.status.displayName,
                 style: AppTypography.caption.copyWith(
-                  color: _getStatusColor(gift.status),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : _getStatusColor(gift.status),
                   fontWeight: FontWeight.w600,
                 ),
               ),
