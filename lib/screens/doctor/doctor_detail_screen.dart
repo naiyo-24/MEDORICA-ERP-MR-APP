@@ -20,18 +20,20 @@ class DoctorDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final doctorAsync = ref.watch(doctorDetailProvider(doctorId));
 
     return doctorAsync == null
         ? Scaffold(
             appBar: AppBar(
-              backgroundColor: AppColors.white,
+              
+              backgroundColor: colorScheme.surface,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(
-                  Iconsax.arrow_circle_left,
-                  color: AppColors.primary,
-                ),
+                icon: Icon(
+  Iconsax.arrow_circle_left,
+  color: colorScheme.onSurface,
+),
                 onPressed: () => context.pop(),
               ),
             ),
@@ -45,18 +47,22 @@ class DoctorDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     Doctor doctor,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
+          icon: Icon(
+  Iconsax.arrow_circle_left,
+  color: colorScheme.onSurface,
+),
           onPressed: () => context.pop(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Iconsax.edit, color: AppColors.primary),
+            icon: Icon(Iconsax.edit, color: colorScheme.onSurface,),
             onPressed: () =>
                 context.go('/mr/doctor/edit/${doctor.id}', extra: doctor),
           ),

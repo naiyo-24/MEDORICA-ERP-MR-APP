@@ -9,10 +9,11 @@ class DoctorExperienceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -32,9 +33,9 @@ class DoctorExperienceCard extends StatelessWidget {
               color: AppColors.primaryLight,
               borderRadius: BorderRadius.circular(AppBorderRadius.lg),
             ),
-            child: const Icon(
+            child: Icon(
               Iconsax.briefcase,
-              color: AppColors.primary,
+              color: colorScheme.onSurface,
               size: 24,
             ),
           ),
@@ -43,7 +44,7 @@ class DoctorExperienceCard extends StatelessWidget {
             experience,
             textAlign: TextAlign.center,
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.primary,
+              color: colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -39,12 +39,13 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         // Search Bar
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(AppBorderRadius.lg),
             boxShadow: [
               BoxShadow(
@@ -87,16 +88,20 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
         // Filter Dropdown
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadowColor,
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
+  color: colorScheme.surface,
+  borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+  border: Border.all(
+    color: colorScheme.outline,
+    width: 1,
+  ),
+  boxShadow: [
+    BoxShadow(
+      color: AppColors.shadowColor,
+      blurRadius: 8,
+      offset: const Offset(0, 2),
+    ),
+  ],
+),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
           ),
@@ -108,13 +113,13 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
               children: [
                 Icon(
                   Iconsax.hospital,
-                  color: AppColors.quaternary,
+                  color: colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Filter by specialization',
                   style: AppTypography.body.copyWith(
-                    color: AppColors.quaternary,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -125,7 +130,7 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
                 child: Text(
                   'All Specializations',
                   style: AppTypography.body.copyWith(
-                    color: AppColors.primary,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -135,7 +140,7 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
                   child: Text(
                     spec,
                     style: AppTypography.body.copyWith(
-                      color: AppColors.primary,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),

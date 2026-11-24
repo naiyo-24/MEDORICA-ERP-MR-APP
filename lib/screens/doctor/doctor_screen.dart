@@ -32,6 +32,7 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final doctorState = ref.watch(doctorProvider);
     final allDoctors = doctorState.doctors;
     final specializations = ref.watch(specializationsProvider);
@@ -61,7 +62,7 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
         context.go(AppRouter.home);
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: colorScheme.surface,
         appBar: const MRAppBar(
           showBack: false,
           showActions: false,
@@ -69,10 +70,11 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
           subtitleText: 'List of doctors you manage',
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => context.go('/mr/doctor/add'),
-          backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: AppColors.white),
-        ),
+  onPressed: () => context.go('/mr/doctor/add'),
+  backgroundColor: colorScheme.primary,
+  foregroundColor: colorScheme.onPrimary,
+  child: const Icon(Icons.add),
+),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -115,15 +117,15 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
                     child: Column(
                       children: [
                         Icon(
-                          Iconsax.user_search,
-                          size: 64,
-                          color: AppColors.quaternary,
-                        ),
+  Iconsax.user_search,
+  size: 64,
+  color: colorScheme.onSurfaceVariant,
+),
                         const SizedBox(height: AppSpacing.md),
                         Text(
                           'No doctors found',
                           style: AppTypography.bodyLarge.copyWith(
-                            color: AppColors.quaternary,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.sm),

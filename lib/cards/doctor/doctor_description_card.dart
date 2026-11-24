@@ -13,10 +13,11 @@ class DoctorDescriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -32,7 +33,7 @@ class DoctorDescriptionCard extends StatelessWidget {
           Text(
             'About',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.primary,
+              color: colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -41,7 +42,7 @@ class DoctorDescriptionCard extends StatelessWidget {
             Text(
               'Birthday: ${_formatDate(birthday!)}',
               style: AppTypography.body.copyWith(
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -50,7 +51,7 @@ class DoctorDescriptionCard extends StatelessWidget {
           Text(
             description,
             style: AppTypography.body.copyWith(
-              color: AppColors.quaternary,
+              color: colorScheme.onSurface,
               height: 1.6,
             ),
           ),
