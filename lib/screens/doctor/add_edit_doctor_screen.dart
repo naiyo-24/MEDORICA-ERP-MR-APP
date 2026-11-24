@@ -278,15 +278,18 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final isEditing = widget.doctor != null;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF3A3A3A)
+    : AppColors.surface,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
+          icon: Icon(Iconsax.arrow_circle_left, color: colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Column(
@@ -294,7 +297,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
           children: [
             Text(
               isEditing ? 'Edit Doctor' : 'Add Doctor',
-              style: AppTypography.h3.copyWith(color: AppColors.primary),
+              style: AppTypography.h3.copyWith(color: colorScheme.onSurface),
             ),
             Text(
               isEditing ? 'Update doctor details' : 'Add new doctor details',
@@ -456,7 +459,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(AppBorderRadius.lg),
                   boxShadow: [
                     BoxShadow(
@@ -472,7 +475,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                     Text(
                       'Chambers',
                       style: AppTypography.bodyLarge.copyWith(
-                        color: AppColors.primary,
+                        color: colorScheme.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -667,20 +670,21 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   }
 
   Widget _buildPhotoPickerField() {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Doctor Photo',
           style: AppTypography.body.copyWith(
-            color: AppColors.quaternary,
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(AppBorderRadius.lg),
             border: Border.all(color: AppColors.border),
           ),
