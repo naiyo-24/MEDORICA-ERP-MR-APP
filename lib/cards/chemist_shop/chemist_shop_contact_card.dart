@@ -40,10 +40,11 @@ class ChemistShopContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -65,9 +66,9 @@ class ChemistShopContactCard extends StatelessWidget {
                   color: AppColors.primaryLight,
                   borderRadius: BorderRadius.circular(AppBorderRadius.sm),
                 ),
-                child: const Icon(
+                child: Icon(
                   Iconsax.call_calling,
-                  color: AppColors.primary,
+                  color: colorScheme.onSurface,
                   size: 20,
                 ),
               ),
@@ -75,7 +76,7 @@ class ChemistShopContactCard extends StatelessWidget {
               Text(
                 'Contact Information',
                 style: AppTypography.h3.copyWith(
-                  color: AppColors.primary,
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -126,13 +127,14 @@ class _ContactItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppBorderRadius.md),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(AppBorderRadius.md),
           border: Border.all(
             color: AppColors.border,
@@ -148,7 +150,7 @@ class _ContactItem extends StatelessWidget {
               ),
               child: Icon(
                 icon,
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 size: 20,
               ),
             ),
@@ -167,7 +169,7 @@ class _ContactItem extends StatelessWidget {
                   Text(
                     value,
                     style: AppTypography.body.copyWith(
-                      color: AppColors.primary,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

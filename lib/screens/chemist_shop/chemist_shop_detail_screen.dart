@@ -59,6 +59,7 @@ class ChemistShopDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final shop = ref.watch(chemistShopDetailProvider(shopId));
 
     if (shop == null) {
@@ -96,7 +97,9 @@ class ChemistShopDetailScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF3A3A3A)
+    : AppColors.surface,
       body: CustomScrollView(
         slivers: [
           // App Bar
