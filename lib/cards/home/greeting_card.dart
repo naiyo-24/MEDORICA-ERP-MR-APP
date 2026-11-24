@@ -23,13 +23,14 @@ class MRGreetingCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final label = _timeBasedGreeting();
-    final roleLabel = 'Medical Representative'; // This can be dynamic based on user role in a real app
+    final roleLabel =
+        'Medical Representative'; // This can be dynamic based on user role in a real app
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withAlpha(20),
@@ -48,25 +49,41 @@ class MRGreetingCard extends ConsumerWidget {
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(AppBorderRadius.md),
               ),
-              child: Icon(_greetingIcon(), color: AppColors.secondary, size: AppSpacing.xxxl),
+              child: Icon(
+                _greetingIcon(),
+                color: AppColors.secondary,
+                size: AppSpacing.xxxl,
+              ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: AppTypography.tagline.copyWith(color: AppColors.quaternary)),
+                  Text(
+                    label,
+                    style: AppTypography.tagline.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(roleLabel, style: AppTypography.h3.copyWith(color: AppColors.primary)),
+                  Text(
+                    roleLabel,
+                    style: AppTypography.h3.copyWith(color: colorScheme.onSurfaceVariant),
+                  ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Serving healthcare, one visit at a time.',
-                    style: AppTypography.body.copyWith(color: AppColors.quaternary),
+                    style: AppTypography.body.copyWith(
+                      color: AppColors.quaternary,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Keep pushing — every call makes a difference.',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.quaternary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.quaternary,
+                    ),
                   ),
                 ],
               ),

@@ -35,7 +35,7 @@ class HomeScreen extends ConsumerWidget {
       },
       child: Scaffold(
       appBar: MRAppBar(showBack: false),
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: const MRBottomNavBar(),
       body: SingleChildScrollView(
         child: Padding(
