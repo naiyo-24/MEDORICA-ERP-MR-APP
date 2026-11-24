@@ -29,9 +29,12 @@ class _ChemistShopSearchFilterCardState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF3A3A3A)
+    : AppColors.white,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -82,15 +85,12 @@ class _ChemistShopSearchFilterCardState
           ),
           // Filter Button
           if (widget.onFilterTapped != null) ...[
-            Container(
-              height: 40,
-              width: 1,
-              color: AppColors.border,
-            ),
+            
             IconButton(
-              icon: const Icon(
+              
+              icon: Icon(
                 Iconsax.filter,
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 size: 20,
               ),
               onPressed: widget.onFilterTapped,
