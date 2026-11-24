@@ -36,9 +36,10 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppBorderRadius.xl),
         ),
@@ -68,7 +69,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 children: [
                   Text(
                     'Appointment Details',
-                    style: AppTypography.h3.copyWith(color: AppColors.black),
+                    style: AppTypography.h3.copyWith(color: colorScheme.onSurface,),
                   ),
                   const Spacer(),
                   IconButton(
@@ -151,7 +152,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                     Text(
                       doctor.name,
                       style: AppTypography.bodyLarge.copyWith(
-                        color: AppColors.black,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     Text(
@@ -172,7 +173,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 content: Text(
                   DateFormat('EEEE, MMMM dd, yyyy').format(appointment.date),
                   style: AppTypography.bodyLarge.copyWith(
-                    color: AppColors.black,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -185,7 +186,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 content: Text(
                   appointment.time,
                   style: AppTypography.bodyLarge.copyWith(
-                    color: AppColors.black,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -197,7 +198,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 title: 'Appointment Place',
                 content: Text(
                   appointment.message,
-                  style: AppTypography.body.copyWith(color: AppColors.black),
+                  style: AppTypography.body.copyWith(color: colorScheme.onSurface,),
                 ),
               ),
               if (appointment.visualAds.isNotEmpty) ...[
@@ -209,7 +210,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                     appointment.visualAds
                         .map((ad) => ad.medicineName)
                         .join(', '),
-                    style: AppTypography.body.copyWith(color: AppColors.black),
+                    style: AppTypography.body.copyWith(color: colorScheme.onSurface,),
                   ),
                 ),
               ],
@@ -444,6 +445,7 @@ class _StatusUpdateSectionState extends State<_StatusUpdateSection> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -458,26 +460,28 @@ class _StatusUpdateSectionState extends State<_StatusUpdateSection> {
         DropdownButtonFormField<AppointmentStatus>(
           initialValue: _selectedStatus,
           decoration: InputDecoration(
-            labelText: 'Select Status',
-            labelStyle: AppTypography.body.copyWith(color: AppColors.primary),
+            //labelText: 'Select Status',
+            //labelStyle: AppTypography.body.copyWith(color: colorScheme.onSurface,),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primaryLight),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primaryLight),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary),
-            ),
+  borderRadius: BorderRadius.circular(12),
+  borderSide: BorderSide(color: colorScheme.primary),
+),
+enabledBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(12),
+  borderSide: BorderSide(color: colorScheme.primary),
+),
+focusedBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(12),
+  borderSide: BorderSide(color: colorScheme.primary),
+),
             filled: true,
-            fillColor: AppColors.surface,
+            fillColor: colorScheme.surface,
           ),
-          style: AppTypography.body.copyWith(color: AppColors.black),
-          dropdownColor: AppColors.surface,
+          style: AppTypography.body.copyWith(
+  color: colorScheme.onSurface,
+),
+          dropdownColor: colorScheme.surface,
           items: AppointmentStatus.values.map((status) {
             return DropdownMenuItem<AppointmentStatus>(
               value: status,
