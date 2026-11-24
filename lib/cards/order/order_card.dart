@@ -39,15 +39,16 @@ class OrderCard extends StatelessWidget {
     return AppColors.white;
   }
 
-  Widget _infoRow({
+  Widget _infoRow(BuildContext context,{
     required IconData icon,
     required String label,
     required String value,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(11),
         border: Border.all(color: AppColors.primaryLight),
       ),
@@ -74,7 +75,7 @@ class OrderCard extends StatelessWidget {
             child: Text(
               value.trim().isEmpty ? '-' : value,
               style: AppTypography.body.copyWith(
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
                 fontSize: 12,
               ),
@@ -89,12 +90,15 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF3A3A3A)
+    : AppColors.white,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
@@ -110,7 +114,7 @@ class OrderCard extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: AppColors.primaryLight),
               ),
@@ -134,7 +138,7 @@ class OrderCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.body.copyWith(
-                            color: AppColors.primary,
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
                           ),
@@ -166,12 +170,14 @@ class OrderCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _infoRow(
+              context,
               icon: Iconsax.shop,
               label: 'Shop',
               value: order.chemistShopName,
             ),
             const SizedBox(height: 8),
             _infoRow(
+              context,
               icon: Iconsax.truck,
               label: 'Distributor',
               value: order.distributorName,

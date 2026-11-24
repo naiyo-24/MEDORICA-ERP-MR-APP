@@ -26,6 +26,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final orderState = ref.watch(orderNotifierProvider);
     final allOrders = orderState.orders;
     final filteredOrders = _filterOrders(allOrders);
@@ -38,7 +39,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: colorScheme.surface,
         appBar: const MRAppBar(
           titleText: 'My Orders',
           subtitleText: 'Track your orders',
