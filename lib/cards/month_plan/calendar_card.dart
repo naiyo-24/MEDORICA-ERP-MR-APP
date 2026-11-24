@@ -13,10 +13,11 @@ class CalendarCard extends ConsumerWidget {
     final displayedMonth = ref.watch(displayedMonthProvider);
     final datesWithPlans = ref.watch(datesWithPlansProvider(displayedMonth));
     final selectedDate = ref.watch(selectedDateProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -36,7 +37,7 @@ class CalendarCard extends ConsumerWidget {
               children: [
                 IconButton(
                   icon: const Icon(Iconsax.arrow_circle_left),
-                  color: AppColors.primary,
+                  color: colorScheme.onSurfaceVariant,
                   onPressed: () {
                     final newMonth = DateTime(
                       displayedMonth.year,
@@ -48,11 +49,13 @@ class CalendarCard extends ConsumerWidget {
                 ),
                 Text(
                   DateFormat('MMMM yyyy').format(displayedMonth),
-                  style: AppTypography.h3.copyWith(color: AppColors.primary),
+                  style: AppTypography.h3.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Iconsax.arrow_circle_right),
-                  color: AppColors.primary,
+                  color: colorScheme.onSurfaceVariant,
                   onPressed: () {
                     final newMonth = DateTime(
                       displayedMonth.year,
@@ -65,26 +68,28 @@ class CalendarCard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            
+
             // Weekday headers
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                  .map((day) => Expanded(
-                        child: Center(
-                          child: Text(
-                            day,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.quaternary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                  .map(
+                    (day) => Expanded(
+                      child: Center(
+                        child: Text(
+                          day,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ))
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
             const SizedBox(height: AppSpacing.sm),
-            
+
             // Calendar grid
             _buildCalendarGrid(
               context,
@@ -106,8 +111,16 @@ class CalendarCard extends ConsumerWidget {
     List<DateTime> datesWithPlans,
     DateTime? selectedDate,
   ) {
-    final firstDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month, 1);
-    final lastDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month + 1, 0);
+    final firstDayOfMonth = DateTime(
+      displayedMonth.year,
+      displayedMonth.month,
+      1,
+    );
+    final lastDayOfMonth = DateTime(
+      displayedMonth.year,
+      displayedMonth.month + 1,
+      0,
+    );
     final daysInMonth = lastDayOfMonth.day;
     final firstWeekday = firstDayOfMonth.weekday % 7; // 0 = Sunday
 
@@ -123,16 +136,24 @@ class CalendarCard extends ConsumerWidget {
           // Empty cell before month starts
           weekDays.add(const Expanded(child: SizedBox()));
         } else if (dayCounter <= daysInMonth) {
-          final date = DateTime(displayedMonth.year, displayedMonth.month, dayCounter);
-          final hasPlan = datesWithPlans.any((d) =>
-              d.year == date.year &&
-              d.month == date.month &&
-              d.day == date.day);
-          final isSelected = selectedDate != null &&
+          final date = DateTime(
+            displayedMonth.year,
+            displayedMonth.month,
+            dayCounter,
+          );
+          final hasPlan = datesWithPlans.any(
+            (d) =>
+                d.year == date.year &&
+                d.month == date.month &&
+                d.day == date.day,
+          );
+          final isSelected =
+              selectedDate != null &&
               selectedDate.year == date.year &&
               selectedDate.month == date.month &&
               selectedDate.day == date.day;
-          final isToday = DateTime.now().year == date.year &&
+          final isToday =
+              DateTime.now().year == date.year &&
               DateTime.now().month == date.month &&
               DateTime.now().day == date.day;
 
@@ -179,6 +200,8 @@ class CalendarCard extends ConsumerWidget {
     bool isSelected,
     bool isToday,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: hasPlan
           ? () {
@@ -189,10 +212,10 @@ class CalendarCard extends ConsumerWidget {
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary
+              ? colorScheme.primary
               : isToday
-                  ? AppColors.primaryLight
-                  : Colors.transparent,
+              ? (isDarkMode ? AppColors.darkSurface300 : AppColors.primaryLight)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(AppBorderRadius.sm),
           border: Border.all(
             color: isToday && !isSelected
@@ -211,10 +234,12 @@ class CalendarCard extends ConsumerWidget {
                   day.toString(),
                   style: AppTypography.bodySmall.copyWith(
                     color: isSelected
-                        ? AppColors.white
+                        ? colorScheme.onPrimary
                         : hasPlan
-                            ? AppColors.primary
-                            : AppColors.quaternary,
+                        ? (isDarkMode
+                              ? AppColors.darkText
+                              : colorScheme.primary)
+                        : colorScheme.onSurfaceVariant,
                     fontWeight: hasPlan ? FontWeight.w700 : FontWeight.normal,
                   ),
                 ),

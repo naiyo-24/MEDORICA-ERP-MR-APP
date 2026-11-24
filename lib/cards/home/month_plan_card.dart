@@ -9,9 +9,10 @@ class MonthPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -31,19 +32,25 @@ class MonthPlanCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkSurface300
+                        : AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(AppBorderRadius.md),
                   ),
                   child: Icon(
                     Iconsax.calendar_1,
-                    color: AppColors.primary,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkText
+                        : AppColors.primary,
                     size: 20,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Text(
                   'Monthly Planning',
-                  style: AppTypography.h3.copyWith(color: AppColors.primary),
+                  style: AppTypography.h3.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),
@@ -63,11 +70,7 @@ class MonthPlanCard extends StatelessWidget {
                     onPressed: () {
                       context.push(AppRouter.monthPlan);
                     },
-                    icon: Icon(
-                      Iconsax.eye,
-                      size: 18,
-                      color: AppColors.white,
-                    ),
+                    icon: Icon(Iconsax.eye, size: 18, color: AppColors.white),
                     label: Text(
                       'View Plan',
                       style: AppTypography.bodySmall.copyWith(
@@ -88,7 +91,6 @@ class MonthPlanCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                
               ],
             ),
           ],

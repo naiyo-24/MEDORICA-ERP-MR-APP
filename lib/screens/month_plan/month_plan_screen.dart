@@ -31,7 +31,7 @@ class _MonthPlanScreenState extends ConsumerState<MonthPlanScreen> {
     final error = ref.watch(monthPlanErrorProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const MRAppBar(
         showBack: true,
         showActions: false,
@@ -96,7 +96,7 @@ class _MonthPlanScreenState extends ConsumerState<MonthPlanScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(AppBorderRadius.lg),
                 ),
                 child: Column(

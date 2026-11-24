@@ -131,13 +131,12 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
     final bool isLoading = ref.watch(attendanceLoadingProvider);
     final bool isSubmitting = ref.watch(attendanceSubmittingProvider);
     final String? error = ref.watch(attendanceErrorProvider);
-    ref.watch(
-      selectedMonthAttendanceCountProvider,
-    );
+    final colorScheme = Theme.of(context).colorScheme;
+    ref.watch(selectedMonthAttendanceCountProvider);
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
 
         boxShadow: [
@@ -162,7 +161,9 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
               children: [
                 Text(
                   'Attendance',
-                  style: AppTypography.h3.copyWith(color: AppColors.primary),
+                  style: AppTypography.h3.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 GestureDetector(
@@ -173,8 +174,13 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                         backgroundColor: Colors.transparent,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                            color: colorScheme.surface,
+                            borderRadius: BorderRadius.circular(
+                              AppBorderRadius.lg,
+                            ),
+                            border: Border.all(
+                              color: colorScheme.outlineVariant,
+                            ),
                           ),
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           child: Column(
@@ -185,13 +191,15 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(AppSpacing.sm),
+                                    padding: const EdgeInsets.all(
+                                      AppSpacing.sm,
+                                    ),
                                     decoration: AppCardStyles.minimalCard(
                                       backgroundColor: AppColors.primaryLight,
                                     ),
                                     child: Icon(
                                       Iconsax.information,
-                                      color: AppColors.primary,
+                                      color: colorScheme.onSurface,
                                     ),
                                   ),
                                   const SizedBox(width: AppSpacing.md),
@@ -199,7 +207,7 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                                     child: Text(
                                       'How attendance works',
                                       style: AppTypography.h3.copyWith(
-                                        color: AppColors.primary,
+                                        color: colorScheme.onSurface,
                                       ),
                                     ),
                                   ),
@@ -209,22 +217,26 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                               _InfoStep(
                                 icon: Iconsax.camera,
                                 title: 'Take a Selfie',
-                                description: 'A selfie is taken using your front camera as proof of your visit.',
+                                description:
+                                    'A selfie is taken using your front camera as proof of your visit.',
                               ),
                               _InfoStep(
                                 icon: Iconsax.clock,
                                 title: 'Timestamped Record',
-                                description: 'Each selfie is saved with a timestamp and attached to your attendance record.',
+                                description:
+                                    'Each selfie is saved with a timestamp and attached to your attendance record.',
                               ),
                               _InfoStep(
                                 icon: Iconsax.shield_tick,
                                 title: 'Secure & Verified',
-                                description: 'Photos are used only for verification and may be retained according to company policy.',
+                                description:
+                                    'Photos are used only for verification and may be retained according to company policy.',
                               ),
                               _InfoStep(
                                 icon: Iconsax.logout,
                                 title: 'Check Out Required',
-                                description: 'You must check out with a selfie to complete the day\'s record.',
+                                description:
+                                    'You must check out with a selfie to complete the day\'s record.',
                               ),
                               const SizedBox(height: AppSpacing.lg),
                               Align(
@@ -237,9 +249,19 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: AppSpacing.sm,
                                     ),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
-                                  child: const Text('Close'),
+                                  child: Text(
+                                    'Close',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? AppColors.darkText
+                                          : AppColors.primary,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -251,12 +273,16 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.darkSurface300
+                          : AppColors.primaryLight,
                       borderRadius: BorderRadius.circular(AppBorderRadius.md),
                     ),
                     child: Icon(
                       Iconsax.information,
-                      color: AppColors.primary,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.darkText
+                          : AppColors.primary,
                       size: 18,
                     ),
                   ),
@@ -271,7 +297,7 @@ class _MRAttendanceCardState extends ConsumerState<MRAttendanceCard> {
                   ),
               ],
             ),
-           
+
             const SizedBox(height: AppSpacing.xs),
             Text(
               'We capture a timestamped selfie as proof of your visit. The photo and time are stored securely and used by your organization for verification.',
@@ -365,10 +391,15 @@ class _InfoStep extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
-  const _InfoStep({required this.icon, required this.title, required this.description});
+  const _InfoStep({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
@@ -377,19 +408,39 @@ class _InfoStep extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primaryLight,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.darkSurface300
+                  : AppColors.primaryLight,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 22),
+            child: Icon(
+              icon,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.darkText
+                  : AppColors.primary,
+              size: 22,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTypography.body.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                Text(
+                  title,
+                  style: AppTypography.body.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(description, style: AppTypography.bodySmall.copyWith(color: AppColors.quaternary)),
+                Text(
+                  description,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.quaternary,
+                    //color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),

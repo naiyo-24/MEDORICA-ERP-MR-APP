@@ -9,7 +9,12 @@ import '../../theme/app_theme.dart';
 class MRQuickActionsCard extends ConsumerWidget {
   const MRQuickActionsCard({super.key});
 
-  Widget _actionTile(BuildContext context, WidgetRef ref, IconData icon, String label) {
+  Widget _actionTile(
+    BuildContext context,
+    WidgetRef ref,
+    IconData icon,
+    String label,
+  ) {
     return InkWell(
       onTap: () {
         _handleAction(context, ref, label);
@@ -23,17 +28,29 @@ class MRQuickActionsCard extends ConsumerWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primaryLight,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.darkSurface300
+                  : AppColors.primaryLight,
               borderRadius: BorderRadius.circular(AppBorderRadius.md),
             ),
-            child: Center(child: Icon(icon, color: AppColors.primary, size: 20)),
+            child: Center(
+              child: Icon(
+                icon,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.darkText
+                    : AppColors.primary,
+                size: 20,
+              ),
+            ),
           ),
           const SizedBox(height: AppSpacing.sm),
           SizedBox(
             width: 72,
             child: Text(
               label,
-              style: AppTypography.bodySmall.copyWith(color: AppColors.primary),
+              style: AppTypography.bodySmall.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -70,13 +87,15 @@ class MRQuickActionsCard extends ConsumerWidget {
         context.push('/attendance');
         break;
       default:
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('$label tapped')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$label tapped')));
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final items = [
       [Iconsax.route_square, 'Month Plan'],
       [FontAwesomeIcons.gifts, 'Gifts'],
@@ -90,7 +109,7 @@ class MRQuickActionsCard extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -107,7 +126,12 @@ class MRQuickActionsCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text('Quick Actions', style: AppTypography.h3.copyWith(color: AppColors.primary)),
+                Text(
+                  'Quick Actions',
+                  style: AppTypography.h3.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -117,7 +141,16 @@ class MRQuickActionsCard extends ConsumerWidget {
               crossAxisCount: 4,
               mainAxisSpacing: AppSpacing.md,
               crossAxisSpacing: AppSpacing.md,
-              children: items.map((it) => _actionTile(context, ref, it[0] as IconData, it[1] as String)).toList(),
+              children: items
+                  .map(
+                    (it) => _actionTile(
+                      context,
+                      ref,
+                      it[0] as IconData,
+                      it[1] as String,
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),
@@ -125,4 +158,3 @@ class MRQuickActionsCard extends ConsumerWidget {
     );
   }
 }
-       
