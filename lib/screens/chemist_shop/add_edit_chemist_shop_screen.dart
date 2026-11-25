@@ -41,8 +41,9 @@ class _AddEditChemistShopScreenState
     _phoneController = TextEditingController(text: shop?.phoneNumber ?? '');
     _emailController = TextEditingController(text: shop?.email ?? '');
     _locationController = TextEditingController(text: shop?.location ?? '');
-    _descriptionController =
-        TextEditingController(text: shop?.description ?? '');
+    _descriptionController = TextEditingController(
+      text: shop?.description ?? '',
+    );
   }
 
   @override
@@ -60,9 +61,9 @@ class _AddEditChemistShopScreenState
       return await _imagePicker.pickImage(source: source, imageQuality: 85);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error picking image: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
       }
       return null;
     }
@@ -125,9 +126,12 @@ class _AddEditChemistShopScreenState
     setState(() => _loading = true);
 
     // Resolve photo paths: prefer newly picked local file, else keep existing
-    final String shopPhotoPath = _selectedPhoto?.path ?? widget.shop?.photo ?? '';
+    final String shopPhotoPath =
+        _selectedPhoto?.path ?? widget.shop?.photo ?? '';
     final String bankPassbookPath =
-        _selectedBankPassbookPhoto?.path ?? widget.shop?.bankPassbookPhoto ?? '';
+        _selectedBankPassbookPhoto?.path ??
+        widget.shop?.bankPassbookPhoto ??
+        '';
 
     final shop = ChemistShop(
       id: widget.shop?.id ?? '',
@@ -152,9 +156,9 @@ class _AddEditChemistShopScreenState
     final String? error = ref.read(chemistShopProvider).error;
     if (error != null) {
       setState(() => _loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
@@ -173,15 +177,18 @@ class _AddEditChemistShopScreenState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final isEditing = widget.shop != null;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF3A3A3A)
+          : AppColors.surface,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
+          icon: Icon(Iconsax.arrow_circle_left, color: colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Column(
@@ -189,12 +196,12 @@ class _AddEditChemistShopScreenState
           children: [
             Text(
               isEditing ? 'Edit Shop' : 'Add Shop',
-              style: AppTypography.h3.copyWith(color: AppColors.primary),
+              style: AppTypography.h3.copyWith(color: colorScheme.onSurface),
             ),
             Text(
               isEditing ? 'Update shop details' : 'Add new shop details',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.quaternary,
+                color: colorScheme.onSurface,
               ),
             ),
           ],
@@ -209,6 +216,7 @@ class _AddEditChemistShopScreenState
             children: [
               // Shop Name (required)
               _buildTextFormField(
+                colorScheme: colorScheme,
                 controller: _nameController,
                 label: 'Shop Name *',
                 icon: Iconsax.shop,
@@ -219,17 +227,20 @@ class _AddEditChemistShopScreenState
 
               // Phone Number (required)
               _buildTextFormField(
+                colorScheme: colorScheme,
                 controller: _phoneController,
                 label: 'Phone Number *',
                 icon: Iconsax.call,
                 keyboardType: TextInputType.phone,
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Enter phone number' : null,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Enter phone number'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
 
               // Email (optional)
               _buildTextFormField(
+                colorScheme: colorScheme,
                 controller: _emailController,
                 label: 'Email',
                 icon: Iconsax.sms,
@@ -239,6 +250,7 @@ class _AddEditChemistShopScreenState
 
               // Address / Location (optional)
               _buildTextFormField(
+                colorScheme: colorScheme,
                 controller: _locationController,
                 label: 'Address',
                 icon: Iconsax.location,
@@ -248,6 +260,7 @@ class _AddEditChemistShopScreenState
 
               // Description (optional)
               _buildTextFormField(
+                colorScheme: colorScheme,
                 controller: _descriptionController,
                 label: 'Description',
                 icon: Iconsax.document_text,
@@ -257,6 +270,7 @@ class _AddEditChemistShopScreenState
 
               // Shop Photo
               _buildPhotoPickerField(
+                colorScheme: colorScheme,
                 label: 'Shop Photo',
                 icon: Iconsax.shop,
                 selectedFile: _selectedPhoto,
@@ -268,6 +282,7 @@ class _AddEditChemistShopScreenState
 
               // Bank Passbook Photo
               _buildPhotoPickerField(
+                colorScheme: colorScheme,
                 label: 'Bank Passbook Photo',
                 icon: Iconsax.wallet,
                 selectedFile: _selectedBankPassbookPhoto,
@@ -289,8 +304,9 @@ class _AddEditChemistShopScreenState
                           width: 24,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(AppColors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.white,
+                            ),
                           ),
                         )
                       : Text(
@@ -310,6 +326,7 @@ class _AddEditChemistShopScreenState
   }
 
   Widget _buildTextFormField({
+    required ColorScheme colorScheme,
     required TextEditingController controller,
     required String label,
     required IconData icon,
@@ -322,7 +339,7 @@ class _AddEditChemistShopScreenState
       keyboardType: keyboardType,
       maxLines: maxLines,
       validator: validator,
-      style: AppTypography.body.copyWith(color: AppColors.primary),
+      style: AppTypography.body.copyWith(color: colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: AppTypography.body.copyWith(color: AppColors.quaternary),
@@ -336,7 +353,7 @@ class _AddEditChemistShopScreenState
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         filled: true,
-        fillColor: AppColors.white,
+        fillColor: colorScheme.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
@@ -346,6 +363,7 @@ class _AddEditChemistShopScreenState
   }
 
   Widget _buildPhotoPickerField({
+    required ColorScheme colorScheme,
     required String label,
     required IconData icon,
     required XFile? selectedFile,
@@ -361,7 +379,7 @@ class _AddEditChemistShopScreenState
         Text(
           label,
           style: AppTypography.bodyLarge.copyWith(
-            color: AppColors.primary,
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -380,18 +398,22 @@ class _AddEditChemistShopScreenState
               child: selectedFile != null
                   ? Image.file(File(selectedFile.path), fit: BoxFit.cover)
                   : (existingUrl!.startsWith('http')
-                      ? Image.network(
-                          existingUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => _photoPlaceholder(icon),
-                        )
-                      : _photoPlaceholder(icon)),
+                        ? Image.network(
+                            existingUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => _photoPlaceholder(icon),
+                          )
+                        : _photoPlaceholder(icon)),
             ),
           ),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            style: AppButtonStyles.secondaryButton(height: 48),
+            style: AppButtonStyles.secondaryButton(height: 48).copyWith(
+              backgroundColor: WidgetStatePropertyAll(
+                Theme.of(context).colorScheme.surface,
+              ),
+            ),
             onPressed: onPickTapped,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -45,9 +45,9 @@ class AppRouter {
   static const String profile = '/profile';
   static const String aboutUs = '/about-us';
   static const String notifications = '/notifications';
-    static const String monthPlan = '/month-plan';
-    static const String visualAds = '/visual-ads';
-    static const String attendance = '/attendance';
+  static const String monthPlan = '/month-plan';
+  static const String visualAds = '/visual-ads';
+  static const String attendance = '/attendance';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -90,24 +90,26 @@ class AppRouter {
             name: 'doctorEdit',
             builder: (context, state) {
               final doctorId = state.pathParameters['id']!;
-final extra = state.extra;
+              final extra = state.extra;
 
-Doctor? doctor;
-if (extra is Doctor) {
-  doctor = extra;
-} else if (extra is Map<String, dynamic>) {
-  doctor = Doctor.fromJson(extra);
-}
+              Doctor? doctor;
+              if (extra is Doctor) {
+                doctor = extra;
+              } else if (extra is Map<String, dynamic>) {
+                doctor = Doctor.fromJson(extra);
+              }
 
-if (doctor == null || doctor.id != doctorId) {
-  return const Scaffold(
-    body: Center(
-      child: Text('Could not load doctor. Go back and open the doctor again.'),
-    ),
-  );
-}
+              if (doctor == null || doctor.id != doctorId) {
+                return const Scaffold(
+                  body: Center(
+                    child: Text(
+                      'Could not load doctor. Go back and open the doctor again.',
+                    ),
+                  ),
+                );
+              }
 
-return AddEditDoctorScreen(doctor: doctor);
+              return AddEditDoctorScreen(doctor: doctor);
             },
           ),
         ],
@@ -122,9 +124,7 @@ return AddEditDoctorScreen(doctor: doctor);
             name: 'appointmentSchedule',
             builder: (context, state) {
               final doctorId = state.uri.queryParameters['doctorId'];
-              return ScheduleEditAppointmentScreen(
-                initialDoctorId: doctorId,
-              );
+              return ScheduleEditAppointmentScreen(initialDoctorId: doctorId);
             },
           ),
           GoRoute(
@@ -182,8 +182,27 @@ return AddEditDoctorScreen(doctor: doctor);
             path: 'edit/:id',
             name: 'chemistEdit',
             builder: (context, state) {
-              final _ = state.pathParameters['id']!;
-              final shop = state.extra as ChemistShop?;
+              final shopId = state.pathParameters['id']!;
+              final extra = state.extra;
+
+              ChemistShop? shop;
+
+              if (extra is ChemistShop) {
+                shop = extra;
+              } else if (extra is Map<String, dynamic>) {
+                shop = ChemistShop.fromJson(extra);
+              }
+
+              if (shop == null || shop.id.toString() != shopId) {
+                return const Scaffold(
+                  body: Center(
+                    child: Text(
+                      'Could not load chemist shop. Go back and open the shop again.',
+                    ),
+                  ),
+                );
+              }
+
               return AddEditChemistShopScreen(shop: shop);
             },
           ),
@@ -263,11 +282,11 @@ return AddEditDoctorScreen(doctor: doctor);
           return VisualAdsScreen(onlyAdIds: onlyAdIds);
         },
       ),
-        GoRoute(
-          path: attendance,
-          name: 'attendance',
-          builder: (context, state) => const AttendanceScreen(),
-        ),
+      GoRoute(
+        path: attendance,
+        name: 'attendance',
+        builder: (context, state) => const AttendanceScreen(),
+      ),
       GoRoute(
         path: '/mr/team',
         name: 'myTeam',
