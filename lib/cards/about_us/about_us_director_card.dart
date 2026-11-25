@@ -16,13 +16,14 @@ class AboutUsDirectorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
@@ -113,7 +114,7 @@ class AboutUsDirectorCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(AppBorderRadius.md),
               ),
               child: Text(

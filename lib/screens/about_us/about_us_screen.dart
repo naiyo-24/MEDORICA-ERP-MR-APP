@@ -16,12 +16,13 @@ class AboutUsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final aboutUs = ref.watch(aboutUsProvider);
     final isLoading = ref.watch(aboutUsLoadingProvider);
     final error = ref.watch(aboutUsErrorProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: colorScheme.surface,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,
