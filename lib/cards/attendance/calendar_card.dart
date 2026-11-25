@@ -17,16 +17,17 @@ class CalendarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final Map<DateTime, Attendance> attendanceMap = {
       for (final record in records)
-        DateTime(record.date.year, record.date.month, record.date.day): record
+        DateTime(record.date.year, record.date.month, record.date.day): record,
     };
 
     return Container(
       margin: const EdgeInsets.all(AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -39,13 +40,17 @@ class CalendarCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Attendance Calendar', style: AppTypography.h3.copyWith(color: AppColors.primary)),
+          Text(
+            'Attendance Calendar',
+            style: AppTypography.h3.copyWith(color: colorScheme.onSurface),
+          ),
           const SizedBox(height: AppSpacing.md),
           TableCalendar(
             firstDay: DateTime(DateTime.now().year - 1, 1, 1),
             lastDay: DateTime(DateTime.now().year + 1, 12, 31),
             focusedDay: selectedDate ?? DateTime.now(),
-            selectedDayPredicate: (day) => selectedDate != null &&
+            selectedDayPredicate: (day) =>
+                selectedDate != null &&
                 day.year == selectedDate!.year &&
                 day.month == selectedDate!.month &&
                 day.day == selectedDate!.day,
@@ -55,7 +60,8 @@ class CalendarCard extends StatelessWidget {
             },
             calendarBuilders: CalendarBuilders(
               markerBuilder: (context, date, events) {
-                final record = attendanceMap[DateTime(date.year, date.month, date.day)];
+                final record =
+                    attendanceMap[DateTime(date.year, date.month, date.day)];
                 if (record == null) return null;
                 final isPresent = record.status.toLowerCase() == 'present';
                 return Padding(
@@ -71,11 +77,17 @@ class CalendarCard extends StatelessWidget {
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
-              titleTextStyle: AppTypography.h3.copyWith(color: AppColors.primary),
+              titleTextStyle: AppTypography.h3.copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
             daysOfWeekStyle: DaysOfWeekStyle(
-              weekdayStyle: AppTypography.bodySmall.copyWith(color: AppColors.primary),
-              weekendStyle: AppTypography.bodySmall.copyWith(color: AppColors.error),
+              weekdayStyle: AppTypography.bodySmall.copyWith(
+                color: AppColors.primary,
+              ),
+              weekendStyle: AppTypography.bodySmall.copyWith(
+                color: AppColors.error,
+              ),
             ),
             calendarStyle: CalendarStyle(
               todayDecoration: BoxDecoration(
@@ -86,8 +98,12 @@ class CalendarCard extends StatelessWidget {
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
-              selectedTextStyle: AppTypography.body.copyWith(color: Colors.white),
-              todayTextStyle: AppTypography.body.copyWith(color: AppColors.primary),
+              selectedTextStyle: AppTypography.body.copyWith(
+                color: Colors.white,
+              ),
+              todayTextStyle: AppTypography.body.copyWith(
+                color: AppColors.primary,
+              ),
             ),
           ),
         ],
