@@ -142,12 +142,19 @@ class _ScheduleEditAppointmentScreenState
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: AppColors.white,
-              surface: AppColors.white,
-              onSurface: AppColors.black,
-            ),
+            colorScheme: Theme.of(context).brightness == Brightness.dark
+                ? const ColorScheme.dark(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: Color(0xFF3A3A3A),
+                    onSurface: AppColors.white,
+                  )
+                : const ColorScheme.light(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: AppColors.white,
+                    onSurface: AppColors.black,
+                  ),
           ),
           child: child!,
         );
@@ -167,12 +174,19 @@ class _ScheduleEditAppointmentScreenState
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: AppColors.white,
-              surface: AppColors.white,
-              onSurface: AppColors.black,
-            ),
+            colorScheme: Theme.of(context).brightness == Brightness.dark
+                ? const ColorScheme.dark(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: Color(0xFF3A3A3A),
+                    onSurface: AppColors.white,
+                  )
+                : const ColorScheme.light(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: AppColors.white,
+                    onSurface: AppColors.black,
+                  ),
           ),
           child: child!,
         );
@@ -342,13 +356,16 @@ class _ScheduleEditAppointmentScreenState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final doctorsState = ref.watch(doctorProvider);
     final doctors = doctorsState.doctors;
     final visualAdsState = ref.watch(visualAdsProvider);
     final visualAds = visualAdsState.ads;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF3A3A3A)
+          : AppColors.surface,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,
@@ -365,6 +382,7 @@ class _ScheduleEditAppointmentScreenState
             children: [
               // Date Picker Card
               _buildSectionCard(
+                colorScheme: colorScheme,
                 title: 'Appointment Date',
                 icon: Iconsax.calendar,
                 child: InkWell(
@@ -373,7 +391,7 @@ class _ScheduleEditAppointmentScreenState
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.surface200,
+                      color: colorScheme.surface,
                       borderRadius: AppBorderRadius.mdRadius,
                       border: Border.all(color: AppColors.border),
                     ),
@@ -389,7 +407,7 @@ class _ScheduleEditAppointmentScreenState
                           style: AppTypography.body.copyWith(
                             color: _selectedDate == null
                                 ? AppColors.quaternary
-                                : AppColors.black,
+                                : colorScheme.onSurface,
                           ),
                         ),
                         const Icon(Iconsax.calendar, color: AppColors.primary),
@@ -402,6 +420,7 @@ class _ScheduleEditAppointmentScreenState
 
               // Time Picker Card
               _buildSectionCard(
+                colorScheme: colorScheme,
                 title: 'Appointment Time',
                 icon: Iconsax.clock,
                 child: InkWell(
@@ -410,7 +429,7 @@ class _ScheduleEditAppointmentScreenState
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.surface200,
+                      color: colorScheme.surface,
                       borderRadius: AppBorderRadius.mdRadius,
                       border: Border.all(color: AppColors.border),
                     ),
@@ -424,7 +443,7 @@ class _ScheduleEditAppointmentScreenState
                           style: AppTypography.body.copyWith(
                             color: _selectedTime == null
                                 ? AppColors.quaternary
-                                : AppColors.black,
+                                : colorScheme.onSurface,
                           ),
                         ),
                         const Icon(Iconsax.clock, color: AppColors.primary),
@@ -437,6 +456,7 @@ class _ScheduleEditAppointmentScreenState
 
               // Doctor Dropdown Card
               _buildSectionCard(
+                colorScheme: colorScheme,
                 title: 'Select Doctor',
                 icon: Iconsax.user,
                 child: Container(
@@ -445,7 +465,7 @@ class _ScheduleEditAppointmentScreenState
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surface200,
+                    color: colorScheme.surface,
                     borderRadius: AppBorderRadius.mdRadius,
                     border: Border.all(color: AppColors.border),
                   ),
@@ -476,7 +496,7 @@ class _ScheduleEditAppointmentScreenState
                               Text(
                                 doctor.name,
                                 style: AppTypography.body.copyWith(
-                                  color: AppColors.black,
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
                               Text(
@@ -502,6 +522,7 @@ class _ScheduleEditAppointmentScreenState
 
               // Status Dropdown Card
               _buildSectionCard(
+                colorScheme: colorScheme,
                 title: 'Appointment Status',
                 icon: Iconsax.status,
                 child: Container(
@@ -510,7 +531,7 @@ class _ScheduleEditAppointmentScreenState
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surface200,
+                    color: colorScheme.surface,
                     borderRadius: AppBorderRadius.mdRadius,
                     border: Border.all(color: AppColors.border),
                   ),
@@ -533,7 +554,7 @@ class _ScheduleEditAppointmentScreenState
                           child: Text(
                             status.displayName,
                             style: AppTypography.body.copyWith(
-                              color: AppColors.black,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         );
@@ -553,19 +574,22 @@ class _ScheduleEditAppointmentScreenState
 
               // Place Card
               _buildSectionCard(
+                colorScheme: colorScheme,
                 title: 'Appointment Place',
                 icon: Iconsax.message_text,
                 child: TextFormField(
                   controller: _placeController,
                   maxLines: 2,
-                  style: AppTypography.body.copyWith(color: AppColors.black),
+                  style: AppTypography.body.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Enter appointment place...',
                     hintStyle: AppTypography.body.copyWith(
                       color: AppColors.quaternary,
                     ),
                     filled: true,
-                    fillColor: AppColors.surface200,
+                    fillColor: colorScheme.surface,
                     border: OutlineInputBorder(
                       borderRadius: AppBorderRadius.mdRadius,
                       borderSide: const BorderSide(color: AppColors.border),
@@ -593,6 +617,7 @@ class _ScheduleEditAppointmentScreenState
 
               // Visual Ads Selection Card
               _buildSectionCard(
+                colorScheme: colorScheme,
                 title: 'Select Visual Ads',
                 icon: Iconsax.image,
                 child: visualAdsState.isLoading && visualAds.isEmpty
@@ -634,6 +659,7 @@ class _ScheduleEditAppointmentScreenState
               // Completion Proof Card
               if (_selectedStatus == AppointmentStatus.completed)
                 _buildSectionCard(
+                  colorScheme: colorScheme,
                   title: 'Completion Proof Photo',
                   icon: Iconsax.camera,
                   child: Column(
@@ -642,9 +668,9 @@ class _ScheduleEditAppointmentScreenState
                       ElevatedButton.icon(
                         onPressed: _pickCompletionProofImage,
                         style: AppButtonStyles.primaryButton(height: 42),
-                        icon: const Icon(
+                        icon: Icon(
                           Iconsax.camera,
-                          color: AppColors.white,
+                          color: colorScheme.surface,
                           size: 18,
                         ),
                         label: Text(
@@ -706,6 +732,7 @@ class _ScheduleEditAppointmentScreenState
   }
 
   Widget _buildSectionCard({
+    required ColorScheme colorScheme,
     required String title,
     required IconData icon,
     required Widget child,
@@ -713,7 +740,7 @@ class _ScheduleEditAppointmentScreenState
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: AppBorderRadius.lgRadius,
         boxShadow: [
           BoxShadow(
@@ -732,7 +759,9 @@ class _ScheduleEditAppointmentScreenState
               const SizedBox(width: AppSpacing.sm),
               Text(
                 title,
-                style: AppTypography.tagline.copyWith(color: AppColors.black),
+                style: AppTypography.tagline.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
             ],
           ),
