@@ -153,9 +153,28 @@ class AppRouter {
             path: 'edit/:id',
             name: 'orderEdit',
             builder: (context, state) {
-              final _ = state.pathParameters['id']!;
-              final order = state.extra as Order?;
-              return EditOrderScreen(order: order!);
+              final orderId = state.pathParameters['id']!;
+              final extra = state.extra;
+
+              Order? order;
+
+              if (extra is Order) {
+                order = extra;
+              } else if (extra is Map<String, dynamic>) {
+                order = Order.fromJson(extra);
+              }
+
+              if (order == null || order.id != orderId) {
+                return const Scaffold(
+                  body: Center(
+                    child: Text(
+                      'Could not load order. Go back and open the order again.',
+                    ),
+                  ),
+                );
+              }
+
+              return EditOrderScreen(order: order);
             },
           ),
         ],
