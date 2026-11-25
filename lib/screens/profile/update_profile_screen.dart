@@ -300,6 +300,7 @@ class _UpdateProfileScreenState extends ConsumerState<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final profile = ref.watch(profileProvider);
 
     // Initialize controllers if not already done
@@ -308,7 +309,7 @@ class _UpdateProfileScreenState extends ConsumerState<UpdateProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: colorScheme.surface,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,
@@ -811,12 +812,13 @@ class _UpdateProfileScreenState extends ConsumerState<UpdateProfileScreen> {
     required String hintText,
     required IconData prefixIcon,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InputDecoration(
       hintText: hintText,
       hintStyle: AppTypography.body.copyWith(color: AppColors.quaternary),
       prefixIcon: Icon(prefixIcon, color: AppColors.primary),
       filled: true,
-      fillColor: AppColors.white,
+      fillColor: colorScheme.surface,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppBorderRadius.md),
         borderSide: const BorderSide(color: AppColors.border),
