@@ -16,8 +16,8 @@ class MRQuickActionsCard extends ConsumerWidget {
     String label,
   ) {
     return InkWell(
-      onTap: () {
-        _handleAction(context, ref, label);
+      onTap: () async{
+        await _handleAction(context, ref, label);
       },
       borderRadius: BorderRadius.circular(AppBorderRadius.md),
       child: Column(
@@ -61,7 +61,7 @@ class MRQuickActionsCard extends ConsumerWidget {
     );
   }
 
-  void _handleAction(BuildContext context, WidgetRef ref, String label) {
+  Future<void> _handleAction(BuildContext context, WidgetRef ref, String label) async {
     switch (label) {
       case 'Month Plan':
         context.push('/month-plan');
@@ -80,6 +80,11 @@ class MRQuickActionsCard extends ConsumerWidget {
         final mrId = mr?.mrId ?? '';
         context.push('/mr/team?mrId=$mrId');
         break;
+      case 'Salary Slip':
+  await ref
+      .read(profileProvider.notifier)
+      .downloadSalarySlipForCurrentMr();
+  break;
       case 'Chemists':
         context.push('/mr/chemist');
         break;
