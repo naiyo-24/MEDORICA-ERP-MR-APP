@@ -70,11 +70,11 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
           subtitleText: 'List of doctors you manage',
         ),
         floatingActionButton: FloatingActionButton(
-  onPressed: () => context.go('/mr/doctor/add'),
-  backgroundColor: colorScheme.primary,
-  foregroundColor: colorScheme.onPrimary,
-  child: const Icon(Icons.add),
-),
+          onPressed: () => context.go('/mr/doctor/add'),
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          child: const Icon(Icons.add),
+        ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -117,10 +117,10 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
                     child: Column(
                       children: [
                         Icon(
-  Iconsax.user_search,
-  size: 64,
-  color: colorScheme.onSurfaceVariant,
-),
+                          Iconsax.user_search,
+                          size: 64,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
                           'No doctors found',

@@ -69,7 +69,10 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
               ),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear, color: AppColors.quaternary),
+                      icon: const Icon(
+                        Icons.clear,
+                        color: AppColors.quaternary,
+                      ),
                       onPressed: () {
                         _searchController.clear();
                         widget.onSearchChanged('');
@@ -88,33 +91,25 @@ class _DoctorSearchBarCardState extends State<DoctorSearchBarCard> {
         // Filter Dropdown
         Container(
           decoration: BoxDecoration(
-  color: colorScheme.surface,
-  borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-  border: Border.all(
-    color: colorScheme.outline,
-    width: 1,
-  ),
-  boxShadow: [
-    BoxShadow(
-      color: AppColors.shadowColor,
-      blurRadius: 8,
-      offset: const Offset(0, 2),
-    ),
-  ],
-),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+            border: Border.all(color: colorScheme.tertiary, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowColor,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: DropdownButton<String>(
             isExpanded: true,
             underline: const SizedBox(),
             value: _selectedSpecialization,
             hint: Row(
               children: [
-                Icon(
-                  Iconsax.hospital,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                Icon(Iconsax.hospital, color: colorScheme.onSurfaceVariant),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Filter by specialization',

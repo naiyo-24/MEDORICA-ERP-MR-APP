@@ -46,9 +46,7 @@ class DoctorChambersCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               'No chambers available',
-              style: AppTypography.body.copyWith(
-                color: AppColors.quaternary,
-              ),
+              style: AppTypography.body.copyWith(color: AppColors.quaternary),
             ),
           ],
         ),
@@ -90,12 +88,10 @@ class DoctorChambersCard extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-  color: colorScheme.surfaceContainerHighest,
-  borderRadius: BorderRadius.circular(AppBorderRadius.md),
-  border: Border.all(
-    color: colorScheme.outlineVariant,
-  ),
-),
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                  border: Border.all(color: colorScheme.tertiary),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

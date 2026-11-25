@@ -161,11 +161,10 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     super.dispose();
   }
 
-  
   void _addChamber() {
     if (!_chamberPhoneKey.currentState!.validate()) {
-  return;
-}
+      return;
+    }
     if (_chamberNameController.text.isEmpty ||
         _chamberAddressController.text.isEmpty ||
         _chamberPhoneController.text.isEmpty) {
@@ -283,8 +282,8 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
-    ? const Color(0xFF3A3A3A)
-    : AppColors.surface,
+          ? const Color(0xFF3A3A3A)
+          : AppColors.surface,
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
         elevation: 0,
@@ -506,11 +505,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                       icon: Iconsax.call,
                       keyboardType: TextInputType.phone,
                       validator: (v) =>
-    (v != null &&
-     v.trim().isNotEmpty &&
-     !RegExp(r'^\d{10}$').hasMatch(v.trim()))
-        ? 'Enter a valid 10-digit phone number'
-        : null,
+                          (v != null &&
+                              v.trim().isNotEmpty &&
+                              !RegExp(r'^\d{10}$').hasMatch(v.trim()))
+                          ? 'Enter a valid 10-digit phone number'
+                          : null,
                     ),
                     const SizedBox(height: AppSpacing.md),
 
@@ -518,17 +517,22 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        style: AppButtonStyles.secondaryButton(height: 48),
+                        style: AppButtonStyles.secondaryButton(height: 48)
+                            .copyWith(
+                              backgroundColor: WidgetStatePropertyAll(
+                                colorScheme.surface,
+                              ),
+                            ),
                         onPressed: _addChamber,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.add),
+                            Icon(Icons.add, color: colorScheme.onSurface),
                             const SizedBox(width: AppSpacing.sm),
                             Text(
                               'Add Chamber',
                               style: AppTypography.buttonMedium.copyWith(
-                                color: AppColors.primary,
+                                color: colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -556,7 +560,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                           return Container(
                             padding: const EdgeInsets.all(AppSpacing.sm),
                             decoration: BoxDecoration(
-                              color: AppColors.surface,
+                              color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(
                                 AppBorderRadius.md,
                               ),
@@ -572,14 +576,14 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                                       Text(
                                         chamber.name,
                                         style: AppTypography.bodySmall.copyWith(
-                                          color: AppColors.primary,
+                                          color: colorScheme.onSurface,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                       Text(
                                         chamber.address,
                                         style: AppTypography.caption.copyWith(
-                                          color: AppColors.quaternary,
+                                          color: colorScheme.onSurface,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -700,7 +704,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                       topLeft: Radius.circular(AppBorderRadius.lg - 1),
                       topRight: Radius.circular(AppBorderRadius.lg - 1),
                     ),
-                    color: AppColors.surface,
+                    color: colorScheme.surface,
                   ),
                   child: Image.file(
                     File(_selectedPhoto!.path),
