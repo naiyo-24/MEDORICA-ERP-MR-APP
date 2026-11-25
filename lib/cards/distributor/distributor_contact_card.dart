@@ -39,6 +39,7 @@ class DistributorContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final location = distributor.location ?? distributor.address;
     final hasBankDetails =
         (distributor.bankName?.isNotEmpty ?? false) ||
@@ -49,7 +50,7 @@ class DistributorContactCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -143,10 +144,11 @@ class _ContactItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: AppColors.primaryLight.withAlpha(150),
@@ -180,7 +182,7 @@ class _ContactItem extends StatelessWidget {
                 Text(
                   value,
                   style: AppTypography.body.copyWith(
-                    color: AppColors.primary,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),

@@ -48,6 +48,7 @@ class _DistributorDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final distributorAsync = ref.watch(
       distributorByIdProvider(widget.distributorId),
     );
@@ -96,17 +97,18 @@ class _DistributorDetailScreenState
   }
 
   PreferredSizeWidget _buildAnimatedAppBar() {
+    final colorScheme = Theme.of(context).colorScheme;
     return AppBar(
       backgroundColor: _showAppBar
-          ? AppColors.white
-          : AppColors.white.withAlpha(0),
+    ? colorScheme.surface
+    : colorScheme.surface.withAlpha(0),
       elevation: _showAppBar ? 2 : 0,
       leading: GestureDetector(
         onTap: () => GoRouter.of(context).pop(),
         child: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: colorScheme.surface,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -116,9 +118,9 @@ class _DistributorDetailScreenState
               ),
             ],
           ),
-          child: const Icon(
+          child: Icon(
             Iconsax.arrow_circle_left,
-            color: AppColors.primary,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
