@@ -169,6 +169,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final shops = ref.watch(chemistShopProvider).shops;
     final doctors = ref.watch(doctorListProvider);
     final distributors = ref.watch(distributorListProvider);
@@ -176,15 +177,15 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_circle_left, color: AppColors.primary),
+          icon: Icon(Iconsax.arrow_circle_left, color: colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Create New Order',
-          style: AppTypography.h3.copyWith(color: AppColors.primary),
+          style: AppTypography.h3.copyWith(color: colorScheme.onSurface),
         ),
       ),
       body: SingleChildScrollView(
@@ -199,6 +200,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
               _buildSectionTitle('Select Chemist Shop'),
               const SizedBox(height: 16),
               _buildDropdown<ChemistShop>(
+                colorScheme: colorScheme,
                 items: shops,
                 selectedItem: _selectedShop,
                 label: 'Chemist Shop',
@@ -218,6 +220,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
               _buildSectionTitle('Select Doctor'),
               const SizedBox(height: 16),
               _buildDropdown<doctor_model.Doctor>(
+                colorScheme: colorScheme,
                 items: doctors,
                 selectedItem: _selectedDoctor,
                 label: 'Doctor',
@@ -236,6 +239,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
               _buildSectionTitle('Select Distributor'),
               const SizedBox(height: 16),
               _buildDropdown<Distributor>(
+                colorScheme: colorScheme,
                 items: distributors,
                 selectedItem: _selectedDistributor,
                 label: 'Distributor',
@@ -253,6 +257,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
               _buildSectionTitle('Add Medicines'),
               const SizedBox(height: 16),
               _buildTextField(
+                colorScheme: colorScheme,
                 controller: _medicineNameController,
                 label: 'Medicine Name',
                 hint: 'e.g., Aspirin 500mg',
@@ -263,6 +268,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
                 children: [
                   Expanded(
                     child: _buildTextField(
+                      colorScheme: colorScheme,
                       controller: _medicineQtyController,
                       label: 'Quantity',
                       hint: 'Enter quantity',
@@ -273,6 +279,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _buildTextField(
+                      colorScheme: colorScheme,
                       controller: _medicinePackController,
                       label: 'Pack',
                       hint: 'e.g., Blister',
@@ -282,6 +289,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _buildTextField(
+                      colorScheme: colorScheme,
                       controller: _medicineTotalAmountController,
                       label: 'Total Amount',
                       hint: 'Amount (₹)',
@@ -455,6 +463,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
   }
 
   Widget _buildTextField({
+    required ColorScheme colorScheme,
     required TextEditingController controller,
     required String label,
     required String hint,
@@ -525,7 +534,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
             ),
           ),
           style: AppTypography.body.copyWith(
-            color: AppColors.primary,
+            color: colorScheme.onSurface,
             fontSize: 13,
           ),
         ),
@@ -534,6 +543,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
   }
 
   Widget _buildDropdown<T>({
+    required ColorScheme colorScheme,
     required List<T> items,
     required T? selectedItem,
     required String label,
@@ -597,7 +607,7 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
                 child: Text(
                   itemLabel(item),
                   style: AppTypography.body.copyWith(
-                    color: AppColors.primary,
+                    color: colorScheme.onSurface,
                     fontSize: 13,
                   ),
                 ),
