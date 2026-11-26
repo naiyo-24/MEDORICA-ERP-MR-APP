@@ -193,258 +193,260 @@ class _CreateNewOrderScreenState extends ConsumerState<CreateNewOrderScreen> {
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Section 1: Chemist Shop Selection
-              _buildSectionTitle('Select Chemist Shop'),
-              const SizedBox(height: 16),
-              _buildDropdown<ChemistShop>(
-                colorScheme: colorScheme,
-                items: shops,
-                selectedItem: _selectedShop,
-                label: 'Chemist Shop',
-                hint: 'Select a chemist shop',
-                itemLabel: (shop) => shop.name,
-                onChanged: (shop) {
-                  setState(() {
-                    _selectedShop = shop;
-                  });
-                },
-                icon: Iconsax.shop,
-                isRequired: false,
-              ),
-              const SizedBox(height: 24),
-
-              // Section 3: Doctor Selection
-              _buildSectionTitle('Select Doctor'),
-              const SizedBox(height: 16),
-              _buildDropdown<doctor_model.Doctor>(
-                colorScheme: colorScheme,
-                items: doctors,
-                selectedItem: _selectedDoctor,
-                label: 'Doctor',
-                hint: 'Select a doctor',
-                itemLabel: (doctor) =>
-                    '${doctor.name} (${doctor.specialization})',
-                onChanged: (doctor) {
-                  setState(() => _selectedDoctor = doctor);
-                },
-                icon: Iconsax.user,
-                isRequired: false,
-              ),
-              const SizedBox(height: 24),
-
-              // Section 3.5: Distributor Selection
-              _buildSectionTitle('Select Distributor'),
-              const SizedBox(height: 16),
-              _buildDropdown<Distributor>(
-                colorScheme: colorScheme,
-                items: distributors,
-                selectedItem: _selectedDistributor,
-                label: 'Distributor',
-                hint: 'Select a distributor',
-                itemLabel: (distributor) => distributor.name,
-                onChanged: (distributor) {
-                  setState(() => _selectedDistributor = distributor);
-                },
-                icon: Iconsax.truck,
-                isRequired: false,
-              ),
-              const SizedBox(height: 24),
-
-              // Section 4: Medicines
-              _buildSectionTitle('Add Medicines'),
-              const SizedBox(height: 16),
-              _buildTextField(
-                colorScheme: colorScheme,
-                controller: _medicineNameController,
-                label: 'Medicine Name',
-                hint: 'e.g., Aspirin 500mg',
-                icon: Iconsax.box,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      colorScheme: colorScheme,
-                      controller: _medicineQtyController,
-                      label: 'Quantity',
-                      hint: 'Enter quantity',
-                      icon: Iconsax.box_1,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildTextField(
-                      colorScheme: colorScheme,
-                      controller: _medicinePackController,
-                      label: 'Pack',
-                      hint: 'e.g., Blister',
-                      icon: Iconsax.box,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildTextField(
-                      colorScheme: colorScheme,
-                      controller: _medicineTotalAmountController,
-                      label: 'Total Amount',
-                      hint: 'Amount (₹)',
-                      icon: Iconsax.wallet_2,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _addMedicine,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryLight,
-                    foregroundColor: AppColors.primary,
-                    elevation: 0,
-                    minimumSize: const Size(double.infinity, 48),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  icon: const Icon(Iconsax.add, size: 20),
-                  label: const Text(
-                    'Add Medicine',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Medicines List
-              if (_medicines.isNotEmpty) ...[
-                Text(
-                  'Added Medicines (${_medicines.length})',
-                  style: AppTypography.body.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _medicines.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final medicine = _medicines[index];
-                    return Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryLight.withAlpha(100),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.primaryLight.withAlpha(150),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  medicine.name,
-                                  style: AppTypography.body.copyWith(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Qty: ${medicine.quantity} | Pack: ${medicine.pack}',
-                                  style: AppTypography.caption.copyWith(
-                                    color: AppColors.quaternary,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Amount: ₹${medicine.totalAmount.toStringAsFixed(2)}',
-                                  style: AppTypography.caption.copyWith(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => _removeMedicine(index),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.red.withAlpha(50),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Iconsax.trash,
-                                color: Colors.red,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section 1: Chemist Shop Selection
+                _buildSectionTitle('Select Chemist Shop'),
+                const SizedBox(height: 16),
+                _buildDropdown<ChemistShop>(
+                  colorScheme: colorScheme,
+                  items: shops,
+                  selectedItem: _selectedShop,
+                  label: 'Chemist Shop',
+                  hint: 'Select a chemist shop',
+                  itemLabel: (shop) => shop.name,
+                  onChanged: (shop) {
+                    setState(() {
+                      _selectedShop = shop;
+                    });
                   },
+                  icon: Iconsax.shop,
+                  isRequired: false,
+                ),
+                const SizedBox(height: 24),
+            
+                // Section 3: Doctor Selection
+                _buildSectionTitle('Select Doctor'),
+                const SizedBox(height: 16),
+                _buildDropdown<doctor_model.Doctor>(
+                  colorScheme: colorScheme,
+                  items: doctors,
+                  selectedItem: _selectedDoctor,
+                  label: 'Doctor',
+                  hint: 'Select a doctor',
+                  itemLabel: (doctor) =>
+                      '${doctor.name} (${doctor.specialization})',
+                  onChanged: (doctor) {
+                    setState(() => _selectedDoctor = doctor);
+                  },
+                  icon: Iconsax.user,
+                  isRequired: false,
+                ),
+                const SizedBox(height: 24),
+            
+                // Section 3.5: Distributor Selection
+                _buildSectionTitle('Select Distributor'),
+                const SizedBox(height: 16),
+                _buildDropdown<Distributor>(
+                  colorScheme: colorScheme,
+                  items: distributors,
+                  selectedItem: _selectedDistributor,
+                  label: 'Distributor',
+                  hint: 'Select a distributor',
+                  itemLabel: (distributor) => distributor.name,
+                  onChanged: (distributor) {
+                    setState(() => _selectedDistributor = distributor);
+                  },
+                  icon: Iconsax.truck,
+                  isRequired: false,
+                ),
+                const SizedBox(height: 24),
+            
+                // Section 4: Medicines
+                _buildSectionTitle('Add Medicines'),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  colorScheme: colorScheme,
+                  controller: _medicineNameController,
+                  label: 'Medicine Name',
+                  hint: 'e.g., Aspirin 500mg',
+                  icon: Iconsax.box,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        colorScheme: colorScheme,
+                        controller: _medicineQtyController,
+                        label: 'Quantity',
+                        hint: 'Enter quantity',
+                        icon: Iconsax.box_1,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildTextField(
+                        colorScheme: colorScheme,
+                        controller: _medicinePackController,
+                        label: 'Pack',
+                        hint: 'e.g., Blister',
+                        icon: Iconsax.box,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildTextField(
+                        colorScheme: colorScheme,
+                        controller: _medicineTotalAmountController,
+                        label: 'Total Amount',
+                        hint: 'Amount (₹)',
+                        icon: Iconsax.wallet_2,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: _addMedicine,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryLight,
+                      foregroundColor: AppColors.primary,
+                      elevation: 0,
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Iconsax.add, size: 20),
+                    label: const Text(
+                      'Add Medicine',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+            
+                // Medicines List
+                if (_medicines.isNotEmpty) ...[
+                  Text(
+                    'Added Medicines (${_medicines.length})',
+                    style: AppTypography.body.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _medicines.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      final medicine = _medicines[index];
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryLight.withAlpha(100),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.primaryLight.withAlpha(150),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    medicine.name,
+                                    style: AppTypography.body.copyWith(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Qty: ${medicine.quantity} | Pack: ${medicine.pack}',
+                                    style: AppTypography.caption.copyWith(
+                                      color: AppColors.quaternary,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Amount: ₹${medicine.totalAmount.toStringAsFixed(2)}',
+                                    style: AppTypography.caption.copyWith(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => _removeMedicine(index),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withAlpha(50),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Iconsax.trash,
+                                  color: Colors.red,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                ],
+            
+                const SizedBox(height: 32),
+            
+                // Save Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: isSaving ? null : _saveOrder,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      elevation: 4,
+                      shadowColor: AppColors.primary.withAlpha(100),
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: isSaving
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.white,
+                            ),
+                          )
+                        : const Icon(Iconsax.add_circle, color: AppColors.white),
+                    label: Text(
+                      isSaving ? 'Creating...' : 'Create Order',
+                      style: AppTypography.h3.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
               ],
-
-              const SizedBox(height: 32),
-
-              // Save Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: isSaving ? null : _saveOrder,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    elevation: 4,
-                    shadowColor: AppColors.primary.withAlpha(100),
-                    minimumSize: const Size(double.infinity, 56),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  icon: isSaving
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : const Icon(Iconsax.add_circle, color: AppColors.white),
-                  label: Text(
-                    isSaving ? 'Creating...' : 'Create Order',
-                    style: AppTypography.h3.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
+            ),
           ),
         ),
       ),

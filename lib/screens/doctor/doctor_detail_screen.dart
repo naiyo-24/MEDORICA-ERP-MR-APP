@@ -85,56 +85,58 @@ class DoctorDetailScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Doctor Header Card
-            DoctorHeaderCard(doctor: doctor),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Experience and Specialization Side by Side
-            SizedBox(
-              height: 150,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: DoctorExperienceCard(experience: doctor.experience),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: DoctorSpecializationCard(
-                      specialization: doctor.specialization,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Doctor Header Card
+              DoctorHeaderCard(doctor: doctor),
+              const SizedBox(height: AppSpacing.lg),
+          
+              // Experience and Specialization Side by Side
+              SizedBox(
+                height: 150,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: DoctorExperienceCard(experience: doctor.experience),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: DoctorSpecializationCard(
+                        specialization: doctor.specialization,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Qualification
-            DoctorQualificationCard(qualification: doctor.qualification),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Description
-            DoctorDescriptionCard(
-              description: doctor.description,
-              birthday: doctor.birthday,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Contact Information
-            DoctorContactCard(
-              phoneNumber: doctor.phoneNumber,
-              email: doctor.email,
-              address: doctor.address,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Chambers
-            DoctorChambersCard(chambers: doctor.chambers),
-            const SizedBox(height: 100), // Bottom padding for FAB
-          ],
+              const SizedBox(height: AppSpacing.lg),
+          
+              // Qualification
+              DoctorQualificationCard(qualification: doctor.qualification),
+              const SizedBox(height: AppSpacing.lg),
+          
+              // Description
+              DoctorDescriptionCard(
+                description: doctor.description,
+                birthday: doctor.birthday,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+          
+              // Contact Information
+              DoctorContactCard(
+                phoneNumber: doctor.phoneNumber,
+                email: doctor.email,
+                address: doctor.address,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+          
+              // Chambers
+              DoctorChambersCard(chambers: doctor.chambers),
+              const SizedBox(height: 100), // Bottom padding for FAB
+            ],
+          ),
         ),
       ),
     );

@@ -211,114 +211,116 @@ class _AddEditChemistShopScreenState
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Shop Name (required)
-              _buildTextFormField(
-                colorScheme: colorScheme,
-                controller: _nameController,
-                label: 'Shop Name *',
-                icon: Iconsax.shop,
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Enter shop name' : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Phone Number (required)
-              _buildTextFormField(
-                colorScheme: colorScheme,
-                controller: _phoneController,
-                label: 'Phone Number *',
-                icon: Iconsax.call,
-                keyboardType: TextInputType.phone,
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? 'Enter phone number'
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Email (optional)
-              _buildTextFormField(
-                colorScheme: colorScheme,
-                controller: _emailController,
-                label: 'Email',
-                icon: Iconsax.sms,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Address / Location (optional)
-              _buildTextFormField(
-                colorScheme: colorScheme,
-                controller: _locationController,
-                label: 'Address',
-                icon: Iconsax.location,
-                maxLines: 2,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Description (optional)
-              _buildTextFormField(
-                colorScheme: colorScheme,
-                controller: _descriptionController,
-                label: 'Description',
-                icon: Iconsax.document_text,
-                maxLines: 4,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Shop Photo
-              _buildPhotoPickerField(
-                colorScheme: colorScheme,
-                label: 'Shop Photo',
-                icon: Iconsax.shop,
-                selectedFile: _selectedPhoto,
-                existingUrl: widget.shop?.photo,
-                onPickTapped: () =>
-                    _showPhotoPickerOptions(isBankPassbook: false),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Bank Passbook Photo
-              _buildPhotoPickerField(
-                colorScheme: colorScheme,
-                label: 'Bank Passbook Photo',
-                icon: Iconsax.wallet,
-                selectedFile: _selectedBankPassbookPhoto,
-                existingUrl: widget.shop?.bankPassbookPhoto,
-                onPickTapped: () =>
-                    _showPhotoPickerOptions(isBankPassbook: true),
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Submit Button
-              SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  style: AppButtonStyles.primaryButton(height: 56),
-                  onPressed: _loading ? null : _submit,
-                  child: _loading
-                      ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.white,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Shop Name (required)
+                _buildTextFormField(
+                  colorScheme: colorScheme,
+                  controller: _nameController,
+                  label: 'Shop Name *',
+                  icon: Iconsax.shop,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Enter shop name' : null,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Phone Number (required)
+                _buildTextFormField(
+                  colorScheme: colorScheme,
+                  controller: _phoneController,
+                  label: 'Phone Number *',
+                  icon: Iconsax.call,
+                  keyboardType: TextInputType.phone,
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? 'Enter phone number'
+                      : null,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Email (optional)
+                _buildTextFormField(
+                  colorScheme: colorScheme,
+                  controller: _emailController,
+                  label: 'Email',
+                  icon: Iconsax.sms,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Address / Location (optional)
+                _buildTextFormField(
+                  colorScheme: colorScheme,
+                  controller: _locationController,
+                  label: 'Address',
+                  icon: Iconsax.location,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Description (optional)
+                _buildTextFormField(
+                  colorScheme: colorScheme,
+                  controller: _descriptionController,
+                  label: 'Description',
+                  icon: Iconsax.document_text,
+                  maxLines: 4,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Shop Photo
+                _buildPhotoPickerField(
+                  colorScheme: colorScheme,
+                  label: 'Shop Photo',
+                  icon: Iconsax.shop,
+                  selectedFile: _selectedPhoto,
+                  existingUrl: widget.shop?.photo,
+                  onPickTapped: () =>
+                      _showPhotoPickerOptions(isBankPassbook: false),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Bank Passbook Photo
+                _buildPhotoPickerField(
+                  colorScheme: colorScheme,
+                  label: 'Bank Passbook Photo',
+                  icon: Iconsax.wallet,
+                  selectedFile: _selectedBankPassbookPhoto,
+                  existingUrl: widget.shop?.bankPassbookPhoto,
+                  onPickTapped: () =>
+                      _showPhotoPickerOptions(isBankPassbook: true),
+                ),
+                const SizedBox(height: AppSpacing.xxl),
+            
+                // Submit Button
+                SizedBox(
+                  height: 56,
+                  child: ElevatedButton(
+                    style: AppButtonStyles.primaryButton(height: 56),
+                    onPressed: _loading ? null : _submit,
+                    child: _loading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.white,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            isEditing ? 'Update Shop' : 'Add Shop',
+                            style: AppTypography.buttonLarge.copyWith(
+                              color: AppColors.white,
                             ),
                           ),
-                        )
-                      : Text(
-                          isEditing ? 'Update Shop' : 'Add Shop',
-                          style: AppTypography.buttonLarge.copyWith(
-                            color: AppColors.white,
-                          ),
-                        ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-            ],
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+            ),
           ),
         ),
       ),

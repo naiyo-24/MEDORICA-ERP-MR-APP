@@ -311,322 +311,324 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Doctor Name (mandatory)
-              _buildTextFormField(
-                controller: _nameController,
-                label: 'Doctor Name',
-                icon: Iconsax.user,
-                validator: (v) =>
-                    (v == null ||
-                        v.trim().length < 2 ||
-                        !RegExp(r"^[a-zA-Z\s.'-]+$").hasMatch(v.trim()))
-                    ? 'Enter a valid doctor name'
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Phone Number (mandatory)
-              _buildTextFormField(
-                controller: _phoneController,
-                label: 'Phone Number',
-                icon: Iconsax.call,
-                keyboardType: TextInputType.phone,
-                validator: (v) =>
-                    (v == null || !RegExp(r'^\d{10}$').hasMatch(v.trim()))
-                    ? 'Enter a valid 10-digit phone number'
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Specialization (mandatory)
-              _buildTextFormField(
-                controller: _specializationController,
-                label: 'Specialization',
-                icon: Iconsax.medal_star,
-                validator: (v) => (v == null || v.trim().length < 2)
-                    ? 'Enter a valid specialization'
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Optional fields
-              _buildTextFormField(
-                controller: _emailController,
-                label: 'Email',
-                icon: Iconsax.sms,
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    (v != null &&
-                        v.trim().isNotEmpty &&
-                        !RegExp(
-                          r'^[\w.+-]+@[\w-]+\.[\w.-]+$',
-                        ).hasMatch(v.trim()))
-                    ? 'Enter a valid email address'
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              _buildTextFormField(
-                controller: _addressController,
-                label: 'Address',
-                icon: Iconsax.location,
-                maxLines: 2,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              TextFormField(
-                controller: _birthdayController,
-                readOnly: true,
-                onTap: _selectBirthday,
-                style: AppTypography.bodyLarge,
-                decoration: InputDecoration(
-                  labelText: 'Birthday',
-                  labelStyle: AppTypography.body.copyWith(
-                    color: AppColors.quaternary,
-                  ),
-                  prefixIcon: const Icon(
-                    Iconsax.calendar,
-                    color: AppColors.primary,
-                  ),
-                  suffixIcon: _selectedBirthday != null
-                      ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _selectedBirthday = null;
-                              _birthdayController.clear();
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.close,
-                            color: AppColors.quaternary,
-                          ),
-                        )
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Doctor Name (mandatory)
+                _buildTextFormField(
+                  controller: _nameController,
+                  label: 'Doctor Name',
+                  icon: Iconsax.user,
+                  validator: (v) =>
+                      (v == null ||
+                          v.trim().length < 2 ||
+                          !RegExp(r"^[a-zA-Z\s.'-]+$").hasMatch(v.trim()))
+                      ? 'Enter a valid doctor name'
                       : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-                    borderSide: const BorderSide(color: AppColors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-                    borderSide: const BorderSide(color: AppColors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-                    borderSide: const BorderSide(
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Phone Number (mandatory)
+                _buildTextFormField(
+                  controller: _phoneController,
+                  label: 'Phone Number',
+                  icon: Iconsax.call,
+                  keyboardType: TextInputType.phone,
+                  validator: (v) =>
+                      (v == null || !RegExp(r'^\d{10}$').hasMatch(v.trim()))
+                      ? 'Enter a valid 10-digit phone number'
+                      : null,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Specialization (mandatory)
+                _buildTextFormField(
+                  controller: _specializationController,
+                  label: 'Specialization',
+                  icon: Iconsax.medal_star,
+                  validator: (v) => (v == null || v.trim().length < 2)
+                      ? 'Enter a valid specialization'
+                      : null,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                // Optional fields
+                _buildTextFormField(
+                  controller: _emailController,
+                  label: 'Email',
+                  icon: Iconsax.sms,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (v) =>
+                      (v != null &&
+                          v.trim().isNotEmpty &&
+                          !RegExp(
+                            r'^[\w.+-]+@[\w-]+\.[\w.-]+$',
+                          ).hasMatch(v.trim()))
+                      ? 'Enter a valid email address'
+                      : null,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                _buildTextFormField(
+                  controller: _addressController,
+                  label: 'Address',
+                  icon: Iconsax.location,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                TextFormField(
+                  controller: _birthdayController,
+                  readOnly: true,
+                  onTap: _selectBirthday,
+                  style: AppTypography.bodyLarge,
+                  decoration: InputDecoration(
+                    labelText: 'Birthday',
+                    labelStyle: AppTypography.body.copyWith(
+                      color: AppColors.quaternary,
+                    ),
+                    prefixIcon: const Icon(
+                      Iconsax.calendar,
                       color: AppColors.primary,
-                      width: 2,
                     ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.md,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              _buildPhotoPickerField(),
-              const SizedBox(height: AppSpacing.md),
-
-              _buildTextFormField(
-                controller: _experienceController,
-                label: 'Experience (e.g., 15 years)',
-                icon: Iconsax.briefcase,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              _buildTextFormField(
-                controller: _qualificationController,
-                label: 'Qualification',
-                icon: Iconsax.book,
-                maxLines: 2,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              _buildTextFormField(
-                controller: _descriptionController,
-                label: 'Description',
-                icon: Iconsax.document,
-                maxLines: 3,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Chambers Section
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadowColor,
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                    suffixIcon: _selectedBirthday != null
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _selectedBirthday = null;
+                                _birthdayController.clear();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: AppColors.quaternary,
+                            ),
+                          )
+                        : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                      borderSide: const BorderSide(color: AppColors.border),
                     ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Chambers',
-                      style: AppTypography.bodyLarge.copyWith(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.w600,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Chamber Name
-                    _buildTextFormField(
-                      controller: _chamberNameController,
-                      label: 'Chamber Name',
-                      icon: Iconsax.hospital,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.md,
                     ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Chamber Address
-                    _buildTextFormField(
-                      controller: _chamberAddressController,
-                      label: 'Chamber Address',
-                      icon: Iconsax.location,
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Chamber Phone
-                    _buildTextFormField(
-                      controller: _chamberPhoneController,
-                      key: _chamberPhoneKey,
-                      label: 'Chamber Phone',
-                      icon: Iconsax.call,
-                      keyboardType: TextInputType.phone,
-                      validator: (v) =>
-                          (v != null &&
-                              v.trim().isNotEmpty &&
-                              !RegExp(r'^\d{10}$').hasMatch(v.trim()))
-                          ? 'Enter a valid 10-digit phone number'
-                          : null,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Add Chamber Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: AppButtonStyles.secondaryButton(height: 48)
-                            .copyWith(
-                              backgroundColor: WidgetStatePropertyAll(
-                                colorScheme.surface,
-                              ),
-                            ),
-                        onPressed: _addChamber,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add, color: colorScheme.onSurface),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              'Add Chamber',
-                              style: AppTypography.buttonMedium.copyWith(
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                          ],
-                        ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                _buildPhotoPickerField(),
+                const SizedBox(height: AppSpacing.md),
+            
+                _buildTextFormField(
+                  controller: _experienceController,
+                  label: 'Experience (e.g., 15 years)',
+                  icon: Iconsax.briefcase,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                _buildTextFormField(
+                  controller: _qualificationController,
+                  label: 'Qualification',
+                  icon: Iconsax.book,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: AppSpacing.md),
+            
+                _buildTextFormField(
+                  controller: _descriptionController,
+                  label: 'Description',
+                  icon: Iconsax.document,
+                  maxLines: 3,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Chambers Section
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadowColor,
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                    ),
-
-                    if (_chambers.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.lg),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        'Added Chambers (${_chambers.length})',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.quaternary,
+                        'Chambers',
+                        style: AppTypography.bodyLarge.copyWith(
+                          color: colorScheme.onSurface,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _chambers.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: AppSpacing.sm),
-                        itemBuilder: (context, index) {
-                          final chamber = _chambers[index];
-                          return Container(
-                            padding: const EdgeInsets.all(AppSpacing.sm),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surface,
-                              borderRadius: BorderRadius.circular(
-                                AppBorderRadius.md,
-                              ),
-                              border: Border.all(color: AppColors.surface300),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        chamber.name,
-                                        style: AppTypography.bodySmall.copyWith(
-                                          color: colorScheme.onSurface,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
-                                        chamber.address,
-                                        style: AppTypography.caption.copyWith(
-                                          color: colorScheme.onSurface,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Iconsax.trash,
-                                    color: AppColors.error,
-                                    size: 18,
-                                  ),
-                                  onPressed: () => _removeChamber(index),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+            
+                      // Chamber Name
+                      _buildTextFormField(
+                        controller: _chamberNameController,
+                        label: 'Chamber Name',
+                        icon: Iconsax.hospital,
                       ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Submit Button
-              SizedBox(
-                width: double.infinity,
-                child: _loading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        style: AppButtonStyles.primaryButton(height: 56),
-                        onPressed: _submit,
-                        child: Text(
-                          isEditing ? 'Update Doctor' : 'Add Doctor',
-                          style: AppTypography.buttonLarge.copyWith(
-                            color: AppColors.white,
+                      const SizedBox(height: AppSpacing.md),
+            
+                      // Chamber Address
+                      _buildTextFormField(
+                        controller: _chamberAddressController,
+                        label: 'Chamber Address',
+                        icon: Iconsax.location,
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+            
+                      // Chamber Phone
+                      _buildTextFormField(
+                        controller: _chamberPhoneController,
+                        key: _chamberPhoneKey,
+                        label: 'Chamber Phone',
+                        icon: Iconsax.call,
+                        keyboardType: TextInputType.phone,
+                        validator: (v) =>
+                            (v != null &&
+                                v.trim().isNotEmpty &&
+                                !RegExp(r'^\d{10}$').hasMatch(v.trim()))
+                            ? 'Enter a valid 10-digit phone number'
+                            : null,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+            
+                      // Add Chamber Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: AppButtonStyles.secondaryButton(height: 48)
+                              .copyWith(
+                                backgroundColor: WidgetStatePropertyAll(
+                                  colorScheme.surface,
+                                ),
+                              ),
+                          onPressed: _addChamber,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add, color: colorScheme.onSurface),
+                              const SizedBox(width: AppSpacing.sm),
+                              Text(
+                                'Add Chamber',
+                                style: AppTypography.buttonMedium.copyWith(
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-              ),
-            ],
+            
+                      if (_chambers.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.lg),
+                        Text(
+                          'Added Chambers (${_chambers.length})',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.quaternary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _chambers.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: AppSpacing.sm),
+                          itemBuilder: (context, index) {
+                            final chamber = _chambers[index];
+                            return Container(
+                              padding: const EdgeInsets.all(AppSpacing.sm),
+                              decoration: BoxDecoration(
+                                color: colorScheme.surface,
+                                borderRadius: BorderRadius.circular(
+                                  AppBorderRadius.md,
+                                ),
+                                border: Border.all(color: AppColors.surface300),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          chamber.name,
+                                          style: AppTypography.bodySmall.copyWith(
+                                            color: colorScheme.onSurface,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          chamber.address,
+                                          style: AppTypography.caption.copyWith(
+                                            color: colorScheme.onSurface,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Iconsax.trash,
+                                      color: AppColors.error,
+                                      size: 18,
+                                    ),
+                                    onPressed: () => _removeChamber(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  child: _loading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          style: AppButtonStyles.primaryButton(height: 56),
+                          onPressed: _submit,
+                          child: Text(
+                            isEditing ? 'Update Doctor' : 'Add Doctor',
+                            style: AppTypography.buttonLarge.copyWith(
+                              color: AppColors.white,
+                            ),
+                          ),
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

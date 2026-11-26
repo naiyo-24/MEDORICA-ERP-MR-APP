@@ -68,15 +68,17 @@ class _DistributorDetailScreenState
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenPaddingHorizontal,
               ),
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSpacing.lg),
-                  DistributorHeaderCard(distributor: distributor),
-                  DistributorOrderInfoCard(distributor: distributor),
-                  DistributorDescriptionCard(distributor: distributor),
-                  DistributorContactCard(distributor: distributor),
-                  const SizedBox(height: AppSpacing.xl),
-                ],
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: AppSpacing.lg),
+                    DistributorHeaderCard(distributor: distributor),
+                    DistributorOrderInfoCard(distributor: distributor),
+                    DistributorDescriptionCard(distributor: distributor),
+                    DistributorContactCard(distributor: distributor),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
+                ),
               ),
             ),
           );

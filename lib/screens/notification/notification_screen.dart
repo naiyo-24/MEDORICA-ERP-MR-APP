@@ -30,40 +30,42 @@ class NotificationScreen extends ConsumerWidget {
       ),
       body: notifications.isEmpty
           ? const TransparentLoader(subtext: 'Loading notifications...')
-          : ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final notification = notifications[index];
-                return NotificationCard(
-                  notification: notification,
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(notification.title),
-                        backgroundColor: AppColors.primary,
-                      ),
-                    );
-                  },
-                  onDelete: () {
-                    ref
-                        .read(notificationProvider.notifier)
-                        .deleteNotification(notification.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Notification deleted'),
-                        backgroundColor: AppColors.secondary,
-                      ),
-                    );
-                  },
-                  onMarkAsRead: (id) {
-                    ref
-                        .read(notificationProvider.notifier)
-                        .markAsRead(id);
-                  },
-                );
-              },
-            ),
+          : SafeArea(
+            child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+                  return NotificationCard(
+                    notification: notification,
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(notification.title),
+                          backgroundColor: AppColors.primary,
+                        ),
+                      );
+                    },
+                    onDelete: () {
+                      ref
+                          .read(notificationProvider.notifier)
+                          .deleteNotification(notification.id);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Notification deleted'),
+                          backgroundColor: AppColors.secondary,
+                        ),
+                      );
+                    },
+                    onMarkAsRead: (id) {
+                      ref
+                          .read(notificationProvider.notifier)
+                          .markAsRead(id);
+                    },
+                  );
+                },
+              ),
+          ),
       floatingActionButton: unreadCount > 0
           ? FloatingActionButton.extended(
               onPressed: () {
