@@ -69,7 +69,9 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 children: [
                   Text(
                     'Appointment Details',
-                    style: AppTypography.h3.copyWith(color: colorScheme.onSurface,),
+                    style: AppTypography.h3.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   const Spacer(),
                   IconButton(
@@ -111,35 +113,41 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   ],
                 ),
               ),
-                const SizedBox(height: AppSpacing.md),
-                // Status Update Dropdown
-                _StatusUpdateSection(
-                  currentStatus: appointment.status,
-                  onStatusChanged: (newStatus) async {
-                    final mrId = ref.read(authNotifierProvider).mr?.mrId;
-                    if (mrId == null || mrId.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Unable to update status: MR ID missing.'),
-                          backgroundColor: AppColors.error,
-                        ),
-                      );
-                      return;
-                    }
-                    final updatedAppointment = appointment.copyWith(status: newStatus);
-                    await ref.read(appointmentNotifierProvider.notifier).updateAppointment(
-                      mrId: mrId,
-                      appointment: updatedAppointment,
-                    );
+              const SizedBox(height: AppSpacing.md),
+              // Status Update Dropdown
+              _StatusUpdateSection(
+                currentStatus: appointment.status,
+                onStatusChanged: (newStatus) async {
+                  final mrId = ref.read(authNotifierProvider).mr?.mrId;
+                  if (mrId == null || mrId.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Appointment status updated.'),
-                        backgroundColor: AppColors.success,
+                        content: Text(
+                          'Unable to update status: MR ID missing.',
+                        ),
+                        backgroundColor: AppColors.error,
                       ),
                     );
-                    Navigator.of(context).pop();
-                  },
-                ),
+                    return;
+                  }
+                  final updatedAppointment = appointment.copyWith(
+                    status: newStatus,
+                  );
+                  await ref
+                      .read(appointmentNotifierProvider.notifier)
+                      .updateAppointment(
+                        mrId: mrId,
+                        appointment: updatedAppointment,
+                      );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Appointment status updated.'),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                  Navigator.of(context).pop();
+                },
+              ),
               const SizedBox(height: AppSpacing.xl),
 
               // Doctor Information
@@ -198,7 +206,9 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                 title: 'Appointment Place',
                 content: Text(
                   appointment.message,
-                  style: AppTypography.body.copyWith(color: colorScheme.onSurface,),
+                  style: AppTypography.body.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
               if (appointment.visualAds.isNotEmpty) ...[
@@ -210,7 +220,9 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                     appointment.visualAds
                         .map((ad) => ad.medicineName)
                         .join(', '),
-                    style: AppTypography.body.copyWith(color: colorScheme.onSurface,),
+                    style: AppTypography.body.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                 ),
               ],
@@ -244,7 +256,6 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).pop();
                         _showDeleteDialog(context, ref, colorScheme);
                       },
                       style: OutlinedButton.styleFrom(
@@ -336,7 +347,13 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref, ColorScheme colorScheme,) {
+  void _showDeleteDialog(
+    BuildContext context,
+    WidgetRef ref,
+    ColorScheme colorScheme,
+  ) {
+    final sheetContext = context;
+    final messenger = ScaffoldMessenger.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -378,16 +395,14 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
 
               ref
                   .read(appointmentNotifierProvider.notifier)
-                  .deleteAppointment(
-                    mrId: mrId,
-                    appointmentId: appointment.id,
-                  )
+                  .deleteAppointment(mrId: mrId, appointmentId: appointment.id)
                   .then((_) {
-                    if (!context.mounted) {
-                      return;
-                    }
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    if (!context.mounted || !sheetContext.mounted) return;
+
+                    Navigator.of(context).pop(); // Close confirmation dialog
+                    Navigator.of(sheetContext).pop(); // Close bottom sheet
+
+                    messenger.showSnackBar(
                       const SnackBar(
                         content: Text('Appointment deleted successfully'),
                       ),
@@ -462,25 +477,26 @@ class _StatusUpdateSectionState extends State<_StatusUpdateSection> {
           decoration: InputDecoration(
             //labelText: 'Select Status',
             //labelStyle: AppTypography.body.copyWith(color: colorScheme.onSurface,),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
-  borderRadius: BorderRadius.circular(12),
-  borderSide: BorderSide(color: colorScheme.primary),
-),
-enabledBorder: OutlineInputBorder(
-  borderRadius: BorderRadius.circular(12),
-  borderSide: BorderSide(color: colorScheme.primary),
-),
-focusedBorder: OutlineInputBorder(
-  borderRadius: BorderRadius.circular(12),
-  borderSide: BorderSide(color: colorScheme.primary),
-),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.primary),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.primary),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.primary),
+            ),
             filled: true,
             fillColor: colorScheme.surface,
           ),
-          style: AppTypography.body.copyWith(
-  color: colorScheme.onSurface,
-),
+          style: AppTypography.body.copyWith(color: colorScheme.onSurface),
           dropdownColor: colorScheme.surface,
           items: AppointmentStatus.values.map((status) {
             return DropdownMenuItem<AppointmentStatus>(
