@@ -36,14 +36,34 @@ class ChemistShopDetailScreen extends ConsumerWidget {
             ),
           ),
           TextButton(
-            onPressed: () {
-              ref.read(chemistShopProvider.notifier).deleteChemistShop(shopId);
-              Navigator.of(context).pop();
-              context.go('/mr/chemist');
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Shop deleted successfully')),
-              );
-            },
+            onPressed: () async {
+  Navigator.of(context).pop();
+
+  final success = await ref
+      .read(chemistShopProvider.notifier)
+      .deleteChemistShop(shopId);
+
+  if (!context.mounted) return;
+
+  if (success) {
+    context.go('/mr/chemist');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Shop deleted successfully'),
+      ),
+    );
+  } else {
+    final error = ref.read(chemistShopProvider).error;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(error ?? 'Failed to delete shop'),
+        backgroundColor: AppColors.error,
+      ),
+    );
+  }
+},
             child: Text(
               'Delete',
               style: AppTypography.bodyLarge.copyWith(
