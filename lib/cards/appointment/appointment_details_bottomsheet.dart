@@ -245,7 +245,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                     child: OutlinedButton.icon(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        _showDeleteDialog(context, ref);
+                        _showDeleteDialog(context, ref, colorScheme);
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.error,
@@ -336,14 +336,14 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref) {
+  void _showDeleteDialog(BuildContext context, WidgetRef ref, ColorScheme colorScheme,) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: AppBorderRadius.lgRadius),
         title: Text(
           'Delete Appointment',
-          style: AppTypography.tagline.copyWith(color: AppColors.black),
+          style: AppTypography.tagline.copyWith(color: colorScheme.onSurface),
         ),
         content: Text(
           'Are you sure you want to delete this appointment?',
