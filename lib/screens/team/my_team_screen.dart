@@ -28,6 +28,7 @@ class _MyTeamScreenState extends ConsumerState<MyTeamScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final teamState = ref.watch(teamNotifierProvider);
 
     return Scaffold(
@@ -60,20 +61,20 @@ class _MyTeamScreenState extends ConsumerState<MyTeamScreen> {
                       borderRadius: BorderRadius.circular(AppBorderRadius.lg),
                     ),
                     elevation: 6,
-                    color: AppColors.white,
+                    color: colorScheme.surface,
                     child: Padding(
                       padding: const EdgeInsets.all(AppSpacing.lg),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(team.teamName, style: AppTypography.h2.copyWith(color: AppColors.primary)),
+                          Text(team.teamName, style: AppTypography.h2.copyWith(color: colorScheme.onSurface)),
                           if (team.teamDescription != null)
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                               child: Text(
                                 team.teamDescription!,
-                                style: AppTypography.bodySmall.copyWith(color: AppColors.primary),
+                                style: AppTypography.bodySmall.copyWith(color: colorScheme.onSurface),
                               ),
                             ),
                           const SizedBox(height: AppSpacing.sm),
