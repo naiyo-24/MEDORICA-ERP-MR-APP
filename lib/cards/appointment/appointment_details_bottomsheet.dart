@@ -281,11 +281,7 @@ class AppointmentDetailsBottomSheet extends ConsumerWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        context.push(
-                          '/asm/appointments/edit/${appointment.id}',
-                          extra: appointment,
-                        );
+                        context.go('/mr/appointments/edit/${appointment.id}');
                       },
                       style: AppButtonStyles.primaryButton(height: 44),
                       icon: const Icon(

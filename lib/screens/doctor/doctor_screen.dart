@@ -81,17 +81,6 @@ class _MyDoctorScreenState extends ConsumerState<MyDoctorScreen> {
             children: [
               if (doctorState.isLoading)
                 const TransparentLoader(subtext: 'Loading doctors...'),
-              if (doctorState.error != null && !doctorState.isLoading)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Text(
-                    doctorState.error!,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.error,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
               // Search Bar
               DoctorSearchBarCard(
                 onSearchChanged: (value) {
