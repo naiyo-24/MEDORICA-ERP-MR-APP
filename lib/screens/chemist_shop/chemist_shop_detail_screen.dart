@@ -79,7 +79,7 @@ class ChemistShopDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
+    //final colorScheme = Theme.of(context).colorScheme;
     final shop = ref.watch(chemistShopDetailProvider(shopId));
 
     if (shop == null) {

@@ -6,7 +6,7 @@ import '../../provider/attendance_provider.dart';
 import '../../cards/attendance/calendar_card.dart';
 import '../../cards/attendance/report_card.dart';
 import '../../widgets/app_bar.dart';
-import '../../theme/app_theme.dart';
+//import '../../theme/app_theme.dart';
 
 class AttendanceScreen extends ConsumerStatefulWidget {
   const AttendanceScreen({super.key});
@@ -39,7 +39,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
     ? const Color(0xFF3A3A3A)
-    : AppColors.white,
+    : colorScheme.surface,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,
