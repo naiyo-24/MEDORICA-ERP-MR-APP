@@ -9,14 +9,15 @@ class ProfileHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.all(AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-        border: Border.all(color: AppColors.border),
-      ),
+  color: colorScheme.surface,
+  borderRadius: BorderRadius.circular(AppBorderRadius.lg),
+  border: Border.all(color: colorScheme.outlineVariant),
+),
       child: Column(
         children: [
           // Profile Avatar
@@ -39,7 +40,9 @@ class ProfileHeaderCard extends StatelessWidget {
           // Name
           Text(
             profile.name,
-            style: AppTypography.h3.copyWith(color: AppColors.primary),
+            style: AppTypography.h3.copyWith(
+  color: colorScheme.onSurface,
+),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -48,14 +51,14 @@ class ProfileHeaderCard extends StatelessWidget {
           Text(
             profile.designation,
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.quaternary,
+              color: colorScheme.onSurface,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
 
           // Divider
-          const Divider(height: 1, color: AppColors.border),
+          Divider(height: 1, color: colorScheme.onSurface),
           const SizedBox(height: AppSpacing.lg),
 
           // MR ID and Territories
@@ -65,16 +68,16 @@ class ProfileHeaderCard extends StatelessWidget {
               // MR ID
               Column(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.badge_outlined,
-                    color: AppColors.primary,
+                    color: colorScheme.onSurface,
                     size: 24,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     profile.mrId,
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.quaternary,
+                      color: colorScheme.onSurface,
                     ),
                     textAlign: TextAlign.center,
                   ),

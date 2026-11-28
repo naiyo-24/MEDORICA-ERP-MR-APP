@@ -9,12 +9,14 @@ class DistributorDescriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final description = distributor.description?.trim();
 
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -44,7 +46,7 @@ class DistributorDescriptionCard extends StatelessWidget {
                   ? 'No distributor description available.'
                   : description,
               style: AppTypography.body.copyWith(
-                color: AppColors.quaternary,
+                color: colorScheme.onSurface,
                 height: 1.6,
                 fontSize: 13,
               ),
@@ -77,7 +79,7 @@ class DistributorDescriptionCard extends StatelessWidget {
                         child: Text(
                           product,
                           style: AppTypography.caption.copyWith(
-                            color: AppColors.primary,
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

@@ -20,12 +20,13 @@ class ProfileOptionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
         children: [
@@ -35,6 +36,7 @@ class ProfileOptionsCard extends StatelessWidget {
             subtitle: 'Modify your profile information',
             onTap: onUpdateProfile,
             isFirst: true,
+            colorScheme: colorScheme,
           ),
           _buildDivider(),
           _buildOption(
@@ -42,6 +44,7 @@ class ProfileOptionsCard extends StatelessWidget {
             title: 'About Us',
             subtitle: 'Learn about Medorica Pharma',
             onTap: onAboutUs,
+            colorScheme: colorScheme,
           ),
           _buildDivider(),
           _buildOption(
@@ -49,6 +52,7 @@ class ProfileOptionsCard extends StatelessWidget {
             title: 'Contact Support',
             subtitle: 'Get help and support',
             onTap: onContactSupport,
+            colorScheme: colorScheme,
           ),
           _buildDivider(),
           _buildOption(
@@ -56,6 +60,7 @@ class ProfileOptionsCard extends StatelessWidget {
             title: 'Salary Slip',
             subtitle: 'Download your salary slip',
             onTap: onSalarySlip,
+            colorScheme: colorScheme,
           ),
           _buildDivider(),
           _buildOption(
@@ -64,6 +69,7 @@ class ProfileOptionsCard extends StatelessWidget {
             subtitle: 'Manage notification settings',
             onTap: onNotifications,
             isLast: true,
+            colorScheme: colorScheme,
           ),
         ],
       ),
@@ -75,6 +81,7 @@ class ProfileOptionsCard extends StatelessWidget {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    required ColorScheme colorScheme,
     bool isFirst = false,
     bool isLast = false,
   }) {
@@ -84,8 +91,12 @@ class ProfileOptionsCard extends StatelessWidget {
         borderRadius: BorderRadius.only(
           topLeft: isFirst ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
           topRight: isFirst ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
-          bottomLeft: isLast ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
-          bottomRight: isLast ? Radius.circular(AppBorderRadius.lg) : Radius.zero,
+          bottomLeft: isLast
+              ? Radius.circular(AppBorderRadius.lg)
+              : Radius.zero,
+          bottomRight: isLast
+              ? Radius.circular(AppBorderRadius.lg)
+              : Radius.zero,
         ),
         onTap: onTap,
         child: Padding(
@@ -96,10 +107,14 @@ class ProfileOptionsCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
+                  color: colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(AppBorderRadius.md),
                 ),
-                child: Icon(icon, color: AppColors.primary, size: 24),
+                child: Icon(
+                  icon,
+                  color: colorScheme.onPrimaryContainer,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -110,7 +125,7 @@ class ProfileOptionsCard extends StatelessWidget {
                       title,
                       style: AppTypography.body.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: AppColors.black,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -123,7 +138,11 @@ class ProfileOptionsCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Iconsax.arrow_right, color: AppColors.quaternary, size: 20),
+              const Icon(
+                Iconsax.arrow_right,
+                color: AppColors.quaternary,
+                size: 20,
+              ),
             ],
           ),
         ),
@@ -134,10 +153,7 @@ class ProfileOptionsCard extends StatelessWidget {
   Widget _buildDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Divider(
-        height: 1,
-        color: AppColors.border,
-      ),
+      child: Divider(height: 1, color: AppColors.border),
     );
   }
 }

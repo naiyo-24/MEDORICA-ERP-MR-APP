@@ -12,12 +12,15 @@ class ChemistShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => context.push('/mr/chemist/${shop.id}'),
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF3A3A3A)
+    : AppColors.white,
           borderRadius: BorderRadius.circular(AppBorderRadius.lg),
           boxShadow: [
             BoxShadow(
@@ -71,7 +74,7 @@ class ChemistShopCard extends StatelessWidget {
                   Text(
                     shop.name,
                     style: AppTypography.h3.copyWith(
-                      color: AppColors.primary,
+                      color: colorScheme.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -122,15 +125,15 @@ class ChemistShopCard extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton.icon(
                       onPressed: () => context.push('/mr/chemist/${shop.id}'),
-                      icon: const Icon(
+                      icon: Icon(
                         Iconsax.eye,
                         size: 16,
-                        color: AppColors.primary,
+                        color: colorScheme.onSurface,
                       ),
                       label: Text(
                         'View Details',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.primary,
+                          color: colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

@@ -54,7 +54,8 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
         context.go('/home');
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: MRAppBar(
           showBack: true,
           showActions: false,
@@ -62,61 +63,67 @@ class _GiftScreenState extends ConsumerState<GiftScreen> {
           subtitleText: 'Send & Track Gifts',
           onBack: () => context.go('/home'),
         ),
-        body: Column(
-          children: [
-            // Filter Card
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: GiftFilterCard(
-                selectedDate: _selectedDate,
-                selectedDoctorId: _selectedDoctorId,
-                selectedStatus: _selectedStatus,
-                doctorNames: doctors.map((d) => d.name).toList(),
-                onDateFilterChanged: (date) {
-                  setState(() {
-                    _selectedDate = date;
-                  });
-                },
-                onDoctorFilterChanged: (doctorId) {
-                  setState(() {
-                    _selectedDoctorId = doctorId;
-                  });
-                },
-                onStatusFilterChanged: (status) {
-                  setState(() {
-                    _selectedStatus = status;
-                  });
-                },
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Filter Card
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: GiftFilterCard(
+                  selectedDate: _selectedDate,
+                  selectedDoctorId: _selectedDoctorId,
+                  selectedStatus: _selectedStatus,
+                  doctorNames: doctors.map((d) => d.name).toList(),
+                  onDateFilterChanged: (date) {
+                    setState(() {
+                      _selectedDate = date;
+                    });
+                  },
+                  onDoctorFilterChanged: (doctorId) {
+                    setState(() {
+                      _selectedDoctorId = doctorId;
+                    });
+                  },
+                  onStatusFilterChanged: (status) {
+                    setState(() {
+                      _selectedStatus = status;
+                    });
+                  },
+                ),
               ),
-            ),
-
-            // Gifts List
-            Expanded(
-              child: filteredGifts.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.sm,
+          
+              // Gifts List
+              Expanded(
+                child: filteredGifts.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                          vertical: AppSpacing.sm,
+                        ),
+                        itemCount: filteredGifts.length,
+                        itemBuilder: (context, index) {
+                          final gift = filteredGifts[index];
+                          return GiftCard(gift: gift);
+                        },
                       ),
-                      itemCount: filteredGifts.length,
-                      itemBuilder: (context, index) {
-                        final gift = filteredGifts[index];
-                        return GiftCard(gift: gift);
-                      },
-                    ),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push('/gifts/send'),
-          backgroundColor: AppColors.primary,
-          icon: const Icon(Iconsax.gift, color: AppColors.white),
-          label: Text(
-            'Gift a Doctor',
-            style: AppTypography.buttonMedium.copyWith(color: AppColors.white),
+              ),
+            ],
           ),
         ),
+        floatingActionButton: filteredGifts.isEmpty
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => context.push('/gifts/send'),
+                backgroundColor: AppColors.primary,
+                icon: const Icon(Iconsax.gift, color: AppColors.white),
+                label: Text(
+                  'Gift a Doctor',
+                  style: AppTypography.buttonMedium.copyWith(
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
       ),
     );
   }

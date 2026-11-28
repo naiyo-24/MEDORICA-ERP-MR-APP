@@ -10,6 +10,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final productSummary = distributor.products.isEmpty
         ? 'Products not specified'
         : distributor.products.join(', ');
@@ -20,7 +21,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -39,7 +40,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
             Text(
               'Order Information',
               style: AppTypography.h3.copyWith(
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.3,
               ),
@@ -54,7 +55,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
                       vertical: 16,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: AppColors.primaryLight.withAlpha(150),
@@ -95,7 +96,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
                               ? 'Not specified'
                               : '₹${distributor.minimumOrderValue!.toStringAsFixed(0)}',
                           style: AppTypography.h3.copyWith(
-                            color: AppColors.primary,
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w700,
                             fontSize: 20,
                           ),
@@ -112,7 +113,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
                       vertical: 16,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: AppColors.primaryLight.withAlpha(150),
@@ -151,7 +152,7 @@ class DistributorOrderInfoCard extends StatelessWidget {
                         Text(
                           distributor.deliveryTime ?? 'Not specified',
                           style: AppTypography.body.copyWith(
-                            color: AppColors.primary,
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w700,
                             fontSize: 14,
                           ),
@@ -202,11 +203,12 @@ class _InfoStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.primaryLight, width: 1),
       ),
@@ -230,7 +232,7 @@ class _InfoStrip extends StatelessWidget {
                 Text(
                   value,
                   style: AppTypography.body.copyWith(
-                    color: AppColors.primary,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

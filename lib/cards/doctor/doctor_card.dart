@@ -11,11 +11,14 @@ class DoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => context.push('/mr/doctor/${doctor.id}'),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+    ? AppColors.darkSurface300
+    : AppColors.white,
           borderRadius: BorderRadius.circular(AppBorderRadius.lg),
           boxShadow: [
             BoxShadow(
@@ -68,7 +71,7 @@ class DoctorCard extends StatelessWidget {
                       Text(
                         doctor.name,
                         style: AppTypography.bodyLarge.copyWith(
-                          color: AppColors.primary,
+                          color: colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 2,
@@ -85,7 +88,7 @@ class DoctorCard extends StatelessWidget {
                       Text(
                         doctor.experience,
                         style: AppTypography.caption.copyWith(
-                          color: AppColors.tertiary,
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ],

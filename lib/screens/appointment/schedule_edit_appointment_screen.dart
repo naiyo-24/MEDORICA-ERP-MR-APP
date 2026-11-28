@@ -142,12 +142,19 @@ class _ScheduleEditAppointmentScreenState
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: AppColors.white,
-              surface: AppColors.white,
-              onSurface: AppColors.black,
-            ),
+            colorScheme: Theme.of(context).brightness == Brightness.dark
+                ? const ColorScheme.dark(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: Color(0xFF3A3A3A),
+                    onSurface: AppColors.white,
+                  )
+                : const ColorScheme.light(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: AppColors.white,
+                    onSurface: AppColors.black,
+                  ),
           ),
           child: child!,
         );
@@ -167,12 +174,19 @@ class _ScheduleEditAppointmentScreenState
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: AppColors.white,
-              surface: AppColors.white,
-              onSurface: AppColors.black,
-            ),
+            colorScheme: Theme.of(context).brightness == Brightness.dark
+                ? const ColorScheme.dark(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: Color(0xFF3A3A3A),
+                    onSurface: AppColors.white,
+                  )
+                : const ColorScheme.light(
+                    primary: AppColors.primary,
+                    onPrimary: AppColors.white,
+                    surface: AppColors.white,
+                    onSurface: AppColors.black,
+                  ),
           ),
           child: child!,
         );
@@ -342,13 +356,16 @@ class _ScheduleEditAppointmentScreenState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final doctorsState = ref.watch(doctorProvider);
     final doctors = doctorsState.doctors;
     final visualAdsState = ref.watch(visualAdsProvider);
     final visualAds = visualAdsState.ads;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF3A3A3A)
+          : AppColors.surface,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,
@@ -360,345 +377,356 @@ class _ScheduleEditAppointmentScreenState
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Date Picker Card
-              _buildSectionCard(
-                title: 'Appointment Date',
-                icon: Iconsax.calendar,
-                child: InkWell(
-                  onTap: () => _selectDate(context),
-                  borderRadius: AppBorderRadius.mdRadius,
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface200,
-                      borderRadius: AppBorderRadius.mdRadius,
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _selectedDate == null
-                              ? 'Select Date'
-                              : DateFormat(
-                                  'EEEE, MMM dd, yyyy',
-                                ).format(_selectedDate!),
-                          style: AppTypography.body.copyWith(
-                            color: _selectedDate == null
-                                ? AppColors.quaternary
-                                : AppColors.black,
-                          ),
-                        ),
-                        const Icon(Iconsax.calendar, color: AppColors.primary),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Time Picker Card
-              _buildSectionCard(
-                title: 'Appointment Time',
-                icon: Iconsax.clock,
-                child: InkWell(
-                  onTap: () => _selectTime(context),
-                  borderRadius: AppBorderRadius.mdRadius,
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface200,
-                      borderRadius: AppBorderRadius.mdRadius,
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _selectedTime == null
-                              ? 'Select Time'
-                              : _formatTime(_selectedTime!),
-                          style: AppTypography.body.copyWith(
-                            color: _selectedTime == null
-                                ? AppColors.quaternary
-                                : AppColors.black,
-                          ),
-                        ),
-                        const Icon(Iconsax.clock, color: AppColors.primary),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Doctor Dropdown Card
-              _buildSectionCard(
-                title: 'Select Doctor',
-                icon: Iconsax.user,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface200,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Date Picker Card
+                _buildSectionCard(
+                  colorScheme: colorScheme,
+                  title: 'Appointment Date',
+                  icon: Iconsax.calendar,
+                  child: InkWell(
+                    onTap: () => _selectDate(context),
                     borderRadius: AppBorderRadius.mdRadius,
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedDoctorId,
-                      hint: Text(
-                        'Choose a doctor',
-                        style: AppTypography.body.copyWith(
-                          color: AppColors.quaternary,
-                        ),
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: AppBorderRadius.mdRadius,
+                        border: Border.all(color: AppColors.border),
                       ),
-                      isExpanded: true,
-                      icon: const Icon(
-                        Iconsax.arrow_down_1,
-                        color: AppColors.primary,
-                      ),
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.black,
-                      ),
-                      items: doctors.map((Doctor doctor) {
-                        return DropdownMenuItem<String>(
-                          value: doctor.id,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                doctor.name,
-                                style: AppTypography.body.copyWith(
-                                  color: AppColors.black,
-                                ),
-                              ),
-                              Text(
-                                doctor.specialization,
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.quaternary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedDoctorId = newValue;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Status Dropdown Card
-              _buildSectionCard(
-                title: 'Appointment Status',
-                icon: Iconsax.status,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface200,
-                    borderRadius: AppBorderRadius.mdRadius,
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<AppointmentStatus>(
-                      value: _selectedStatus,
-                      isExpanded: true,
-                      icon: const Icon(
-                        Iconsax.arrow_down_1,
-                        color: AppColors.primary,
-                      ),
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.black,
-                      ),
-                      items: AppointmentStatus.values.map((
-                        AppointmentStatus status,
-                      ) {
-                        return DropdownMenuItem<AppointmentStatus>(
-                          value: status,
-                          child: Text(
-                            status.displayName,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _selectedDate == null
+                                ? 'Select Date'
+                                : DateFormat(
+                                    'EEEE, MMM dd, yyyy',
+                                  ).format(_selectedDate!),
                             style: AppTypography.body.copyWith(
-                              color: AppColors.black,
+                              color: _selectedDate == null
+                                  ? AppColors.quaternary
+                                  : colorScheme.onSurface,
                             ),
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (AppointmentStatus? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            _selectedStatus = newValue;
-                          });
-                        }
-                      },
+                          const Icon(Iconsax.calendar, color: AppColors.primary),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Place Card
-              _buildSectionCard(
-                title: 'Appointment Place',
-                icon: Iconsax.message_text,
-                child: TextFormField(
-                  controller: _placeController,
-                  maxLines: 2,
-                  style: AppTypography.body.copyWith(color: AppColors.black),
-                  decoration: InputDecoration(
-                    hintText: 'Enter appointment place...',
-                    hintStyle: AppTypography.body.copyWith(
-                      color: AppColors.quaternary,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.surface200,
-                    border: OutlineInputBorder(
-                      borderRadius: AppBorderRadius.mdRadius,
-                      borderSide: const BorderSide(color: AppColors.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: AppBorderRadius.mdRadius,
-                      borderSide: const BorderSide(color: AppColors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: AppBorderRadius.mdRadius,
-                      borderSide: const BorderSide(
-                        color: AppColors.primary,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(AppSpacing.md),
-                  ),
-                  // Appointment place is now optional
-                  validator: (value) {
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Visual Ads Selection Card
-              _buildSectionCard(
-                title: 'Select Visual Ads',
-                icon: Iconsax.image,
-                child: visualAdsState.isLoading && visualAds.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-                        child: Center(child: CircularProgressIndicator()),
-                      )
-                    : visualAds.isEmpty
-                    ? Text(
-                        'No visual ads available',
-                        style: AppTypography.body.copyWith(
-                          color: AppColors.quaternary,
-                        ),
-                      )
-                    : Wrap(
-                        spacing: AppSpacing.sm,
-                        runSpacing: AppSpacing.sm,
-                        children: visualAds.map((VisualAd ad) {
-                          final adId = ad.id.toString();
-                          final selected = _selectedVisualAdIds.contains(adId);
-                          return FilterChip(
-                            label: Text(ad.medicineName),
-                            selected: selected,
-                            onSelected: (isSelected) {
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedVisualAdIds.add(adId);
-                                } else {
-                                  _selectedVisualAdIds.remove(adId);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Completion Proof Card
-              if (_selectedStatus == AppointmentStatus.completed)
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Time Picker Card
                 _buildSectionCard(
-                  title: 'Completion Proof Photo',
-                  icon: Iconsax.camera,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _pickCompletionProofImage,
-                        style: AppButtonStyles.primaryButton(height: 42),
-                        icon: const Icon(
-                          Iconsax.camera,
-                          color: AppColors.white,
-                          size: 18,
-                        ),
-                        label: Text(
-                          _completionProofImage == null
-                              ? 'Capture Proof Photo'
-                              : 'Recapture Proof Photo',
-                          style: AppTypography.buttonMedium.copyWith(
-                            color: AppColors.white,
-                          ),
-                        ),
+                  colorScheme: colorScheme,
+                  title: 'Appointment Time',
+                  icon: Iconsax.clock,
+                  child: InkWell(
+                    onTap: () => _selectTime(context),
+                    borderRadius: AppBorderRadius.mdRadius,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: AppBorderRadius.mdRadius,
+                        border: Border.all(color: AppColors.border),
                       ),
-                      const SizedBox(height: AppSpacing.md),
-                      if (_completionProofImage != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            AppBorderRadius.md,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _selectedTime == null
+                                ? 'Select Time'
+                                : _formatTime(_selectedTime!),
+                            style: AppTypography.body.copyWith(
+                              color: _selectedTime == null
+                                  ? AppColors.quaternary
+                                  : colorScheme.onSurface,
+                            ),
                           ),
-                          child: Image.file(
-                            _completionProofImage!,
-                            width: double.infinity,
-                            height: 180,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      else if (_isEditMode)
-                        Text(
-                          'Keep existing proof photo or upload a new one.',
-                          style: AppTypography.bodySmall.copyWith(
+                          const Icon(Iconsax.clock, color: AppColors.primary),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Doctor Dropdown Card
+                _buildSectionCard(
+                  colorScheme: colorScheme,
+                  title: 'Select Doctor',
+                  icon: Iconsax.user,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: AppBorderRadius.mdRadius,
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedDoctorId,
+                        hint: Text(
+                          'Choose a doctor',
+                          style: AppTypography.body.copyWith(
                             color: AppColors.quaternary,
                           ),
                         ),
-                    ],
+                        isExpanded: true,
+                        icon: const Icon(
+                          Iconsax.arrow_down_1,
+                          color: AppColors.primary,
+                        ),
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.black,
+                        ),
+                        items: doctors.map((Doctor doctor) {
+                          return DropdownMenuItem<String>(
+                            value: doctor.id,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  doctor.name,
+                                  style: AppTypography.body.copyWith(
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                                Text(
+                                  doctor.specialization,
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.quaternary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedDoctorId = newValue;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              if (_selectedStatus == AppointmentStatus.completed)
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Status Dropdown Card
+                _buildSectionCard(
+                  colorScheme: colorScheme,
+                  title: 'Appointment Status',
+                  icon: Iconsax.status,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: AppBorderRadius.mdRadius,
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<AppointmentStatus>(
+                        value: _selectedStatus,
+                        isExpanded: true,
+                        icon: const Icon(
+                          Iconsax.arrow_down_1,
+                          color: AppColors.primary,
+                        ),
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.black,
+                        ),
+                        items: AppointmentStatus.values.map((
+                          AppointmentStatus status,
+                        ) {
+                          return DropdownMenuItem<AppointmentStatus>(
+                            value: status,
+                            child: Text(
+                              status.displayName,
+                              style: AppTypography.body.copyWith(
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (AppointmentStatus? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              _selectedStatus = newValue;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Place Card
+                _buildSectionCard(
+                  colorScheme: colorScheme,
+                  title: 'Appointment Place',
+                  icon: Iconsax.message_text,
+                  child: TextFormField(
+                    controller: _placeController,
+                    maxLines: 2,
+                    style: AppTypography.body.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Enter appointment place...',
+                      hintStyle: AppTypography.body.copyWith(
+                        color: AppColors.quaternary,
+                      ),
+                      filled: true,
+                      fillColor: colorScheme.surface,
+                      border: OutlineInputBorder(
+                        borderRadius: AppBorderRadius.mdRadius,
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: AppBorderRadius.mdRadius,
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: AppBorderRadius.mdRadius,
+                        borderSide: const BorderSide(
+                          color: AppColors.primary,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(AppSpacing.md),
+                    ),
+                    // Appointment place is now optional
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Visual Ads Selection Card
+                _buildSectionCard(
+                  colorScheme: colorScheme,
+                  title: 'Select Visual Ads',
+                  icon: Iconsax.image,
+                  child: visualAdsState.isLoading && visualAds.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      : visualAds.isEmpty
+                      ? Text(
+                          'No visual ads available',
+                          style: AppTypography.body.copyWith(
+                            color: AppColors.quaternary,
+                          ),
+                        )
+                      : Wrap(
+                          spacing: AppSpacing.sm,
+                          runSpacing: AppSpacing.sm,
+                          children: visualAds.map((VisualAd ad) {
+                            final adId = ad.id.toString();
+                            final selected = _selectedVisualAdIds.contains(adId);
+                            return FilterChip(
+                              label: Text(ad.medicineName),
+                              selected: selected,
+                              onSelected: (isSelected) {
+                                setState(() {
+                                  if (isSelected) {
+                                    _selectedVisualAdIds.add(adId);
+                                  } else {
+                                    _selectedVisualAdIds.remove(adId);
+                                  }
+                                });
+                              },
+                            );
+                          }).toList(),
+                        ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+            
+                // Completion Proof Card
+                if (_selectedStatus == AppointmentStatus.completed)
+                  _buildSectionCard(
+                    colorScheme: colorScheme,
+                    title: 'Completion Proof Photo',
+                    icon: Iconsax.camera,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _pickCompletionProofImage,
+                          style: AppButtonStyles.primaryButton(height: 42),
+                          icon: Icon(
+                            Iconsax.camera,
+                            color: colorScheme.surface,
+                            size: 18,
+                          ),
+                          label: Text(
+                            _completionProofImage == null
+                                ? 'Capture Proof Photo'
+                                : 'Recapture Proof Photo',
+                            style: AppTypography.buttonMedium.copyWith(
+                              color: AppColors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        if (_completionProofImage != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              AppBorderRadius.md,
+                            ),
+                            child: Image.file(
+                              _completionProofImage!,
+                              width: double.infinity,
+                              height: 180,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        else if (_isEditMode)
+                          Text(
+                            'Keep existing proof photo or upload a new one.',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.quaternary,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                if (_selectedStatus == AppointmentStatus.completed)
+                  const SizedBox(height: AppSpacing.xxl),
                 const SizedBox(height: AppSpacing.xxl),
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Save Button
-              ElevatedButton(
-                onPressed: _isSubmitting ? null : _saveAppointment,
-                style: AppButtonStyles.primaryButton(),
-                child: Text(
-                  _isSubmitting
-                      ? 'Saving...'
-                      : _isEditMode
-                      ? 'Update Appointment'
-                      : 'Schedule Appointment',
-                  style: AppTypography.buttonMedium.copyWith(
-                    color: AppColors.white,
+            
+                // Save Button
+                ElevatedButton(
+                  onPressed: _isSubmitting ? null : _saveAppointment,
+                  style: AppButtonStyles.primaryButton(),
+                  child: Text(
+                    _isSubmitting
+                        ? 'Saving...'
+                        : _isEditMode
+                        ? 'Update Appointment'
+                        : 'Schedule Appointment',
+                    style: AppTypography.buttonMedium.copyWith(
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -706,6 +734,7 @@ class _ScheduleEditAppointmentScreenState
   }
 
   Widget _buildSectionCard({
+    required ColorScheme colorScheme,
     required String title,
     required IconData icon,
     required Widget child,
@@ -713,7 +742,7 @@ class _ScheduleEditAppointmentScreenState
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: AppBorderRadius.lgRadius,
         boxShadow: [
           BoxShadow(
@@ -732,7 +761,9 @@ class _ScheduleEditAppointmentScreenState
               const SizedBox(width: AppSpacing.sm),
               Text(
                 title,
-                style: AppTypography.tagline.copyWith(color: AppColors.black),
+                style: AppTypography.tagline.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
             ],
           ),

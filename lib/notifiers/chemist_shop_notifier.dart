@@ -164,14 +164,14 @@ class ChemistShopNotifier extends StateNotifier<ChemistShopState> {
   // Delete
   // ---------------------------------------------------------------------------
 
-  Future<void> deleteChemistShop(String shopId) async {
+  Future<bool> deleteChemistShop(String shopId) async {
     final String? mrId = _read(authNotifierProvider).mr?.mrId;
     if (mrId == null || mrId.isEmpty) {
       state = state.copyWith(error: 'No logged in MR found');
-      return;
+      return false;
     }
 
-    state = state.copyWith(isSubmitting: true, error: null);
+    state = state.copyWith(isSubmitting: true, error: null,);
 
     try {
       await _services.deleteShop(mrId: mrId, shopId: shopId);
@@ -184,11 +184,13 @@ class ChemistShopNotifier extends StateNotifier<ChemistShopState> {
         isSubmitting: false,
         error: null,
       );
+      return true;
     } catch (e) {
       state = state.copyWith(
         isSubmitting: false,
         error: e.toString().replaceFirst('Exception: ', ''),
       );
+      return false;
     }
   }
 

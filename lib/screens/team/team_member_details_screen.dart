@@ -13,6 +13,7 @@ class TeamMemberDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: MRAppBar(
         showBack: true,
@@ -213,7 +214,7 @@ class TeamMemberDetailsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppBorderRadius.md),
               ),
               elevation: 2,
-              color: AppColors.white,
+              color: colorScheme.surface,
               margin: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenPaddingHorizontal,
                 vertical: AppSpacing.sm,

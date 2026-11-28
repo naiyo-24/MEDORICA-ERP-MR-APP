@@ -11,6 +11,7 @@ class ChemistShop {
   final String? bankPassbookPhoto;
   final String location;
   final String description;
+  final bool isActive;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<String> doctorIds; // local UI only — not stored on backend
@@ -26,6 +27,7 @@ class ChemistShop {
     this.bankPassbookPhoto,
     required this.location,
     required this.description,
+    this.isActive = true,
     this.createdAt,
     this.updatedAt,
     this.doctorIds = const <String>[],
@@ -43,6 +45,7 @@ class ChemistShop {
     String? bankPassbookPhoto,
     String? location,
     String? description,
+    bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<String>? doctorIds,
@@ -58,6 +61,7 @@ class ChemistShop {
       bankPassbookPhoto: bankPassbookPhoto ?? this.bankPassbookPhoto,
       location: location ?? this.location,
       description: description ?? this.description,
+      isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       doctorIds: doctorIds ?? this.doctorIds,
@@ -76,6 +80,7 @@ class ChemistShop {
         'bank_passbook_photo': bankPassbookPhoto,
         'address': location,
         'description': description,
+        'is_active': isActive,
         'created_at': createdAt?.toIso8601String(),
         'updated_at': updatedAt?.toIso8601String(),
       };
@@ -92,6 +97,7 @@ class ChemistShop {
         bankPassbookPhoto: json['bank_passbook_photo'] as String?,
         location: json['address'] as String? ?? '',
         description: json['description'] as String? ?? '',
+        isActive: json['is_active'] ?? true,
         createdAt: json['created_at'] != null
             ? DateTime.tryParse(json['created_at'].toString())
             : null,

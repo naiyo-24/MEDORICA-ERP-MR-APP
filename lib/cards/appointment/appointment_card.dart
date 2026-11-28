@@ -40,6 +40,7 @@ class AppointmentCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final doctor = ref.watch(doctorDetailProvider(appointment.doctorId));
 
     if (doctor == null) {
@@ -82,7 +83,7 @@ class AppointmentCard extends ConsumerWidget {
                         Text(
                           doctor.name,
                           style: AppTypography.bodyLarge.copyWith(
-                            color: AppColors.black,
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -119,7 +120,7 @@ class AppointmentCard extends ConsumerWidget {
               const SizedBox(height: AppSpacing.md),
 
               // Divider
-              const Divider(color: AppColors.divider),
+              Divider(color: colorScheme.onSurface,),
               const SizedBox(height: AppSpacing.md),
 
               // Date and Time Row
@@ -129,16 +130,16 @@ class AppointmentCard extends ConsumerWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        const Icon(
+                         Icon(
                           Iconsax.calendar,
                           size: 18,
-                          color: AppColors.primary,
+                          color: colorScheme.onSurface,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           DateFormat('MMM dd, yyyy').format(appointment.date),
                           style: AppTypography.body.copyWith(
-                            color: AppColors.black,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -148,16 +149,16 @@ class AppointmentCard extends ConsumerWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        const Icon(
+                         Icon(
                           Iconsax.clock,
                           size: 18,
-                          color: AppColors.primary,
+                          color: colorScheme.onSurface,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           appointment.time,
                           style: AppTypography.body.copyWith(
-                            color: AppColors.black,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -171,17 +172,17 @@ class AppointmentCard extends ConsumerWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                     Icon(
                       Iconsax.message_text,
                       size: 18,
-                      color: AppColors.primary,
+                      color: colorScheme.onSurface,
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         appointment.message,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.quaternary,
+                          color: colorScheme.onSurface,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

@@ -18,11 +18,12 @@ class DoctorChambersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     if (chambers.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(AppBorderRadius.lg),
           boxShadow: [
             BoxShadow(
@@ -38,16 +39,14 @@ class DoctorChambersCard extends StatelessWidget {
             Text(
               'Chambers',
               style: AppTypography.bodyLarge.copyWith(
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'No chambers available',
-              style: AppTypography.body.copyWith(
-                color: AppColors.quaternary,
-              ),
+              style: AppTypography.body.copyWith(color: AppColors.quaternary),
             ),
           ],
         ),
@@ -57,7 +56,7 @@ class DoctorChambersCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -73,7 +72,7 @@ class DoctorChambersCard extends StatelessWidget {
           Text(
             'Chambers',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.primary,
+              color: colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -89,9 +88,9 @@ class DoctorChambersCard extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(AppBorderRadius.md),
-                  border: Border.all(color: AppColors.surface300),
+                  border: Border.all(color: colorScheme.tertiary),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +98,7 @@ class DoctorChambersCard extends StatelessWidget {
                     Text(
                       chamber.name,
                       style: AppTypography.bodyLarge.copyWith(
-                        color: AppColors.primary,
+                        color: colorScheme.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -109,7 +108,7 @@ class DoctorChambersCard extends StatelessWidget {
                       children: [
                         Icon(
                           Iconsax.location,
-                          color: AppColors.quaternary,
+                          color: colorScheme.onSurface,
                           size: 16,
                         ),
                         const SizedBox(width: AppSpacing.sm),
@@ -117,7 +116,7 @@ class DoctorChambersCard extends StatelessWidget {
                           child: Text(
                             chamber.address,
                             style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.quaternary,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -132,7 +131,7 @@ class DoctorChambersCard extends StatelessWidget {
                         children: [
                           Icon(
                             Iconsax.call,
-                            color: AppColors.primary,
+                            color: colorScheme.onSurface,
                             size: 16,
                           ),
                           const SizedBox(width: AppSpacing.sm),
@@ -140,7 +139,7 @@ class DoctorChambersCard extends StatelessWidget {
                             child: Text(
                               chamber.phoneNumber,
                               style: AppTypography.bodySmall.copyWith(
-                                color: AppColors.primary,
+                                color: colorScheme.onSurface,
                                 decoration: TextDecoration.underline,
                               ),
                             ),

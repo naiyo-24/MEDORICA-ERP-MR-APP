@@ -59,30 +59,25 @@ class _MRBottomNavBarState extends State<MRBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final navItems = [
-      _NavItem(label: 'Home',
-       icon: Iconsax.home,
-        filledIcon: Iconsax.home5
-      ),
-      _NavItem(label: 'My Doctors', 
-      icon: FontAwesomeIcons.userDoctor, 
-      filledIcon: FontAwesomeIcons.userDoctor
+      _NavItem(label: 'Home', icon: Iconsax.home, filledIcon: Iconsax.home5),
+      _NavItem(
+        label: 'My Doctors',
+        icon: FontAwesomeIcons.userDoctor,
+        filledIcon: FontAwesomeIcons.userDoctor,
       ),
       _NavItem(
         label: 'Appointments',
         icon: Iconsax.calendar,
-        filledIcon: Iconsax.calendar, 
+        filledIcon: Iconsax.calendar,
       ),
       _NavItem(
         label: 'My Orders',
         icon: Iconsax.receipt,
         filledIcon: Iconsax.receipt_15,
       ),
-      _NavItem(
-        label: 'Shops',
-        icon: Iconsax.shop,
-        filledIcon: Iconsax.shop,
-      ),
+      _NavItem(label: 'Shops', icon: Iconsax.shop, filledIcon: Iconsax.shop),
       _NavItem(
         label: 'Distributors',
         icon: Iconsax.truck,
@@ -92,7 +87,7 @@ class _MRBottomNavBarState extends State<MRBottomNavBar> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: AppColors.shadowColor,
@@ -190,6 +185,7 @@ class _NavBarItemState extends State<_NavBarItem>
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -212,7 +208,9 @@ class _NavBarItemState extends State<_NavBarItem>
                       widget.isSelected
                           ? widget.navItem.filledIcon
                           : widget.navItem.icon,
-                      color: _colorAnimation.value,
+                      color: widget.isSelected && isDarkMode
+                          ? Colors.white
+                          : _colorAnimation.value,
                       size: iconSize,
                     );
                   },
@@ -225,7 +223,9 @@ class _NavBarItemState extends State<_NavBarItem>
                   return Text(
                     widget.navItem.label,
                     style: AppTypography.caption.copyWith(
-                      color: _colorAnimation.value,
+                      color: widget.isSelected && isDarkMode
+                          ? Colors.white
+                          : _colorAnimation.value,
                       fontSize: 9,
                       fontWeight: widget.isSelected
                           ? FontWeight.w600
@@ -244,7 +244,9 @@ class _NavBarItemState extends State<_NavBarItem>
                     width: 24,
                     height: 3,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: widget.isSelected && isDarkMode
+                          ? Colors.white
+                          : _colorAnimation.value,
                       borderRadius: BorderRadius.circular(1.5),
                       boxShadow: [
                         BoxShadow(

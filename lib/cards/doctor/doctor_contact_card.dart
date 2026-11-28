@@ -31,10 +31,11 @@ class DoctorContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -50,13 +51,14 @@ class DoctorContactCard extends StatelessWidget {
           Text(
             'Contact Information',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.primary,
+              color: colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
           // Phone Number
           _buildContactItem(
+            context,
             icon: Iconsax.call,
             label: 'Phone',
             value: phoneNumber,
@@ -65,6 +67,7 @@ class DoctorContactCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           // Email
           _buildContactItem(
+            context,
             icon: Iconsax.sms,
             label: 'Email',
             value: email,
@@ -72,6 +75,7 @@ class DoctorContactCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           _buildContactItem(
+            context,
             icon: Iconsax.location,
             label: 'Address',
             value: address,
@@ -81,12 +85,13 @@ class DoctorContactCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContactItem({
+  Widget _buildContactItem(BuildContext context,{
     required IconData icon,
     required String label,
     required String value,
     VoidCallback? onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppBorderRadius.md),
@@ -97,12 +102,12 @@ class DoctorContactCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.primaryLight,
+            color: colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(AppBorderRadius.md),
           ),
           child: Icon(
             icon,
-            color: AppColors.primary,
+            color: colorScheme.onPrimaryContainer,
             size: 18,
           ),
         ),
@@ -114,14 +119,14 @@ class DoctorContactCard extends StatelessWidget {
               Text(
                 label,
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.quaternary,
+                  color: colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 value.isEmpty ? 'Not provided' : value,
                 style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.primary,
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.w500,
                 ),
               ),

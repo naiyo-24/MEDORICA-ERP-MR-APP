@@ -31,6 +31,7 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final chemistState = ref.watch(chemistShopProvider);
     final allShops = chemistState.shops;
     final filteredShops = _searchQuery.isEmpty
@@ -46,7 +47,7 @@ class _MyChemistShopScreenState extends ConsumerState<MyChemistShopScreen> {
         context.go(AppRouter.home);
       },
       child: Scaffold(
-        backgroundColor: AppColors.surface,
+        backgroundColor: colorScheme.surface,
         appBar: const MRAppBar(
           showBack: false,
           showActions: false,

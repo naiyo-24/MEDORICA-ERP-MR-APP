@@ -16,6 +16,7 @@ class DistributorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final photoPath = distributor.photoUrl?.trim();
     final hasPhoto = photoPath != null && photoPath.isNotEmpty;
     final isNetworkPhoto =
@@ -27,7 +28,7 @@ class DistributorCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -114,7 +115,7 @@ class DistributorCard extends StatelessWidget {
                   Text(
                     distributor.name,
                     style: AppTypography.h3.copyWith(
-                      color: AppColors.primary,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
                     ),

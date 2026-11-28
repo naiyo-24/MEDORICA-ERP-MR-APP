@@ -26,13 +26,14 @@ class AboutUsContactUsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
@@ -68,6 +69,7 @@ class AboutUsContactUsCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
             // Phone
             _buildContactItem(
+              colorScheme: colorScheme,
               icon: Iconsax.call,
               title: 'Phone',
               value: phone,
@@ -76,6 +78,7 @@ class AboutUsContactUsCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             // Email
             _buildContactItem(
+              colorScheme: colorScheme,
               icon: Iconsax.sms,
               title: 'Email',
               value: email,
@@ -84,6 +87,7 @@ class AboutUsContactUsCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             // Address
             _buildContactItem(
+              colorScheme: colorScheme,
               icon: Iconsax.location,
               title: 'Address',
               value: address,
@@ -96,6 +100,7 @@ class AboutUsContactUsCard extends StatelessWidget {
   }
 
   Widget _buildContactItem({
+    required ColorScheme colorScheme,
     required IconData icon,
     required String title,
     required String value,
@@ -107,7 +112,7 @@ class AboutUsContactUsCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(AppBorderRadius.md),
           border: Border.all(color: AppColors.border),
         ),
@@ -138,7 +143,7 @@ class AboutUsContactUsCard extends StatelessWidget {
                   Text(
                     value,
                     style: AppTypography.body.copyWith(
-                      color: AppColors.primary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ],

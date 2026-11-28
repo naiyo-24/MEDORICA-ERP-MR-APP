@@ -9,10 +9,11 @@ class ChemistShopDescriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -34,9 +35,9 @@ class ChemistShopDescriptionCard extends StatelessWidget {
                   color: AppColors.primaryLight,
                   borderRadius: BorderRadius.circular(AppBorderRadius.sm),
                 ),
-                child: const Icon(
+                child: Icon(
                   Iconsax.document_text,
-                  color: AppColors.primary,
+                  color: colorScheme.onSurface,
                   size: 20,
                 ),
               ),
@@ -44,7 +45,7 @@ class ChemistShopDescriptionCard extends StatelessWidget {
               Text(
                 'About the Shop',
                 style: AppTypography.h3.copyWith(
-                  color: AppColors.primary,
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),

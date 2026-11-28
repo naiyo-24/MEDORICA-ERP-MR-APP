@@ -39,6 +39,7 @@ class _OrderDetailsBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.9,
@@ -48,8 +49,8 @@ class _OrderDetailsBottomSheetState
         return SingleChildScrollView(
           controller: scrollController,
           child: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.white,
+            decoration: BoxDecoration(
+              color: colorScheme.tertiary,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24),
                 topRight: Radius.circular(24),
@@ -107,6 +108,7 @@ class _OrderDetailsBottomSheetState
                   _buildSectionTitle('Chemist Shop'),
                   const SizedBox(height: 10),
                   _buildContactItem(
+                    colorScheme: colorScheme,
                     icon: Iconsax.shop,
                     label: 'Shop Name',
                     value: widget.order.chemistShopName,
@@ -116,6 +118,7 @@ class _OrderDetailsBottomSheetState
                   GestureDetector(
                     onTap: () => _launchDialer(widget.order.chemistShopPhoneNo),
                     child: _buildContactItem(
+                      colorScheme: colorScheme,
                       icon: Iconsax.call,
                       label: 'Shop Phone',
                       value: widget.order.chemistShopPhoneNo,
@@ -126,6 +129,7 @@ class _OrderDetailsBottomSheetState
                   GestureDetector(
                     onTap: () => _launchMaps(widget.order.chemistShopAddress),
                     child: _buildContactItem(
+                      colorScheme: colorScheme,
                       icon: Iconsax.location,
                       label: 'Shop Address',
                       value: widget.order.chemistShopAddress,
@@ -138,6 +142,7 @@ class _OrderDetailsBottomSheetState
                   _buildSectionTitle('Doctor'),
                   const SizedBox(height: 10),
                   _buildContactItem(
+                    colorScheme: colorScheme,
                     icon: Iconsax.user,
                     label: 'Doctor Name',
                     value: widget.order.doctorName,
@@ -149,6 +154,7 @@ class _OrderDetailsBottomSheetState
                   _buildSectionTitle('Distributor'),
                   const SizedBox(height: 10),
                   _buildContactItem(
+                    colorScheme: colorScheme,
                     icon: Iconsax.truck,
                     label: 'Distributor Name',
                     value: widget.order.distributorName,
@@ -158,6 +164,7 @@ class _OrderDetailsBottomSheetState
                   GestureDetector(
                     onTap: () => _launchDialer(widget.order.distributorPhoneNo),
                     child: _buildContactItem(
+                      colorScheme: colorScheme,
                       icon: Iconsax.call,
                       label: 'Distributor Phone',
                       value: widget.order.distributorPhoneNo,
@@ -168,6 +175,7 @@ class _OrderDetailsBottomSheetState
                   GestureDetector(
                     onTap: () => _launchMaps(widget.order.distributorAddress),
                     child: _buildContactItem(
+                      colorScheme: colorScheme,
                       icon: Iconsax.location,
                       label: 'Distributor Address',
                       value: widget.order.distributorAddress,
@@ -176,6 +184,7 @@ class _OrderDetailsBottomSheetState
                   ),
                   const SizedBox(height: 8),
                   _buildContactItem(
+                    colorScheme: colorScheme,
                     icon: Iconsax.clock,
                     label: 'Delivery Time',
                     value: widget.order.distributorDeliveryTime,
@@ -352,11 +361,12 @@ class _OrderDetailsBottomSheetState
     required String label,
     required String value,
     required bool isClickable,
+    required ColorScheme colorScheme
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         
         boxShadow: [
@@ -385,7 +395,7 @@ class _OrderDetailsBottomSheetState
                 Text(
                   label,
                   style: AppTypography.caption.copyWith(
-                    color: Colors.black,
+                    color: colorScheme.onSurface,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
@@ -394,7 +404,7 @@ class _OrderDetailsBottomSheetState
                 Text(
                   value,
                   style: AppTypography.body.copyWith(
-                    color: Colors.black,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),

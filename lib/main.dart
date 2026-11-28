@@ -9,6 +9,7 @@ import 'package:mr_app/provider/gift_provider.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 import 'provider/auth_provider.dart';
+import 'provider/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
               final mrId = next.mr?.mrId;
               ref.read(currentMrIdProvider.notifier).state = mrId;
             });
+            final selectedThemeMode = ref.watch(themeModeProvider);
             return PopScope(
               canPop: false,
               onPopInvokedWithResult: (didPop, result) {
@@ -52,7 +54,19 @@ class MyApp extends StatelessWidget {
               child: MaterialApp.router(
                 title: 'Medorica MR App',
                 debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
+                theme: AppTheme.lightTheme.copyWith(
+                  pageTransitionsTheme: const PageTransitionsTheme(
+                    builders: {
+                      TargetPlatform.android: NoTransitionsBuilder(),
+                      TargetPlatform.iOS: NoTransitionsBuilder(),
+                      TargetPlatform.macOS: NoTransitionsBuilder(),
+                      TargetPlatform.windows: NoTransitionsBuilder(),
+                      TargetPlatform.linux: NoTransitionsBuilder(),
+                    },
+                  ),
+                ),
+                darkTheme: AppTheme.darkTheme,
+                themeMode: selectedThemeMode,
                 routerConfig: AppRouter.router,
               ),
             );
@@ -79,7 +93,9 @@ class MyApp extends StatelessWidget {
       }
       if (latestVersion == null) return false;
       // Extract build number from backend APK filename
-      final latestBuildNumber = RegExp(r'_(\d+)\.apk').firstMatch(latestVersion)?.group(1);
+      final latestBuildNumber = RegExp(
+        r'_(\d+)\.apk',
+      ).firstMatch(latestVersion)?.group(1);
       if (kDebugMode) {
         print('Extracted latest build number: $latestBuildNumber');
       }
@@ -94,5 +110,20 @@ class MyApp extends StatelessWidget {
       }
       return false;
     }
+  }
+}
+
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+  const NoTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }

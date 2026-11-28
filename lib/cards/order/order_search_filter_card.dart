@@ -35,10 +35,11 @@ class _OrderSearchFilterCardState extends State<OrderSearchFilterCard> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -74,7 +75,7 @@ class _OrderSearchFilterCardState extends State<OrderSearchFilterCard> {
                 contentPadding: const EdgeInsets.symmetric(vertical: 6),
               ),
               style: AppTypography.body.copyWith(
-                color: AppColors.primary,
+                color: colorScheme.onSurface,
                 fontSize: 13,
               ),
             ),

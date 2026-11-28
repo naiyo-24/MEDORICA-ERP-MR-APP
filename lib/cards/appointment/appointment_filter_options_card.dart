@@ -42,18 +42,20 @@ class _AppointmentFilterOptionsCardState
       firstDate: DateTime.now().subtract(const Duration(days: 365)),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: AppColors.white,
-              surface: AppColors.white,
-              onSurface: AppColors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
+  final theme = Theme.of(context);
+
+  return Theme(
+    data: theme.copyWith(
+      colorScheme: theme.colorScheme.copyWith(
+        primary: theme.colorScheme.primary,
+        onPrimary: theme.colorScheme.onPrimary,
+        surface: theme.colorScheme.surface,
+        onSurface: theme.colorScheme.onSurface,
+      ),
+    ),
+    child: child!,
+  );
+},
     );
     if (picked != null) {
       setState(() {
@@ -88,12 +90,13 @@ class _AppointmentFilterOptionsCardState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final hasActiveFilters = _selectedDate != null || _selectedStatus != null;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: AppBorderRadius.lgRadius,
         boxShadow: [
           BoxShadow(
@@ -113,12 +116,17 @@ class _AppointmentFilterOptionsCardState
               Expanded(
                 child: Row(
                   children: [
-                    const Icon(Iconsax.filter, color: AppColors.primary, size: 20),
+                    Icon(
+                      Iconsax.filter,
+                      color: colorScheme.onSurface,
+                      size: 20,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Filter Appointments',
-                      style:
-                          AppTypography.tagline.copyWith(color: AppColors.black),
+                      style: AppTypography.tagline.copyWith(
+                        color: colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),
@@ -134,7 +142,7 @@ class _AppointmentFilterOptionsCardState
                     child: Text(
                       'Clear All',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.primary,
+                        color: colorScheme.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -155,9 +163,11 @@ class _AppointmentFilterOptionsCardState
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: _selectedDate != null
-                          ? AppColors.primaryLight
-                          : AppColors.surface200,
+                      color: Theme.of(context).brightness == Brightness.dark
+    ? colorScheme.surface
+    : _selectedDate != null
+        ? AppColors.primaryLight
+        : AppColors.surface200,
                       borderRadius: AppBorderRadius.mdRadius,
                       border: Border.all(
                         color: _selectedDate != null
@@ -173,10 +183,10 @@ class _AppointmentFilterOptionsCardState
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Icon(
+                            Icon(
                               Iconsax.calendar,
                               size: 18,
-                              color: AppColors.primary,
+                              color: colorScheme.onSurface,
                             ),
                             if (_selectedDate != null)
                               InkWell(
@@ -195,13 +205,13 @@ class _AppointmentFilterOptionsCardState
                               ? 'By Date'
                               : DateFormat('MMM dd').format(_selectedDate!),
                           style: AppTypography.bodySmall.copyWith(
-                            color: _selectedDate != null
-                                ? AppColors.black
-                                : AppColors.quaternary,
-                            fontWeight: _selectedDate != null
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                          ),
+    color: _selectedStatus != null
+        ? colorScheme.onSurface
+        : colorScheme.onSurfaceVariant,
+    fontWeight: _selectedStatus != null
+        ? FontWeight.w600
+        : FontWeight.w400,
+  ),
                         ),
                       ],
                     ),
@@ -211,82 +221,83 @@ class _AppointmentFilterOptionsCardState
               const SizedBox(width: AppSpacing.md),
 
               // Status Filter
+              // Status Filter
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: _selectedStatus != null
-                        ? AppColors.primaryLight
-                        : AppColors.surface200,
+                child: PopupMenuButton<AppointmentStatus>(
+                  offset: const Offset(0, 40),
+                  shape: RoundedRectangleBorder(
                     borderRadius: AppBorderRadius.mdRadius,
-                    border: Border.all(
-                      color: _selectedStatus != null
-                          ? AppColors.primary
-                          : AppColors.border,
-                      width: _selectedStatus != null ? 2 : 1,
-                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Icon(
-                            Iconsax.status,
-                            size: 18,
-                            color: AppColors.primary,
-                          ),
-                          if (_selectedStatus != null)
-                            InkWell(
-                              onTap: _clearStatusFilter,
-                              child: const Icon(
-                                Iconsax.close_circle,
-                                size: 16,
-                                color: AppColors.quaternary,
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      PopupMenuButton<AppointmentStatus>(
-                        offset: const Offset(0, 40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppBorderRadius.mdRadius,
-                        ),
+                  onSelected: (AppointmentStatus status) {
+                    setState(() {
+                      _selectedStatus = status;
+                    });
+                    widget.onStatusFilterChanged(status);
+                  },
+                  itemBuilder: (context) {
+                    return AppointmentStatus.values.map((status) {
+                      return PopupMenuItem<AppointmentStatus>(
+                        value: status,
                         child: Text(
-                          _selectedStatus == null
-                              ? 'By Status'
-                              : _selectedStatus!.displayName,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: _selectedStatus != null
-                                ? AppColors.black
-                                : AppColors.quaternary,
-                            fontWeight: _selectedStatus != null
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                          ),
+                          status.displayName,
+                          style: AppTypography.body,
                         ),
-                        itemBuilder: (context) {
-                          return AppointmentStatus.values.map((status) {
-                            return PopupMenuItem<AppointmentStatus>(
-                              value: status,
-                              child: Text(
-                                status.displayName,
-                                style: AppTypography.body,
-                              ),
-                            );
-                          }).toList();
-                        },
-                        onSelected: (AppointmentStatus status) {
-                          setState(() {
-                            _selectedStatus = status;
-                          });
-                          widget.onStatusFilterChanged(status);
-                        },
+                      );
+                    }).toList();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+    ? colorScheme.surface
+    : _selectedStatus != null
+        ? AppColors.primaryLight
+        : AppColors.surface200,
+                      borderRadius: AppBorderRadius.mdRadius,
+                      border: Border.all(
+                        color: _selectedStatus != null
+                            ? AppColors.primary
+                            : AppColors.border,
+                        width: _selectedStatus != null ? 2 : 1,
                       ),
-                    ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(
+                              Iconsax.status,
+                              size: 18,
+                              color: colorScheme.onSurface
+                            ),
+                            if (_selectedStatus != null)
+                              GestureDetector(
+                                onTap: _clearStatusFilter,
+                                child: const Icon(
+                                  Iconsax.close_circle,
+                                  size: 16,
+                                  color: AppColors.quaternary,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+  _selectedStatus?.displayName ?? 'By Status',
+  style: AppTypography.bodySmall.copyWith(
+    color: _selectedStatus != null
+        ? colorScheme.onSurface
+        : colorScheme.onSurfaceVariant,
+    fontWeight: _selectedStatus != null
+        ? FontWeight.w600
+        : FontWeight.w400,
+  ),
+),
+                      ],
+                    ),
                   ),
                 ),
               ),

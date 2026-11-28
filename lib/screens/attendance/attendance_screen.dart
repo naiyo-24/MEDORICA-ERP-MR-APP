@@ -20,6 +20,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     // Removed unused variables: records, todayAttendance
     final selectedMonthRecords = ref.watch(selectedMonthAttendancesProvider);
     Attendance? selectedAttendance;
@@ -36,7 +37,9 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? const Color(0xFF3A3A3A)
+    : AppColors.white,
       appBar: MRAppBar(
         showBack: true,
         showActions: false,

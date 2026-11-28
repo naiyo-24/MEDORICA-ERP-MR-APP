@@ -12,13 +12,14 @@ class AboutUsDescriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorcheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorcheme.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(color: AppColors.border),
       ),

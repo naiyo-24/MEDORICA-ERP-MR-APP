@@ -30,11 +30,12 @@ class _DistributorSearchFilterCardState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: EdgeInsets.zero,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
@@ -69,7 +70,7 @@ class _DistributorSearchFilterCardState
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(vertical: 6),
               ),
-              style: AppTypography.body.copyWith(color: AppColors.primary),
+              style: AppTypography.body.copyWith(color: colorScheme.onSurface),
             ),
           ),
         ],

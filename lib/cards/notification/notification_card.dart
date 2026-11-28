@@ -67,6 +67,7 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final previewText = notification.subTitle?.trim().isNotEmpty == true
         ? notification.subTitle!.trim()
         : notification.message;
@@ -77,7 +78,7 @@ class NotificationCard extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: notification.isRead ? AppColors.white : AppColors.primaryLight,
+        color: notification.isRead ? colorScheme.surface : AppColors.primaryLight,
         borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         border: Border.all(
           color: notification.isRead ? AppColors.border : AppColors.primary,
@@ -128,7 +129,7 @@ class NotificationCard extends StatelessWidget {
                                   notification.title,
                                   style: AppTypography.body.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.black,
+                                    color: colorScheme.onSurface,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
