@@ -24,7 +24,7 @@ class _DistributorScreenState extends ConsumerState<DistributorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    //final colorScheme = Theme.of(context).colorScheme;
     final distributors = ref.watch(distributorListProvider);
     final isLoading = ref.watch(distributorLoadingProvider);
     final error = ref.watch(distributorErrorProvider);

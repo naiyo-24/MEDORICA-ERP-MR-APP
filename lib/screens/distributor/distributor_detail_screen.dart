@@ -48,7 +48,7 @@ class _DistributorDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    //final colorScheme = Theme.of(context).colorScheme;
     final distributorAsync = ref.watch(
       distributorByIdProvider(widget.distributorId),
     );
